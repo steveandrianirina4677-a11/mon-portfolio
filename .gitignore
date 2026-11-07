@@ -1,0 +1,16 @@
+
+# Ne jamais envoyer les dépendances Node.js
+node_modules/
+
+# Protéger les mots de passe et paramètres secrets
+.env
+.env.local
+.env.*.local
+
+# Ignorer les fichiers générés par React / Vite
+dist/
+build/
+
+# Ignorer les fichiers temporaires
+.DS_Store
+Thumbs.db
