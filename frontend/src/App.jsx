@@ -1,241 +1,99 @@
-
 import { useState } from "react";
-
 import {
-  FaPython,
-  FaNodeJs,
-  FaReact,
   FaGithub,
-  FaDatabase,
-  FaJs,
   FaLinkedin,
   FaEnvelope,
+  FaPhone,
+  FaMapMarkerAlt,
   FaCode,
   FaLaptopCode,
+  FaDatabase,
+  FaDownload,
   FaBars,
   FaTimes,
-  FaExternalLinkAlt
+  FaPaperPlane,
+  FaCheckCircle
 } from "react-icons/fa";
 
-// ========================================
-// COORDONNEES PERSONNELLES
-// ========================================
-
-const personalInfo = {
-  name: "Steve Andrianirina",
-  github: "https://github.com/steveandrianirina4677-a11",
-  linkedin: "https://www.linkedin.com/in/steve-andrianirina-922a17448/",
-  email: "steveandrianirina4677@gmail.com"
-};
-
-// ========================================
-// COMPETENCES
-// ========================================
-
-const skills = [
-  {
-    name: "Python",
-    level: "Avancé",
-    icon: <FaPython />
-  },
-  {
-    name: "SQL / MySQL",
-    level: "Intermédiaire",
-    icon: <FaDatabase />
-  },
-  {
-    name: "JavaScript",
-    level: "Avancé",
-    icon: <FaJs />
-  },
-  {
-    name: "Node.js",
-    level: "Intermédiaire",
-    icon: <FaNodeJs />
-  },
-  {
-    name: "React.js",
-    level: "Intermédiaire",
-    icon: <FaReact />
-  },
-  {
-    name: "GitHub",
-    level: "Intermédiaire",
-    icon: <FaGithub />
-  }
-];
-
-// ========================================
-// PROJETS RECENTS
-// ========================================
-
-const projects = [
-  {
-    number: "01",
-    title: "Application de gestion",
-    description:
-      "Développement d'une application de gestion permettant d'organiser les informations, gérer les données et simplifier les tâches quotidiennes.",
-
-    tech: [
-      "JavaScript",
-      "React.js",
-      "Node.js",
-      "MySQL",
-      "HTML",
-      "CSS"
-    ],
-
-    github: personalInfo.github,
-    demo: "#"
-  },
-
-  {
-    number: "02",
-    title: "Portfolio personnel",
-    description:
-      "Création d'un portfolio moderne et responsive pour présenter mes compétences, mes réalisations et mes services en développement web.",
-
-    tech: [
-      "JavaScript",
-      "React.js",
-      "HTML",
-      "CSS"
-    ],
-
-    github: personalInfo.github,
-    demo: "#"
-  },
-
-  {
-    number: "03",
-    title: "Application Python",
-    description:
-      "Développement d'une application Python destinée à automatiser certaines tâches et faciliter la gestion des informations.",
-
-    tech: [
-      "Python",
-      "MySQL"
-    ],
-
-    github: personalInfo.github,
-    demo: "#"
-  }
-];
-
-// ========================================
-// NAVIGATION
-// ========================================
-
+// ================================
+// BARRE DE NAVIGATION
+// ================================
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
+  const links = [
+    ["Accueil", "#accueil"],
+    ["À propos", "#apropos"],
+    ["Compétences", "#competences"],
+    ["Projets", "#projets"],
+    ["Contact", "#contact"]
+  ];
 
   return (
     <nav className="navbar">
-
-      <a
-        href="#accueil"
-        className="logo"
-        onClick={closeMenu}
-      >
+      <a href="#accueil" className="logo">
         Steve<span>.</span>
       </a>
 
       <button
         className="menu-toggle"
         onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Ouvrir ou fermer le menu"
+        aria-label="Ouvrir le menu"
       >
         {menuOpen ? <FaTimes /> : <FaBars />}
       </button>
 
-      <ul className={`nav-links ${menuOpen ? "active" : ""}`}>
-
-        <li>
-          <a href="#accueil" onClick={closeMenu}>
-            Accueil
+      <div className={`nav-links ${menuOpen ? "active" : ""}`}>
+        {links.map(([label, href]) => (
+          <a
+            key={href}
+            href={href}
+            onClick={() => setMenuOpen(false)}
+          >
+            {label}
           </a>
-        </li>
-
-        <li>
-          <a href="#apropos" onClick={closeMenu}>
-            À propos
-          </a>
-        </li>
-
-        <li>
-          <a href="#competences" onClick={closeMenu}>
-            Compétences
-          </a>
-        </li>
-
-        <li>
-          <a href="#projets" onClick={closeMenu}>
-            Projets
-          </a>
-        </li>
-
-        <li>
-          <a href="#contact" onClick={closeMenu}>
-            Contact
-          </a>
-        </li>
-
-      </ul>
-
+        ))}
+      </div>
     </nav>
   );
 }
 
-// ========================================
+// ================================
 // SECTION ACCUEIL
-// ========================================
-
+// ================================
 function Hero() {
   return (
     <section className="hero" id="accueil">
-
       <div className="hero-content">
-
-        <p className="welcome">
-          BIENVENUE SUR MON PORTFOLIO
-        </p>
+        <span className="hero-badge">
+          <FaCode /> Développeur Full Stack
+        </span>
 
         <h1>
-          Bonjour, je suis
-          <br />
-          <span>{personalInfo.name}</span>
+          Bonjour, je suis <span>Steve Andrianirina</span>
         </h1>
 
-        <h2>
-          Développeur Full Stack
-        </h2>
+        <h2>Développeur Web & Python</h2>
 
-        <p className="hero-description">
-          Je conçois des applications web modernes,
-          performantes et adaptées aux besoins des
-          entreprises et des particuliers.
+        <p>
+          Je conçois des applications web modernes, des solutions
+          numériques et des outils de gestion adaptés aux besoins
+          des entreprises et des particuliers.
         </p>
 
         <div className="hero-buttons">
-
-          <a href="#projets" className="btn primary">
-            Voir mes projets
+          <a href="#projets" className="btn-primary">
+            Découvrir mes projets
           </a>
 
-          <a href="#contact" className="btn secondary">
+          <a href="#contact" className="btn-secondary">
             Me contacter
           </a>
-
         </div>
 
         <div className="social-links">
-
           <a
-            href={personalInfo.github}
+            href="https://github.com/steveandrianirina4677-a11"
             target="_blank"
             rel="noreferrer"
             aria-label="GitHub"
@@ -244,7 +102,7 @@ function Hero() {
           </a>
 
           <a
-            href={personalInfo.linkedin}
+            href="https://www.linkedin.com/in/steve-andrianirina-922a17448/"
             target="_blank"
             rel="noreferrer"
             aria-label="LinkedIn"
@@ -252,193 +110,178 @@ function Hero() {
             <FaLinkedin />
           </a>
 
-          <a
-            href={`mailto:${personalInfo.email}`}
-            aria-label="Email"
-          >
+          <a href="mailto:steveandrianirina4677@gmail.com">
             <FaEnvelope />
           </a>
-
         </div>
-
       </div>
 
-      <div className="hero-visual">
-
-        <div className="profile-container">
-
-          <img
-            src="/photo.png"
-            alt="Photo de Steve Andrianirina"
-            className="profile-photo"
-          />
-
-          <div className="profile-badge">
-            <FaCode />
-            <span>Full Stack Developer</span>
-          </div>
-
-        </div>
-
+      <div className="hero-image">
+        <img src="/photo.png" alt="Steve Andrianirina" />
       </div>
-
     </section>
   );
 }
 
-// ========================================
-// SECTION A PROPOS
-// ========================================
-
+// ================================
+// SECTION À PROPOS
+// ================================
 function About() {
   return (
-    <section className="section about" id="apropos">
-
-      <h2 className="section-title">
-        À propos de moi
-      </h2>
+    <section className="about section" id="apropos">
+      <div className="section-title">
+        <span>Qui suis-je ?</span>
+        <h2>À propos de moi</h2>
+      </div>
 
       <div className="about-content">
+        <div className="about-text">
+          <h3>Passionné par le développement informatique</h3>
 
-        <div className="about-icon">
-          <FaLaptopCode />
+          <p>
+            Je suis Steve Andrianirina, développeur orienté
+            développement web et programmation Python.
+          </p>
+
+          <p>
+            J'aime concevoir des applications utiles, simples
+            à utiliser et adaptées aux besoins réels des utilisateurs.
+            Mon objectif est de transformer les idées en solutions
+            numériques efficaces.
+          </p>
+
+          <a href="#contact" className="btn-primary">
+            Travaillons ensemble
+          </a>
         </div>
 
-        <p>
-          Je suis développeur passionné par la création
-          d'applications web et de solutions informatiques.
-
-          Je travaille avec Python, JavaScript, React,
-          Node.js et MySQL pour concevoir des projets
-          modernes, pratiques et adaptés aux besoins
-          des utilisateurs.
-
-          Mon objectif est de transformer les idées
-          en solutions numériques efficaces.
-        </p>
-
-      </div>
-
-    </section>
-  );
-}
-
-// ========================================
-// SECTION COMPETENCES
-// ========================================
-
-function Skills() {
-  return (
-    <section className="section skills" id="competences">
-
-      <h2 className="section-title">
-        Mes compétences
-      </h2>
-
-      <div className="skills-grid">
-
-        {skills.map((skill, index) => (
-
-          <div className="skill-card" key={index}>
-
-            <div className="skill-icon">
-              {skill.icon}
-            </div>
-
-            <h3>{skill.name}</h3>
-
-            <p>{skill.level}</p>
-
+        <div className="about-cards">
+          <div className="about-card">
+            <FaLaptopCode />
+            <h3>Développement Web</h3>
+            <p>Création de sites et applications modernes.</p>
           </div>
 
-        ))}
-
+          <div className="about-card">
+            <FaDatabase />
+            <h3>Gestion de données</h3>
+            <p>Conception et gestion de bases de données.</p>
+          </div>
+        </div>
       </div>
-
     </section>
   );
 }
 
-// ========================================
-// SECTION PROJETS
-// ========================================
+// ================================
+// SECTION COMPÉTENCES
+// ================================
+function Skills() {
+  const skills = [
+    { name: "HTML", level: "Intermédiaire" },
+    { name: "CSS", level: "Intermédiaire" },
+    { name: "JavaScript", level: "Intermédiaire" },
+    { name: "React.js", level: "Intermédiaire" },
+    { name: "Python", level: "Intermédiaire" },
+    { name: "Node.js", level: "En apprentissage" },
+    { name: "MySQL", level: "Intermédiaire" }
+  ];
 
-function Projects() {
   return (
-    <section className="section projects" id="projets">
+    <section className="skills section" id="competences">
+      <div className="section-title">
+        <span>Mon savoir-faire</span>
+        <h2>Mes compétences</h2>
+      </div>
 
-      <h2 className="section-title">
-        Mes projets récents
-      </h2>
+      <div className="skills-grid">
+        {skills.map((skill) => (
+          <div className="skill-card" key={skill.name}>
+            <FaCode />
+            <h3>{skill.name}</h3>
+            <p>{skill.level}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ================================
+// SECTION PROJETS
+// ================================
+function Projects() {
+  const projects = [
+    {
+      number: "01",
+      title: "Application de gestion",
+      description:
+        "Application de gestion permettant d'organiser les informations, les opérations et les données d'une activité.",
+      technologies: [
+        "JavaScript",
+        "React.js",
+        "Node.js",
+        "MySQL",
+        "HTML",
+        "CSS"
+      ]
+    },
+    {
+      number: "02",
+      title: "Portfolio personnel",
+      description:
+        "Site web personnel présentant mes compétences, mon parcours et mes réalisations.",
+      technologies: [
+        "JavaScript",
+        "React.js",
+        "HTML",
+        "CSS"
+      ]
+    },
+    {
+      number: "03",
+      title: "Application Python",
+      description:
+        "Développement d'une application en Python avec une base de données MySQL.",
+      technologies: [
+        "Python",
+        "MySQL"
+      ]
+    }
+  ];
+
+  return (
+    <section className="projects section" id="projets">
+      <div className="section-title">
+        <span>Ce que je réalise</span>
+        <h2>Mes projets récents</h2>
+      </div>
 
       <div className="projects-grid">
-
-        {projects.map((project, index) => (
-
-          <div className="project-card" key={index}>
-
-            <div className="project-number">
-              {project.number}
-            </div>
-
-            <div className="project-icon">
-              <FaLaptopCode />
-            </div>
+        {projects.map((project) => (
+          <article className="project-card" key={project.number}>
+            <span className="project-number">{project.number}</span>
 
             <h3>{project.title}</h3>
 
             <p>{project.description}</p>
 
-            <div className="tech-list">
-
-              {project.tech.map((technology, techIndex) => (
-
-                <span key={techIndex}>
-                  {technology}
-                </span>
-
+            <div className="project-technologies">
+              {project.technologies.map((tech) => (
+                <span key={tech}>{tech}</span>
               ))}
-
             </div>
-
-            <div className="project-links">
-
-              <a
-                href={project.github}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FaGithub />
-                Code source
-              </a>
-
-              <a
-                href={project.demo}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FaExternalLinkAlt />
-                Démo
-              </a>
-
-            </div>
-
-          </div>
-
+          </article>
         ))}
-
       </div>
-
     </section>
   );
 }
 
-// ========================================
+// ================================
 // SECTION CONTACT
-// ========================================
-
+// ================================
 function Contact() {
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -446,122 +289,91 @@ function Contact() {
   });
 
   const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Mise à jour des champs du formulaire
-  const handleChange = (event) => {
-
+  function handleChange(e) {
     setFormData({
       ...formData,
-      [event.target.name]: event.target.value
+      [e.target.name]: e.target.value
     });
+  }
 
-  };
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-  // Envoi du formulaire au serveur
-  const handleSubmit = async (event) => {
-
-    event.preventDefault();
-
-    setStatus("Envoi en cours...");
+    setStatus("");
+    setLoading(true);
 
     try {
-
+      // Envoi du message vers le backend hébergé sur Render.
       const response = await fetch(
-        "http://localhost:5000/api/contact",
+        "https://mon-portfolio-backend-twxs.onrender.com/api/contact",
         {
           method: "POST",
-
           headers: {
             "Content-Type": "application/json"
           },
-
           body: JSON.stringify(formData)
         }
       );
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Erreur lors de l'envoi");
+        throw new Error(data.message || "Une erreur est survenue.");
       }
 
-      setStatus(
-        "Votre message a été envoyé avec succès !"
-      );
+      setStatus(data.message || "Votre message a été envoyé avec succès !");
 
       setFormData({
         name: "",
         email: "",
         message: ""
       });
-
     } catch (error) {
+      console.error("Erreur :", error);
 
       setStatus(
-        "Impossible d'envoyer le message. Vérifiez que le serveur est démarré."
+        error.message || "Impossible d'envoyer le message. Réessayez."
       );
-
+    } finally {
+      setLoading(false);
     }
-
-  };
+  }
 
   return (
-    <section className="section contact" id="contact">
+    <section className="contact section" id="contact">
+      <div className="section-title">
+        <span>Entrons en contact</span>
+        <h2>Me contacter</h2>
+      </div>
 
-      <h2 className="section-title">
-        Contactez-moi
-      </h2>
-
-      <div className="contact-container">
-
+      <div className="contact-content">
         <div className="contact-info">
-
-          <h3>
-            Travaillons ensemble
-          </h3>
+          <h3>Discutons de votre projet</h3>
 
           <p>
-            Vous avez un projet ou une idée ?
-            Contactez-moi pour discuter de vos besoins.
+            Vous avez un projet web ou une application à développer ?
+            N'hésitez pas à me contacter.
           </p>
 
-          <p>
+          <div className="contact-item">
             <FaEnvelope />
+            <span>steveandrianirina4677@gmail.com</span>
+          </div>
 
-            <a href={`mailto:${personalInfo.email}`}>
-              {personalInfo.email}
-            </a>
-          </p>
+          <div className="contact-item">
+            <FaMapMarkerAlt />
+            <span>Madagascar</span>
+          </div>
 
-          <p>
-            <FaLinkedin />
-
-            <a
-              href={personalInfo.linkedin}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Mon profil LinkedIn
-            </a>
-          </p>
-
-          <p>
-            <FaGithub />
-
-            <a
-              href={personalInfo.github}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Mon profil GitHub
-            </a>
-          </p>
-
+          <div className="contact-item">
+            <FaPhone />
+            <span>Disponible pour vos projets</span>
+          </div>
         </div>
 
-        <form
-          className="contact-form"
-          onSubmit={handleSubmit}
-        >
-
+        <form className="contact-form" onSubmit={handleSubmit}>
           <input
             type="text"
             name="name"
@@ -582,69 +394,78 @@ function Contact() {
 
           <textarea
             name="message"
-            placeholder="Votre message"
-            rows="5"
+            placeholder="Votre message..."
+            rows="6"
             value={formData.message}
             onChange={handleChange}
             required
           />
 
-          <button
-            type="submit"
-            className="btn primary"
-          >
-            Envoyer le message
+          <button type="submit" disabled={loading}>
+            {loading ? "Envoi en cours..." : "Envoyer le message"}
+            {!loading && <FaPaperPlane />}
           </button>
 
           {status && (
-            <p className="form-status">
+            <p className="form-status" role="status">
               {status}
             </p>
           )}
-
         </form>
-
       </div>
-
     </section>
   );
 }
 
-// ========================================
+// ================================
 // PIED DE PAGE
-// ========================================
-
+// ================================
 function Footer() {
   return (
     <footer className="footer">
-
       <p>
-        © {new Date().getFullYear()} {personalInfo.name}.
+        © {new Date().getFullYear()} Steve Andrianirina.
         Tous droits réservés.
       </p>
 
+      <div className="footer-socials">
+        <a
+          href="https://github.com/steveandrianirina4677-a11"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="GitHub"
+        >
+          <FaGithub />
+        </a>
+
+        <a
+          href="https://www.linkedin.com/in/steve-andrianirina-922a17448/"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="LinkedIn"
+        >
+          <FaLinkedin />
+        </a>
+      </div>
     </footer>
   );
 }
 
-// ========================================
-// APPLICATION PRINCIPALE
-// ========================================
-
-function App() {
-
+// ================================
+// COMPOSANT PRINCIPAL
+// ================================
+export default function App() {
   return (
     <>
       <Navbar />
-      <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Contact />
+      <main>
+        <Hero />
+        <About />
+        <Skills />
+        <Projects />
+        <Contact />
+      </main>
       <Footer />
     </>
   );
-
 }
-
-export default App;
