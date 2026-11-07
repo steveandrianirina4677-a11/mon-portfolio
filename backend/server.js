@@ -1,28 +1,42 @@
 
-// Importation des modules nécessaires
+// ==========================================
+// IMPORTATION DES MODULES
+// ==========================================
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
 
-// Chargement des variables du fichier .env
+// Chargement des variables d'environnement
 dotenv.config();
 
-// Création de l'application Express
+// ==========================================
+// CRÉATION DU SERVEUR
+// ==========================================
 const app = express();
-
-// Autoriser React à communiquer avec le backend
-app.use(cors({
-    origin: "http://localhost:5173"
-}));
-
-// Autoriser la réception des données JSON
-app.use(express.json());
-
-// Configuration du port
 const PORT = process.env.PORT || 5000;
 
-// Configuration de Gmail avec Nodemailer
+// ==========================================
+// CONFIGURATION CORS
+// ==========================================
+
+// Autoriser le frontend local et le site hébergé
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(cors({
+    origin: allowedOrigins
+}));
+
+// Autoriser les données JSON
+app.use(express.json());
+
+// ==========================================
+// CONFIGURATION DE GMAIL
+// ==========================================
+
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -31,21 +45,26 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Vérifier la connexion Gmail
-transporter.verify((error) => {
-    if (error) {
-        console.error("Erreur de connexion Gmail :", error.message);
-    } else {
-        console.log("Connexion Gmail réussie !");
-    }
+// ==========================================
+// ROUTE DE TEST DU BACKEND
+// ==========================================
+
+app.get("/", (req, res) => {
+    res.json({
+        success: true,
+        message: "Backend de mon portfolio opérationnel !"
+    });
 });
 
-// Route de réception du formulaire de contact
+// ==========================================
+// ROUTE DU FORMULAIRE DE CONTACT
+// ==========================================
+
 app.post("/api/contact", async (req, res) => {
     try {
         const { name, email, message } = req.body;
 
-        // Vérifier les champs obligatoires
+        // Vérification des champs obligatoires
         if (!name || !email || !message) {
             return res.status(400).json({
                 success: false,
@@ -53,7 +72,15 @@ app.post("/api/contact", async (req, res) => {
             });
         }
 
-        // Préparer et envoyer l'e-mail
+        // Vérification de la configuration Gmail
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            return res.status(500).json({
+                success: false,
+                message: "Le service email n'est pas configuré."
+            });
+        }
+
+        // Préparation de l'email
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
             replyTo: email,
@@ -68,22 +95,27 @@ ${message}
             `
         });
 
-        res.json({
+        // Réponse en cas de succès
+        return res.json({
             success: true,
             message: "Votre message a été envoyé avec succès !"
         });
 
     } catch (error) {
+
         console.error("Erreur d'envoi :", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "Impossible d'envoyer le message."
         });
     }
 });
 
-// Démarrage du serveur
-app.listen(PORT, () => {
-    console.log(`Backend démarré sur http://localhost:${PORT}`);
+// ==========================================
+// DÉMARRAGE DU SERVEUR
+// ==========================================
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Backend démarré sur le port ${PORT}`);
 });
