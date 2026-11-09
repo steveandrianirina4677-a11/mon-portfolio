@@ -1,54 +1,27 @@
-
-// ==========================================
-// IMPORTATION DES MODULES
-// ==========================================
+// Importation des modules nécessaires
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import nodemailer from "nodemailer";
 
-// Chargement des variables d'environnement
+// Chargement des variables d'environnement (.env ou Render)
 dotenv.config();
 
-// ==========================================
-// CRÉATION DU SERVEUR
-// ==========================================
+// Création de l'application Express
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ==========================================
-// CONFIGURATION CORS
-// ==========================================
-
-// Autoriser le frontend local et le site hébergé
+// Autoriser les requêtes venant du frontend
 const allowedOrigins = [
     "http://localhost:5173",
     process.env.FRONTEND_URL
 ].filter(Boolean);
 
-app.use(cors({
-    origin: allowedOrigins
-}));
+app.use(cors({ origin: allowedOrigins }));
 
-// Autoriser les données JSON
+// Permettre à Express de lire les données JSON envoyées par React
 app.use(express.json());
 
-// ==========================================
-// CONFIGURATION DE GMAIL
-// ==========================================
-
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
-
-// ==========================================
-// ROUTE DE TEST DU BACKEND
-// ==========================================
-
+// Route d'accueil pour vérifier que le backend fonctionne
 app.get("/", (req, res) => {
     res.json({
         success: true,
@@ -56,12 +29,10 @@ app.get("/", (req, res) => {
     });
 });
 
-// ==========================================
-// ROUTE DU FORMULAIRE DE CONTACT
-// ==========================================
-
+// Route pour recevoir et envoyer les messages du formulaire de contact
 app.post("/api/contact", async (req, res) => {
     try {
+        // Récupération des informations du formulaire
         const { name, email, message } = req.body;
 
         // Vérification des champs obligatoires
@@ -72,37 +43,83 @@ app.post("/api/contact", async (req, res) => {
             });
         }
 
-        // Vérification de la configuration Gmail
-        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        // Vérification de la configuration Brevo
+        if (!process.env.BREVO_API_KEY || !process.env.EMAIL_USER) {
             return res.status(500).json({
                 success: false,
                 message: "Le service email n'est pas configuré."
             });
         }
 
-        // Préparation de l'email
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            replyTo: email,
-            to: process.env.EMAIL_USER,
+        // Préparation du message à envoyer avec l'API Brevo
+        const emailData = {
+            sender: {
+                name: "Portfolio",
+                email: process.env.EMAIL_USER
+            },
+
+            // Adresse qui recevra le message
+            to: [
+                {
+                    email: process.env.EMAIL_USER
+                }
+            ],
+
+            // Permet de répondre directement à la personne qui a écrit
+            replyTo: {
+                email: email
+            },
+
+            // Sujet du message
             subject: `Nouveau message de ${name}`,
-            text: `
+
+            // Contenu du message
+            textContent: `
 Nom : ${name}
 Email : ${email}
 
 Message :
 ${message}
             `
-        });
+        };
 
-        // Réponse en cas de succès
+        // Envoi du message à Brevo par HTTPS
+        const response = await fetch(
+            "https://api.brevo.com/v3/smtp/email",
+            {
+                method: "POST",
+
+                headers: {
+                    "accept": "application/json",
+                    "api-key": process.env.BREVO_API_KEY,
+                    "content-type": "application/json"
+                },
+
+                body: JSON.stringify(emailData)
+            }
+        );
+
+        // Récupération de la réponse de Brevo
+        const result = await response.json();
+
+        // Vérification du résultat de l'envoi
+        if (!response.ok) {
+            console.error("Erreur Brevo :", result);
+
+            return res.status(500).json({
+                success: false,
+                message: "Brevo n'a pas pu envoyer le message."
+            });
+        }
+
+        // Confirmation de l'envoi
         return res.json({
             success: true,
             message: "Votre message a été envoyé avec succès !"
         });
 
     } catch (error) {
-
+        // Affichage de l'erreur en cas de problème
         console.error("Erreur d'envoi :", error);
 
         return res.status(500).json({
@@ -112,10 +129,7 @@ ${message}
     }
 });
 
-// ==========================================
-// DÉMARRAGE DU SERVEUR
-// ==========================================
-
+// Démarrage du serveur
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Backend démarré sur le port ${PORT}`);
 });
