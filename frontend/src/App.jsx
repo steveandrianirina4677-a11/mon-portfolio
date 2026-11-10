@@ -2,7 +2,6 @@
 import { useState } from "react";
 
 import {
-  FaGithub,
   FaLinkedin,
   FaEnvelope,
   FaPhone,
@@ -182,16 +181,7 @@ function Hero() {
 
         <div className="social-links">
 
-          <a
-            href="https://github.com/steveandrianirina4677-a11"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="GitHub"
-            title="GitHub"
-          >
-            <FaGithub />
-          </a>
-
+          {/* LinkedIn */}
           <a
             href="https://www.linkedin.com/in/steve-andrianirina-922a17448/"
             target="_blank"
@@ -202,6 +192,7 @@ function Hero() {
             <FaLinkedin />
           </a>
 
+          {/* Email */}
           <a
             href="mailto:steveandrianirina4677@gmail.com"
             aria-label="Email"
@@ -210,8 +201,7 @@ function Hero() {
             <FaEnvelope />
           </a>
 
-          {/* NOUVEAU BOUTON WHATSAPP */}
-
+          {/* WhatsApp */}
           <a
             href={WHATSAPP_URL}
             className="whatsapp-link"
@@ -619,21 +609,6 @@ function Contact() {
 
           </div>
 
-          {/* GitHub */}
-          <div className="contact-item">
-
-            <FaGithub />
-
-            <a
-              href="https://github.com/steveandrianirina4677-a11"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Mon GitHub
-            </a>
-
-          </div>
-
           {/* LinkedIn */}
           <div className="contact-item">
 
@@ -735,15 +710,7 @@ function Footer() {
 
       <div className="footer-socials">
 
-        <a
-          href="https://github.com/steveandrianirina4677-a11"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="GitHub"
-        >
-          <FaGithub />
-        </a>
-
+        {/* LinkedIn */}
         <a
           href="https://www.linkedin.com/in/steve-andrianirina-922a17448/"
           target="_blank"
@@ -753,6 +720,7 @@ function Footer() {
           <FaLinkedin />
         </a>
 
+        {/* Email */}
         <a
           href="mailto:steveandrianirina4677@gmail.com"
           aria-label="Email"
