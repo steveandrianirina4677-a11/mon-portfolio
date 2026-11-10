@@ -19,7 +19,8 @@ import {
   FaPython,
   FaJs,
   FaNodeJs,
-  FaReact
+  FaReact,
+  FaWhatsapp
 } from "react-icons/fa";
 
 // ========================================
@@ -143,7 +144,10 @@ function Hero() {
             <FaLinkedin />
           </a>
 
-          <a href="mailto:steveandrianirina4677@gmail.com" aria-label="Email">
+          <a
+            href="mailto:steveandrianirina4677@gmail.com"
+            aria-label="Email"
+          >
             <FaEnvelope />
           </a>
         </div>
@@ -327,6 +331,7 @@ function Contact() {
   });
 
   const [loading, setLoading] = useState(false);
+
   const [feedback, setFeedback] = useState({
     type: "",
     message: ""
@@ -370,6 +375,7 @@ function Contact() {
         email: "",
         message: ""
       });
+
     } catch (error) {
       setFeedback({
         type: "error",
@@ -377,6 +383,7 @@ function Contact() {
           error.message ||
           "Impossible d'envoyer votre message. Veuillez réessayer."
       });
+
     } finally {
       setLoading(false);
     }
@@ -526,6 +533,25 @@ function Footer() {
 }
 
 // ========================================
+// BOUTON WHATSAPP FLOTTANT
+// ========================================
+
+function WhatsAppButton() {
+  return (
+    <a
+      href="https://wa.me/261385990110?text=Bonjour%20Steve%2C%20je%20viens%20de%20visiter%20votre%20portfolio."
+      className="whatsapp-button"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Me contacter sur WhatsApp"
+      title="Me contacter sur WhatsApp"
+    >
+      <FaWhatsapp />
+    </a>
+  );
+}
+
+// ========================================
 // COMPOSANT PRINCIPAL
 // ========================================
 
@@ -533,6 +559,7 @@ function App() {
   return (
     <>
       <Navbar />
+
       <main>
         <Hero />
         <About />
@@ -540,7 +567,11 @@ function App() {
         <Projects />
         <Contact />
       </main>
+
       <Footer />
+
+      {/* Bouton WhatsApp accessible sur toutes les pages */}
+      <WhatsAppButton />
     </>
   );
 }
