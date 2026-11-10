@@ -1,6 +1,8 @@
 
 import { useState } from "react";
 
+import { motion } from "framer-motion";
+
 import {
   FaLinkedin,
   FaEnvelope,
@@ -39,10 +41,14 @@ const WHATSAPP_URL =
 const projects = [
   {
     title: "Application de gestion d'établissement scolaire",
+
     description:
       "Une application permettant de faciliter la gestion des élèves, des enseignants, des inscriptions, des paiements et des résultats scolaires.",
+
     image: "/images/gestiondecole.png",
+
     icon: <FaGraduationCap />,
+
     technologies: [
       "JavaScript",
       "React.js",
@@ -52,12 +58,17 @@ const projects = [
       "CSS"
     ]
   },
+
   {
     title: "Site vitrine avec gestion de stock",
+
     description:
       "Un site vitrine professionnel accompagné d'une interface de gestion permettant de suivre les produits, les ventes et le stock.",
+
     image: "/images/pv.png",
+
     icon: <FaBoxes />,
+
     technologies: [
       "HTML",
       "CSS",
@@ -66,12 +77,17 @@ const projects = [
       "MySQL"
     ]
   },
+
   {
     title: "Portfolio personnel",
+
     description:
       "Un portfolio moderne présentant mes compétences, mes réalisations et mes services en développement web et logiciel.",
+
     image: "/images/portf.png",
+
     icon: <FaUser />,
+
     technologies: [
       "JavaScript",
       "React.js",
@@ -82,16 +98,54 @@ const projects = [
 ];
 
 // ========================================
+// ANIMATIONS DES PROJETS
+// ========================================
+
+// Animation progressive du conteneur
+const containerVariants = {
+  hidden: {},
+
+  visible: {
+    transition: {
+      staggerChildren: 0.2
+    }
+  }
+};
+
+// Animation individuelle des cartes
+const cardVariants = {
+  hidden: {
+    opacity: 0,
+    y: 60,
+    scale: 0.95
+  },
+
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+
+    transition: {
+      duration: 0.7,
+      ease: "easeOut"
+    }
+  }
+};
+
+// ========================================
 // BARRE DE NAVIGATION
 // ========================================
 
 function Navbar() {
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
 
   return (
+
     <nav className="navbar">
+
       <div className="nav-container">
 
         <a
@@ -107,34 +161,51 @@ function Navbar() {
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Ouvrir le menu"
         >
+
           {menuOpen ? <FaTimes /> : <FaBars />}
+
         </button>
 
         <ul className={menuOpen ? "nav-links active" : "nav-links"}>
+
           <li>
-            <a href="#accueil" onClick={closeMenu}>Accueil</a>
+            <a href="#accueil" onClick={closeMenu}>
+              Accueil
+            </a>
           </li>
 
           <li>
-            <a href="#apropos" onClick={closeMenu}>À propos</a>
+            <a href="#apropos" onClick={closeMenu}>
+              À propos
+            </a>
           </li>
 
           <li>
-            <a href="#competences" onClick={closeMenu}>Compétences</a>
+            <a href="#competences" onClick={closeMenu}>
+              Compétences
+            </a>
           </li>
 
           <li>
-            <a href="#projets" onClick={closeMenu}>Mes projets</a>
+            <a href="#projets" onClick={closeMenu}>
+              Mes projets
+            </a>
           </li>
 
           <li>
-            <a href="#contact" onClick={closeMenu}>Me contacter</a>
+            <a href="#contact" onClick={closeMenu}>
+              Me contacter
+            </a>
           </li>
+
         </ul>
 
       </div>
+
     </nav>
+
   );
+
 }
 
 // ========================================
@@ -142,7 +213,9 @@ function Navbar() {
 // ========================================
 
 function Hero() {
+
   return (
+
     <section className="hero section" id="accueil">
 
       <div className="hero-content">
@@ -160,9 +233,11 @@ function Hero() {
         </h2>
 
         <p className="hero-description">
+
           Je conçois des sites web, des applications et des logiciels
           sur mesure pour aider les entreprises et les particuliers
           à simplifier leurs activités et gagner du temps.
+
         </p>
 
         <div className="hero-buttons">
@@ -181,7 +256,6 @@ function Hero() {
 
         <div className="social-links">
 
-          {/* LinkedIn */}
           <a
             href="https://www.linkedin.com/in/steve-andrianirina-922a17448/"
             target="_blank"
@@ -192,7 +266,6 @@ function Hero() {
             <FaLinkedin />
           </a>
 
-          {/* Email */}
           <a
             href="mailto:steveandrianirina4677@gmail.com"
             aria-label="Email"
@@ -201,7 +274,6 @@ function Hero() {
             <FaEnvelope />
           </a>
 
-          {/* WhatsApp */}
           <a
             href={WHATSAPP_URL}
             className="whatsapp-link"
@@ -228,7 +300,9 @@ function Hero() {
       </div>
 
     </section>
+
   );
+
 }
 
 // ========================================
@@ -236,7 +310,9 @@ function Hero() {
 // ========================================
 
 function About() {
+
   return (
+
     <section className="about section" id="apropos">
 
       <h2 className="section-title">
@@ -248,15 +324,19 @@ function About() {
         <div className="about-text">
 
           <p>
+
             Je suis développeur Full Stack passionné par la création
             de solutions numériques modernes et adaptées aux besoins
             des entreprises et des particuliers.
+
           </p>
 
           <p>
+
             Mon objectif est de concevoir des applications et des
             logiciels pratiques pour faciliter votre quotidien,
             améliorer votre organisation et vous faire gagner du temps.
+
           </p>
 
         </div>
@@ -269,7 +349,9 @@ function About() {
               <FaLaptopCode />
             </div>
 
-            <h3>Développement Web</h3>
+            <h3>
+              Développement Web
+            </h3>
 
             <p>
               Création de sites et d'applications modernes.
@@ -283,7 +365,9 @@ function About() {
               <FaCode />
             </div>
 
-            <h3>Développement logiciel</h3>
+            <h3>
+              Développement logiciel
+            </h3>
 
             <p>
               Création du logiciel pour faciliter la gestion de vos
@@ -298,7 +382,9 @@ function About() {
               <FaDatabase />
             </div>
 
-            <h3>Gestion de données</h3>
+            <h3>
+              Gestion de données
+            </h3>
 
             <p>
               Conception et gestion de bases de données.
@@ -319,7 +405,9 @@ function About() {
       </div>
 
     </section>
+
   );
+
 }
 
 // ========================================
@@ -329,15 +417,23 @@ function About() {
 function Skills() {
 
   const skills = [
+
     { name: "Python", icon: <FaPython /> },
+
     { name: "JavaScript", icon: <FaJs /> },
+
     { name: "Node.js", icon: <FaNodeJs /> },
+
     { name: "React.js", icon: <FaReact /> },
+
     { name: "HTML / CSS", icon: <FaCode /> },
+
     { name: "MySQL", icon: <FaDatabase /> }
+
   ];
 
   return (
+
     <section className="skills section" id="competences">
 
       <h2 className="section-title">
@@ -345,8 +441,10 @@ function Skills() {
       </h2>
 
       <p className="section-description">
+
         Les technologies que j'utilise pour concevoir des solutions
         numériques modernes et performantes.
+
       </p>
 
       <div className="skills-grid">
@@ -359,7 +457,9 @@ function Skills() {
               {skill.icon}
             </div>
 
-            <h3>{skill.name}</h3>
+            <h3>
+              {skill.name}
+            </h3>
 
           </div>
 
@@ -368,15 +468,19 @@ function Skills() {
       </div>
 
     </section>
+
   );
+
 }
 
 // ========================================
-// SECTION PROJETS
+// SECTION PROJETS AVEC FRAMER MOTION
 // ========================================
 
 function Projects() {
+
   return (
+
     <section className="projects section" id="projets">
 
       <h2 className="section-title">
@@ -384,43 +488,127 @@ function Projects() {
       </h2>
 
       <p className="section-description">
+
         Découvrez quelques réalisations qui illustrent mes compétences
         en développement web et logiciel.
+
       </p>
 
-      <div className="projects-grid">
+      {/* CONTENEUR ANIMÉ */}
+
+      <motion.div
+
+        className="projects-grid"
+
+        variants={containerVariants}
+
+        initial="hidden"
+
+        whileInView="visible"
+
+        viewport={{
+          once: true,
+          amount: 0.15
+        }}
+
+      >
 
         {projects.map((project, index) => (
 
-          <article className="project-card" key={index}>
+          <motion.article
+
+            className="project-card"
+
+            key={project.title}
+
+            variants={cardVariants}
+
+            whileHover={{
+              y: -12,
+              scale: 1.02,
+
+              transition: {
+                duration: 0.3
+              }
+            }}
+
+          >
+
+            {/* IMAGE DU PROJET */}
 
             <div className="project-image">
 
-              <img
+              <motion.img
+
                 src={project.image}
+
                 alt={project.title}
+
                 loading="lazy"
+
+                whileHover={{
+                  scale: 1.1
+                }}
+
+                transition={{
+                  duration: 0.5
+                }}
+
               />
 
             </div>
 
+            {/* CONTENU DU PROJET */}
+
             <div className="project-content">
 
-              <div className="project-icon">
+              <motion.div
+
+                className="project-icon"
+
+                whileHover={{
+                  rotate: 10,
+                  scale: 1.15
+                }}
+
+                transition={{
+                  duration: 0.3
+                }}
+
+              >
+
                 {project.icon}
-              </div>
 
-              <h3>{project.title}</h3>
+              </motion.div>
 
-              <p>{project.description}</p>
+              <h3>
+                {project.title}
+              </h3>
+
+              <p>
+                {project.description}
+              </p>
+
+              {/* TECHNOLOGIES */}
 
               <div className="project-technologies">
 
                 {project.technologies.map((technology, techIndex) => (
 
-                  <span key={techIndex}>
+                  <motion.span
+
+                    key={techIndex}
+
+                    whileHover={{
+                      scale: 1.08,
+                      y: -3
+                    }}
+
+                  >
+
                     {technology}
-                  </span>
+
+                  </motion.span>
 
                 ))}
 
@@ -428,14 +616,16 @@ function Projects() {
 
             </div>
 
-          </article>
+          </motion.article>
 
         ))}
 
-      </div>
+      </motion.div>
 
     </section>
+
   );
+
 }
 
 // ========================================
@@ -457,17 +647,20 @@ function Contact() {
     message: ""
   });
 
-  // Gestion des changements dans les champs du formulaire
+  // Gestion des changements dans les champs
   const handleChange = (event) => {
 
     setFormData({
+
       ...formData,
+
       [event.target.name]: event.target.value
+
     });
 
   };
 
-  // Envoi du formulaire vers le serveur
+  // Envoi du formulaire vers le backend
   const handleSubmit = async (event) => {
 
     event.preventDefault();
@@ -504,23 +697,31 @@ function Contact() {
       }
 
       setFeedback({
+
         type: "success",
+
         message: "Votre message a été envoyé avec succès !"
+
       });
 
       setFormData({
+
         name: "",
         email: "",
         message: ""
+
       });
 
     } catch (error) {
 
       setFeedback({
+
         type: "error",
+
         message:
           error.message ||
           "Impossible d'envoyer votre message. Veuillez réessayer."
+
       });
 
     } finally {
@@ -540,13 +741,16 @@ function Contact() {
       </h2>
 
       <p className="section-description">
+
         Vous avez un projet ou besoin d'un logiciel sur mesure ?
         N'hésitez pas à me contacter.
+
       </p>
 
       <div className="contact-container">
 
         {/* COORDONNÉES */}
+
         <div className="contact-info">
 
           <h3>
@@ -554,11 +758,12 @@ function Contact() {
           </h3>
 
           <p>
+
             Je suis disponible pour échanger sur vos besoins et vous
             proposer des solutions adaptées à votre activité.
+
           </p>
 
-          {/* Adresse email */}
           <div className="contact-item">
 
             <FaEnvelope />
@@ -569,7 +774,6 @@ function Contact() {
 
           </div>
 
-          {/* Numéro de téléphone */}
           <div className="contact-item">
 
             <FaPhone />
@@ -580,16 +784,16 @@ function Contact() {
 
           </div>
 
-          {/* Localisation */}
           <div className="contact-item">
 
             <FaMapMarkerAlt />
 
-            <span>Madagascar</span>
+            <span>
+              Madagascar
+            </span>
 
           </div>
 
-          {/* LinkedIn */}
           <div className="contact-item">
 
             <FaLinkedin />
@@ -607,51 +811,80 @@ function Contact() {
         </div>
 
         {/* FORMULAIRE DE CONTACT */}
+
         <form
           className="contact-form"
           onSubmit={handleSubmit}
         >
 
           <input
+
             type="text"
+
             name="name"
+
             placeholder="Votre nom"
+
             value={formData.name}
+
             onChange={handleChange}
+
             required
+
           />
 
           <input
+
             type="email"
+
             name="email"
+
             placeholder="Votre adresse email"
+
             value={formData.email}
+
             onChange={handleChange}
+
             required
+
           />
 
           <textarea
+
             name="message"
+
             placeholder="Décrivez votre projet ou votre message..."
+
             rows="6"
+
             value={formData.message}
+
             onChange={handleChange}
+
             required
+
           />
 
-          {/* Message de confirmation ou d'erreur */}
+          {/* MESSAGE DE CONFIRMATION OU ERREUR */}
+
           {feedback.message && (
 
             <p className={`form-feedback ${feedback.type}`}>
+
               {feedback.message}
+
             </p>
 
           )}
 
           <button
+
             type="submit"
+
             className="btn-primary"
+
             disabled={loading}
+
           >
 
             {loading
@@ -684,13 +917,14 @@ function Footer() {
     <footer className="footer">
 
       <p>
+
         © {new Date().getFullYear()} Steve Andrianirina.
         Tous droits réservés.
+
       </p>
 
       <div className="footer-socials">
 
-        {/* LinkedIn */}
         <a
           href="https://www.linkedin.com/in/steve-andrianirina-922a17448/"
           target="_blank"
@@ -700,7 +934,6 @@ function Footer() {
           <FaLinkedin />
         </a>
 
-        {/* Email */}
         <a
           href="mailto:steveandrianirina4677@gmail.com"
           aria-label="Email"
