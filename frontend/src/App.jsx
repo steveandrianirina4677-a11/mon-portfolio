@@ -589,26 +589,6 @@ function Contact() {
 
           </div>
 
-          {/* GRAND BOUTON WHATSAPP */}
-          <div className="whatsapp-contact">
-
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Me contacter sur WhatsApp"
-            >
-
-              <FaWhatsapp />
-
-              <span>
-                Me contacter sur WhatsApp
-              </span>
-
-            </a>
-
-          </div>
-
           {/* LinkedIn */}
           <div className="contact-item">
 
