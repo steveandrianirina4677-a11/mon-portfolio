@@ -183,9 +183,6 @@
   }
 }
 
-/* ========================================
-   BOUTON WHATSAPP FLOTTANT
-======================================== */
 
 
 /* ========================================
@@ -193,55 +190,70 @@
 ======================================== */
 
 .whatsapp-button {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
+  /* Position fixe sur l'écran */
+  position: fixed !important;
+  bottom: 30px !important;
+  right: 30px !important;
 
+  /* Dimensions du bouton */
   width: 75px;
   height: 75px;
 
+  /* Couleurs */
   background-color: #25D366;
-  color: white;
+  color: #ffffff;
 
+  /* Forme circulaire */
   border-radius: 50%;
 
+  /* Centrage de l'icône */
   display: flex;
   align-items: center;
   justify-content: center;
 
+  /* Taille de l'icône */
   font-size: 45px;
+
+  /* Suppression du soulignement */
   text-decoration: none;
 
+  /* Ombre */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 
-  z-index: 99999;
+  /* Priorité d'affichage et clic */
+  z-index: 999999 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
 
-  pointer-events: auto;
-  cursor: pointer;
-
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  /* Animation */
+  transition: background-color 0.3s ease,
+              transform 0.3s ease;
 }
 
+/* Effet au survol */
 .whatsapp-button:hover {
   background-color: #128C7E;
   transform: scale(1.12);
 }
 
+/* Accessibilité au clavier */
 .whatsapp-button:focus-visible {
   outline: 3px solid #128C7E;
   outline-offset: 4px;
 }
 
-/* Adaptation pour les téléphones */
+/* Adaptation aux téléphones */
 @media (max-width: 600px) {
   .whatsapp-button {
     width: 65px;
     height: 65px;
 
-    bottom: 20px;
-    right: 20px;
+    bottom: 20px !important;
+    right: 20px !important;
 
     font-size: 38px;
   }
 }
+
+
 
