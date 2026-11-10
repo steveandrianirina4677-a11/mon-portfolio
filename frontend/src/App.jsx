@@ -30,6 +30,13 @@ import {
 const API_URL =
   "https://mon-portfolio-backend-twxs.onrender.com/api/contact";
 
+const WHATSAPP_URL =
+  "https://wa.me/261385990110?text=Bonjour%20Steve%2C%20je%20viens%20de%20visiter%20votre%20portfolio.";
+
+// ========================================
+// LISTE DES PROJETS
+// ========================================
+
 const projects = [
   {
     title: "Application de gestion d'établissement scolaire",
@@ -37,7 +44,14 @@ const projects = [
       "Une application permettant de faciliter la gestion des élèves, des enseignants, des inscriptions, des paiements et des résultats scolaires.",
     image: "/images/gestiondecole.png",
     icon: <FaGraduationCap />,
-    technologies: ["JavaScript", "React.js", "Node.js", "MySQL", "HTML", "CSS"]
+    technologies: [
+      "JavaScript",
+      "React.js",
+      "Node.js",
+      "MySQL",
+      "HTML",
+      "CSS"
+    ]
   },
   {
     title: "Site vitrine avec gestion de stock",
@@ -45,7 +59,13 @@ const projects = [
       "Un site vitrine professionnel accompagné d'une interface de gestion permettant de suivre les produits, les ventes et le stock.",
     image: "/images/pv.png",
     icon: <FaBoxes />,
-    technologies: ["HTML", "CSS", "JavaScript", "PHP", "MySQL"]
+    technologies: [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "PHP",
+      "MySQL"
+    ]
   },
   {
     title: "Portfolio personnel",
@@ -53,7 +73,12 @@ const projects = [
       "Un portfolio moderne présentant mes compétences, mes réalisations et mes services en développement web et logiciel.",
     image: "/images/portf.png",
     icon: <FaUser />,
-    technologies: ["JavaScript", "React.js", "Node.js", "CSS"]
+    technologies: [
+      "JavaScript",
+      "React.js",
+      "Node.js",
+      "CSS"
+    ]
   }
 ];
 
@@ -69,7 +94,12 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="nav-container">
-        <a href="#accueil" className="logo" onClick={closeMenu}>
+
+        <a
+          href="#accueil"
+          className="logo"
+          onClick={closeMenu}
+        >
           Steve<span>.</span>
         </a>
 
@@ -82,12 +112,27 @@ function Navbar() {
         </button>
 
         <ul className={menuOpen ? "nav-links active" : "nav-links"}>
-          <li><a href="#accueil" onClick={closeMenu}>Accueil</a></li>
-          <li><a href="#apropos" onClick={closeMenu}>À propos</a></li>
-          <li><a href="#competences" onClick={closeMenu}>Compétences</a></li>
-          <li><a href="#projets" onClick={closeMenu}>Mes projets</a></li>
-          <li><a href="#contact" onClick={closeMenu}>Me contacter</a></li>
+          <li>
+            <a href="#accueil" onClick={closeMenu}>Accueil</a>
+          </li>
+
+          <li>
+            <a href="#apropos" onClick={closeMenu}>À propos</a>
+          </li>
+
+          <li>
+            <a href="#competences" onClick={closeMenu}>Compétences</a>
+          </li>
+
+          <li>
+            <a href="#projets" onClick={closeMenu}>Mes projets</a>
+          </li>
+
+          <li>
+            <a href="#contact" onClick={closeMenu}>Me contacter</a>
+          </li>
         </ul>
+
       </div>
     </nav>
   );
@@ -100,14 +145,20 @@ function Navbar() {
 function Hero() {
   return (
     <section className="hero section" id="accueil">
+
       <div className="hero-content">
-        <p className="hero-subtitle">Bonjour, je suis</p>
+
+        <p className="hero-subtitle">
+          Bonjour, je suis
+        </p>
 
         <h1>
           Steve <span>Andrianirina</span>
         </h1>
 
-        <h2>Développeur Full Stack</h2>
+        <h2>
+          Développeur Full Stack
+        </h2>
 
         <p className="hero-description">
           Je conçois des sites web, des applications et des logiciels
@@ -116,6 +167,7 @@ function Hero() {
         </p>
 
         <div className="hero-buttons">
+
           <a href="#projets" className="btn-primary">
             Découvrir mes projets
           </a>
@@ -123,14 +175,19 @@ function Hero() {
           <a href="#contact" className="btn-secondary">
             Me contacter
           </a>
+
         </div>
 
+        {/* RÉSEAUX SOCIAUX */}
+
         <div className="social-links">
+
           <a
             href="https://github.com/steveandrianirina4677-a11"
             target="_blank"
             rel="noreferrer"
             aria-label="GitHub"
+            title="GitHub"
           >
             <FaGithub />
           </a>
@@ -140,6 +197,7 @@ function Hero() {
             target="_blank"
             rel="noreferrer"
             aria-label="LinkedIn"
+            title="LinkedIn"
           >
             <FaLinkedin />
           </a>
@@ -147,19 +205,38 @@ function Hero() {
           <a
             href="mailto:steveandrianirina4677@gmail.com"
             aria-label="Email"
+            title="Email"
           >
             <FaEnvelope />
           </a>
+
+          {/* NOUVEAU BOUTON WHATSAPP */}
+
+          <a
+            href={WHATSAPP_URL}
+            className="whatsapp-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+            title="Me contacter sur WhatsApp"
+          >
+            <FaWhatsapp />
+          </a>
+
         </div>
+
       </div>
 
       <div className="hero-image">
+
         <img
           src="/images/profil.png"
           alt="Steve Andrianirina"
           className="profile-photo"
         />
+
       </div>
+
     </section>
   );
 }
@@ -171,10 +248,15 @@ function Hero() {
 function About() {
   return (
     <section className="about section" id="apropos">
-      <h2 className="section-title">À propos de moi</h2>
+
+      <h2 className="section-title">
+        À propos de moi
+      </h2>
 
       <div className="about-content">
+
         <div className="about-text">
+
           <p>
             Je suis développeur Full Stack passionné par la création
             de solutions numériques modernes et adaptées aux besoins
@@ -186,10 +268,13 @@ function About() {
             logiciels pratiques pour faciliter votre quotidien,
             améliorer votre organisation et vous faire gagner du temps.
           </p>
+
         </div>
 
         <div className="about-cards">
+
           <div className="about-card">
+
             <div className="about-icon">
               <FaLaptopCode />
             </div>
@@ -199,9 +284,11 @@ function About() {
             <p>
               Création de sites et d'applications modernes.
             </p>
+
           </div>
 
           <div className="about-card">
+
             <div className="about-icon">
               <FaCode />
             </div>
@@ -212,9 +299,11 @@ function About() {
               Création du logiciel pour faciliter la gestion de vos
               tâches et gain de temps.
             </p>
+
           </div>
 
           <div className="about-card">
+
             <div className="about-icon">
               <FaDatabase />
             </div>
@@ -224,15 +313,21 @@ function About() {
             <p>
               Conception et gestion de bases de données.
             </p>
+
           </div>
+
         </div>
 
         <div className="about-button">
+
           <a href="#contact" className="btn-primary">
             Travaillons ensemble
           </a>
+
         </div>
+
       </div>
+
     </section>
   );
 }
@@ -242,6 +337,7 @@ function About() {
 // ========================================
 
 function Skills() {
+
   const skills = [
     { name: "Python", icon: <FaPython /> },
     { name: "JavaScript", icon: <FaJs /> },
@@ -253,7 +349,10 @@ function Skills() {
 
   return (
     <section className="skills section" id="competences">
-      <h2 className="section-title">Mes compétences</h2>
+
+      <h2 className="section-title">
+        Mes compétences
+      </h2>
 
       <p className="section-description">
         Les technologies que j'utilise pour concevoir des solutions
@@ -261,13 +360,23 @@ function Skills() {
       </p>
 
       <div className="skills-grid">
+
         {skills.map((skill, index) => (
+
           <div className="skill-card" key={index}>
-            <div className="skill-icon">{skill.icon}</div>
+
+            <div className="skill-icon">
+              {skill.icon}
+            </div>
+
             <h3>{skill.name}</h3>
+
           </div>
+
         ))}
+
       </div>
+
     </section>
   );
 }
@@ -279,7 +388,10 @@ function Skills() {
 function Projects() {
   return (
     <section className="projects section" id="projets">
-      <h2 className="section-title">Mes projets récents</h2>
+
+      <h2 className="section-title">
+        Mes projets récents
+      </h2>
 
       <p className="section-description">
         Découvrez quelques réalisations qui illustrent mes compétences
@@ -287,17 +399,23 @@ function Projects() {
       </p>
 
       <div className="projects-grid">
+
         {projects.map((project, index) => (
+
           <article className="project-card" key={index}>
+
             <div className="project-image">
+
               <img
                 src={project.image}
                 alt={project.title}
                 loading="lazy"
               />
+
             </div>
 
             <div className="project-content">
+
               <div className="project-icon">
                 {project.icon}
               </div>
@@ -307,14 +425,25 @@ function Projects() {
               <p>{project.description}</p>
 
               <div className="project-technologies">
+
                 {project.technologies.map((technology, techIndex) => (
-                  <span key={techIndex}>{technology}</span>
+
+                  <span key={techIndex}>
+                    {technology}
+                  </span>
+
                 ))}
+
               </div>
+
             </div>
+
           </article>
+
         ))}
+
       </div>
+
     </section>
   );
 }
@@ -324,6 +453,7 @@ function Projects() {
 // ========================================
 
 function Contact() {
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -337,32 +467,50 @@ function Contact() {
     message: ""
   });
 
+  // Gestion des changements dans les champs du formulaire
   const handleChange = (event) => {
+
     setFormData({
       ...formData,
       [event.target.name]: event.target.value
     });
+
   };
 
+  // Envoi du formulaire vers le serveur
   const handleSubmit = async (event) => {
+
     event.preventDefault();
 
     setLoading(true);
-    setFeedback({ type: "", message: "" });
+
+    setFeedback({
+      type: "",
+      message: ""
+    });
 
     try {
+
       const response = await fetch(API_URL, {
+
         method: "POST",
+
         headers: {
           "Content-Type": "application/json"
         },
+
         body: JSON.stringify(formData)
+
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Une erreur est survenue.");
+
+        throw new Error(
+          data.message || "Une erreur est survenue."
+        );
+
       }
 
       setFeedback({
@@ -377,6 +525,7 @@ function Contact() {
       });
 
     } catch (error) {
+
       setFeedback({
         type: "error",
         message:
@@ -385,13 +534,20 @@ function Contact() {
       });
 
     } finally {
+
       setLoading(false);
+
     }
+
   };
 
   return (
+
     <section className="contact section" id="contact">
-      <h2 className="section-title">Me contacter</h2>
+
+      <h2 className="section-title">
+        Me contacter
+      </h2>
 
       <p className="section-description">
         Vous avez un projet ou besoin d'un logiciel sur mesure ?
@@ -399,28 +555,75 @@ function Contact() {
       </p>
 
       <div className="contact-container">
+
+        {/* COORDONNÉES */}
         <div className="contact-info">
-          <h3>Parlons de votre projet</h3>
+
+          <h3>
+            Parlons de votre projet
+          </h3>
 
           <p>
             Je suis disponible pour échanger sur vos besoins et vous
             proposer des solutions adaptées à votre activité.
           </p>
 
+          {/* Adresse email */}
           <div className="contact-item">
+
             <FaEnvelope />
+
             <a href="mailto:steveandrianirina4677@gmail.com">
               steveandrianirina4677@gmail.com
             </a>
+
           </div>
 
+          {/* Numéro de téléphone */}
           <div className="contact-item">
+
+            <FaPhone />
+
+            <a href="tel:+261385990110">
+              +261 38 599 01 10
+            </a>
+
+          </div>
+
+          {/* Localisation */}
+          <div className="contact-item">
+
             <FaMapMarkerAlt />
+
             <span>Madagascar</span>
+
           </div>
 
+          {/* GRAND BOUTON WHATSAPP */}
+          <div className="whatsapp-contact">
+
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Me contacter sur WhatsApp"
+            >
+
+              <FaWhatsapp />
+
+              <span>
+                Me contacter sur WhatsApp
+              </span>
+
+            </a>
+
+          </div>
+
+          {/* GitHub */}
           <div className="contact-item">
+
             <FaGithub />
+
             <a
               href="https://github.com/steveandrianirina4677-a11"
               target="_blank"
@@ -428,10 +631,14 @@ function Contact() {
             >
               Mon GitHub
             </a>
+
           </div>
 
+          {/* LinkedIn */}
           <div className="contact-item">
+
             <FaLinkedin />
+
             <a
               href="https://www.linkedin.com/in/steve-andrianirina-922a17448/"
               target="_blank"
@@ -439,10 +646,17 @@ function Contact() {
             >
               Mon LinkedIn
             </a>
+
           </div>
+
         </div>
 
-        <form className="contact-form" onSubmit={handleSubmit}>
+        {/* FORMULAIRE DE CONTACT */}
+        <form
+          className="contact-form"
+          onSubmit={handleSubmit}
+        >
+
           <input
             type="text"
             name="name"
@@ -470,10 +684,13 @@ function Contact() {
             required
           />
 
+          {/* Message de confirmation ou d'erreur */}
           {feedback.message && (
+
             <p className={`form-feedback ${feedback.type}`}>
               {feedback.message}
             </p>
+
           )}
 
           <button
@@ -481,13 +698,24 @@ function Contact() {
             className="btn-primary"
             disabled={loading}
           >
-            {loading ? "Envoi en cours..." : "Envoyer le message"}
+
+            {loading
+              ? "Envoi en cours..."
+              : "Envoyer le message"
+            }
+
             {!loading && <FaPaperPlane />}
+
           </button>
+
         </form>
+
       </div>
+
     </section>
+
   );
+
 }
 
 // ========================================
@@ -495,14 +723,18 @@ function Contact() {
 // ========================================
 
 function Footer() {
+
   return (
+
     <footer className="footer">
+
       <p>
         © {new Date().getFullYear()} Steve Andrianirina.
         Tous droits réservés.
       </p>
 
       <div className="footer-socials">
+
         <a
           href="https://github.com/steveandrianirina4677-a11"
           target="_blank"
@@ -527,28 +759,13 @@ function Footer() {
         >
           <FaEnvelope />
         </a>
+
       </div>
+
     </footer>
-  );
-}
 
-// ========================================
-// BOUTON WHATSAPP FLOTTANT
-// ========================================
-
-function WhatsAppButton() {
-  return (
-    <a
-      href="https://wa.me/261385990110?text=Bonjour%20Steve%2C%20je%20viens%20de%20visiter%20votre%20portfolio."
-      className="whatsapp-button"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Me contacter sur WhatsApp"
-      title="Me contacter sur WhatsApp"
-    >
-      <FaWhatsapp />
-    </a>
   );
+
 }
 
 // ========================================
@@ -556,24 +773,33 @@ function WhatsAppButton() {
 // ========================================
 
 function App() {
+
   return (
+
     <>
+
       <Navbar />
 
       <main>
+
         <Hero />
+
         <About />
+
         <Skills />
+
         <Projects />
+
         <Contact />
+
       </main>
 
       <Footer />
 
-      {/* Bouton WhatsApp accessible sur toutes les pages */}
-      <WhatsAppButton />
     </>
+
   );
+
 }
 
 export default App;

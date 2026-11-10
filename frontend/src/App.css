@@ -1,3 +1,4 @@
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;
@@ -11,6 +12,7 @@
   &:hover {
     border-color: var(--accent-border);
   }
+
   &:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
@@ -78,6 +80,7 @@
   & > div {
     flex: 1 1 0;
     padding: 32px;
+
     @media (max-width: 1024px) {
       padding: 24px 20px;
     }
@@ -130,6 +133,7 @@
     &:hover {
       box-shadow: var(--shadow);
     }
+
     .button-icon {
       height: 18px;
       width: 18px;
@@ -156,6 +160,7 @@
 #spacer {
   height: 88px;
   border-top: 1px solid var(--border);
+
   @media (max-width: 1024px) {
     height: 48px;
   }
@@ -177,83 +182,92 @@
     left: 0;
     border-left-color: var(--border);
   }
+
   &::after {
     right: 0;
     border-right-color: var(--border);
   }
 }
 
-
-
 /* ========================================
-   BOUTON WHATSAPP FLOTTANT
+   BOUTON WHATSAPP DANS LES RÉSEAUX SOCIAUX
 ======================================== */
 
-.whatsapp-button {
-  /* Position fixe sur l'écran */
-  position: fixed !important;
-  bottom: 30px !important;
-  right: 30px !important;
-
-  /* Dimensions du bouton */
-  width: 75px;
-  height: 75px;
-
-  /* Couleurs */
+.social-links a.whatsapp-link {
   background-color: #25D366;
   color: #ffffff;
-
-  /* Forme circulaire */
-  border-radius: 50%;
-
-  /* Centrage de l'icône */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  /* Taille de l'icône */
-  font-size: 45px;
-
-  /* Suppression du soulignement */
-  text-decoration: none;
-
-  /* Ombre */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-
-  /* Priorité d'affichage et clic */
-  z-index: 999999 !important;
-  pointer-events: auto !important;
-  cursor: pointer !important;
-
-  /* Animation */
-  transition: background-color 0.3s ease,
-              transform 0.3s ease;
+  border: 1px solid #25D366;
+  transition: all 0.3s ease;
 }
 
-/* Effet au survol */
-.whatsapp-button:hover {
+.social-links a.whatsapp-link:hover {
   background-color: #128C7E;
-  transform: scale(1.12);
+  color: #ffffff;
+  border-color: #128C7E;
+  transform: translateY(-3px);
 }
 
-/* Accessibilité au clavier */
-.whatsapp-button:focus-visible {
+.social-links a.whatsapp-link:focus-visible {
   outline: 3px solid #128C7E;
   outline-offset: 4px;
 }
 
-/* Adaptation aux téléphones */
-@media (max-width: 600px) {
-  .whatsapp-button {
-    width: 65px;
-    height: 65px;
+/* ========================================
+   BOUTON WHATSAPP DANS LES COORDONNÉES
+======================================== */
 
-    bottom: 20px !important;
-    right: 20px !important;
-
-    font-size: 38px;
-  }
+.whatsapp-contact {
+  margin-top: 25px;
+  margin-bottom: 25px;
 }
 
+.whatsapp-contact a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 
+  padding: 16px 24px;
 
+  background-color: #25D366;
+  color: #ffffff;
+
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 600;
+
+  text-decoration: none;
+
+  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.25);
+
+  transition: all 0.3s ease;
+}
+
+.whatsapp-contact a svg {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.whatsapp-contact a:hover {
+  background-color: #128C7E;
+  transform: translateY(-3px);
+
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.35);
+}
+
+.whatsapp-contact a:focus-visible {
+  outline: 3px solid #128C7E;
+  outline-offset: 4px;
+}
+
+/* Adaptation pour les téléphones */
+@media (max-width: 600px) {
+  .whatsapp-contact a {
+    padding: 14px 18px;
+    font-size: 15px;
+  }
+
+  .whatsapp-contact a svg {
+    font-size: 25px;
+  }
+}
