@@ -284,7 +284,7 @@ section {
   align-items: center;
 }
 
-/* PHOTO DE PROFIL AGRANDIE */
+/* PHOTO DE PROFIL */
 
 .profile-photo {
   width: 380px;
@@ -639,6 +639,120 @@ section {
 }
 
 /* ========================================
+   BOUTON WHATSAPP DANS LES RÉSEAUX SOCIAUX
+======================================== */
+
+.social-links a.whatsapp-link {
+  background-color: #25D366;
+  color: #ffffff;
+  border: 1px solid #25D366;
+  transition: all 0.3s ease;
+}
+
+.social-links a.whatsapp-link:hover {
+  background-color: #128C7E;
+  color: #ffffff;
+  border-color: #128C7E;
+  transform: translateY(-3px);
+}
+
+.social-links a.whatsapp-link:focus-visible {
+  outline: 3px solid #128C7E;
+  outline-offset: 4px;
+}
+
+/* ========================================
+   BOUTON WHATSAPP DANS LES COORDONNÉES
+======================================== */
+
+.whatsapp-contact {
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.whatsapp-contact a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background-color: #25D366;
+  color: #ffffff;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.25);
+  transition: all 0.3s ease;
+}
+
+.whatsapp-contact a svg {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.whatsapp-contact a:hover {
+  background-color: #128C7E;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.35);
+}
+
+.whatsapp-contact a:focus-visible {
+  outline: 3px solid #128C7E;
+  outline-offset: 4px;
+}
+
+/* ========================================
+   ANIMATIONS DES CARTES PROJETS
+======================================== */
+
+.project-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  transition:
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+  border: 1px solid rgba(100, 120, 255, 0.12);
+}
+
+.project-card:hover {
+  border-color: rgba(110, 100, 255, 0.8);
+  box-shadow:
+    0 15px 35px rgba(60, 80, 180, 0.18),
+    0 0 18px rgba(100, 80, 255, 0.15);
+}
+
+.project-image {
+  overflow: hidden;
+  position: relative;
+}
+
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.project-content {
+  position: relative;
+  z-index: 1;
+}
+
+.project-icon {
+  transition: all 0.3s ease;
+}
+
+.project-technologies span {
+  display: inline-block;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+/* ========================================
    RESPONSIVE TABLETTE
 ======================================== */
 
@@ -790,6 +904,15 @@ section {
     flex-direction: column;
     text-align: center;
   }
+
+  .whatsapp-contact a {
+    padding: 14px 18px;
+    font-size: 15px;
+  }
+
+  .whatsapp-contact a svg {
+    font-size: 25px;
+  }
 }
 
 /* ========================================
@@ -825,5 +948,63 @@ section {
 
   .contact-form {
     padding: 18px;
+  }
+}
+
+/* ========================================
+   VIDÉO EN ARRIÈRE-PLAN DE L'ACCUEIL
+======================================== */
+
+/* La section Hero devient le conteneur de la vidéo */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #080d1c;
+}
+
+/* La vidéo occupe toute la section */
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* Voile sombre pour améliorer la lisibilité */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    rgba(8, 13, 28, 0.93) 0%,
+    rgba(8, 13, 28, 0.82) 55%,
+    rgba(8, 13, 28, 0.72) 100%
+  );
+  pointer-events: none;
+}
+
+/* Le texte et la photo restent devant la vidéo */
+.hero-content,
+.hero-image {
+  position: relative;
+  z-index: 1;
+}
+
+/* Réduire les animations si l'utilisateur le demande */
+@media (prefers-reduced-motion: reduce) {
+  .hero-video {
+    display: none;
+  }
+
+  .project-card,
+  .project-image img,
+  .project-icon,
+  .project-technologies span {
+    transition: none !important;
   }
 }
