@@ -1,16 +1,24 @@
-// Importation des modules nécessaires
+
+// ============================================
+// 1. IMPORTATION DES MODULES
+// ============================================
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { createClient } from "@supabase/supabase-js";
 
-// Chargement des variables d'environnement (.env ou Render)
+// Chargement des variables d'environnement
 dotenv.config();
 
-// Création de l'application Express
+// ============================================
+// 2. CONFIGURATION DU SERVEUR
+// ============================================
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Autoriser les requêtes venant du frontend
+// Autorisation du frontend React
 const allowedOrigins = [
     "http://localhost:5173",
     process.env.FRONTEND_URL
@@ -18,10 +26,32 @@ const allowedOrigins = [
 
 app.use(cors({ origin: allowedOrigins }));
 
-// Permettre à Express de lire les données JSON envoyées par React
+// Autoriser Express à recevoir du JSON
 app.use(express.json());
 
-// Route d'accueil pour vérifier que le backend fonctionne
+// ============================================
+// 3. CONNEXION À SUPABASE
+// ============================================
+
+// Récupération des informations depuis Render
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY;
+
+// Création du client Supabase uniquement
+// si les deux variables sont disponibles
+const supabase = SUPABASE_URL && SUPABASE_SECRET_KEY
+    ? createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, {
+        auth: {
+            persistSession: false,
+            autoRefreshToken: false
+        }
+    })
+    : null;
+
+// ============================================
+// 4. ROUTE D'ACCUEIL
+// ============================================
+
 app.get("/", (req, res) => {
     res.json({
         success: true,
@@ -29,9 +59,63 @@ app.get("/", (req, res) => {
     });
 });
 
-// Route pour recevoir et envoyer les messages du formulaire de contact
+// ============================================
+// 5. TEST DE CONNEXION À SUPABASE
+// ============================================
+
+app.get("/api/creative-break/health", async (req, res) => {
+    try {
+
+        // Vérifier que Supabase est configuré
+        if (!supabase) {
+            return res.status(503).json({
+                success: false,
+                message: "La connexion Supabase n'est pas configurée."
+            });
+        }
+
+        // Tester la lecture de la table des paramètres
+        const { data, error } = await supabase
+            .from("professional_settings")
+            .select("professional_status, timezone")
+            .limit(1)
+            .maybeSingle();
+
+        // Vérifier les erreurs Supabase
+        if (error) {
+            console.error("Erreur Supabase :", error);
+
+            return res.status(500).json({
+                success: false,
+                message: "Impossible de communiquer avec Supabase."
+            });
+        }
+
+        // Connexion réussie
+        return res.json({
+            success: true,
+            message: "Connexion à Supabase réussie !",
+            settings: data
+        });
+
+    } catch (error) {
+
+        console.error("Erreur de connexion :", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Erreur lors du test de connexion."
+        });
+    }
+});
+
+// ============================================
+// 6. FORMULAIRE DE CONTACT AVEC BREVO
+// ============================================
+
 app.post("/api/contact", async (req, res) => {
     try {
+
         // Récupération des informations du formulaire
         const { name, email, message } = req.body;
 
@@ -51,29 +135,25 @@ app.post("/api/contact", async (req, res) => {
             });
         }
 
-        // Préparation du message à envoyer avec l'API Brevo
+        // Préparation du message
         const emailData = {
             sender: {
                 name: "Portfolio",
                 email: process.env.EMAIL_USER
             },
 
-            // Adresse qui recevra le message
             to: [
                 {
                     email: process.env.EMAIL_USER
                 }
             ],
 
-            // Permet de répondre directement à la personne qui a écrit
             replyTo: {
                 email: email
             },
 
-            // Sujet du message
             subject: `Nouveau message de ${name}`,
 
-            // Contenu du message
             textContent: `
 Nom : ${name}
 Email : ${email}
@@ -83,7 +163,7 @@ ${message}
             `
         };
 
-        // Envoi du message à Brevo par HTTPS
+        // Envoi du message à Brevo
         const response = await fetch(
             "https://api.brevo.com/v3/smtp/email",
             {
@@ -102,7 +182,7 @@ ${message}
         // Récupération de la réponse de Brevo
         const result = await response.json();
 
-        // Vérification du résultat de l'envoi
+        // Vérification du résultat
         if (!response.ok) {
             console.error("Erreur Brevo :", result);
 
@@ -119,7 +199,7 @@ ${message}
         });
 
     } catch (error) {
-        // Affichage de l'erreur en cas de problème
+
         console.error("Erreur d'envoi :", error);
 
         return res.status(500).json({
@@ -129,7 +209,10 @@ ${message}
     }
 });
 
-// Démarrage du serveur
+// ============================================
+// 7. DÉMARRAGE DU SERVEUR
+// ============================================
+
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Backend démarré sur le port ${PORT}`);
 });
