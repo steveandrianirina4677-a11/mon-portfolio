@@ -21,7 +21,11 @@ import {
   FaJs,
   FaNodeJs,
   FaReact,
-  FaWhatsapp
+  FaWhatsapp,
+  FaShoppingCart,
+  FaTags,
+  FaChevronLeft,
+  FaChevronRight
 } from "react-icons/fa";
 
 // ========================================
@@ -80,6 +84,36 @@ const projects = [
       "Node.js",
       "CSS"
     ]
+  },
+  {
+    title: "Boutique en ligne E-commerce",
+    description:
+      "Une boutique en ligne moderne permettant de découvrir les produits, consulter le catalogue, gérer son panier et passer des commandes depuis un téléphone ou un ordinateur.",
+    images: [
+      {
+        src: "/images/BoutiqueE-commerce-sur-mobile.png",
+        alt: "Boutique E-commerce sur mobile"
+      },
+      {
+        src: "/images/BoutiqueE-commerce-sur-ordinateur.png",
+        alt: "Boutique E-commerce sur ordinateur"
+      },
+      {
+        src: "/images/Catalogue-de-produits.png",
+        alt: "Catalogue de produits"
+      },
+      {
+        src: "/images/Panier-et-commande.png",
+        alt: "Panier et commande"
+      }
+    ],
+    icon: <FaShoppingCart />,
+    technologies: [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "React.js"
+    ]
   }
 ];
 
@@ -137,24 +171,14 @@ function Reveal({ children, className = "" }) {
   return (
     <motion.div
       className={className}
-
-      // Animation de départ et d'arrivée
       variants={revealVariants}
-
-      // L'élément commence invisible
       initial="hidden"
-
-      // L'animation démarre lorsque l'élément apparaît à l'écran
       whileInView="visible"
-
-      // L'animation ne se répète pas
       viewport={{
         once: true,
         amount: 0.2,
         margin: "0px 0px -50px 0px"
       }}
-
-      // Optimisation de l'animation
       style={{
         willChange: "transform, opacity"
       }}
@@ -340,6 +364,7 @@ function Navbar() {
           <li><a href="#apropos" onClick={closeMenu}>À propos</a></li>
           <li><a href="#competences" onClick={closeMenu}>Compétences</a></li>
           <li><a href="#projets" onClick={closeMenu}>Mes projets</a></li>
+          <li><a href="#offres" onClick={closeMenu}>Mes tarifs</a></li>
           <li><a href="#contact" onClick={closeMenu}>Me contacter</a></li>
         </ul>
 
@@ -356,7 +381,7 @@ function Hero() {
   return (
     <section className="hero section" id="accueil">
 
-      {/* VIDÉO ORIGINALE : CONSERVÉE SANS MODIFICATION */}
+      {/* VIDÉO ORIGINALE : CONSERVÉE */}
       <video
         className="hero-video"
         autoPlay
@@ -370,16 +395,12 @@ function Hero() {
         Votre navigateur ne prend pas en charge la vidéo.
       </video>
 
-      {/* VOILE SOMBRE */}
       <div className="hero-overlay" aria-hidden="true"></div>
 
-      {/* PARTICULES LUMINEUSES */}
       <Particles />
 
-      {/* ICÔNES TECHNOLOGIQUES */}
       <FloatingIcons />
 
-      {/* PRÉSENTATION */}
       <motion.div
         className="hero-content"
         initial={{ opacity: 0, y: 30 }}
@@ -413,7 +434,6 @@ function Hero() {
           </a>
         </div>
 
-        {/* RÉSEAUX SOCIAUX */}
         <div className="social-links">
 
           <a
@@ -448,17 +468,21 @@ function Hero() {
         </div>
       </motion.div>
 
-      {/* PHOTO DE PROFIL */}
       <motion.div
         className="hero-image"
-        initial={{ opacity: 0, x: 35 }}
+        initial={{ opacity: 0, x: 0 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1, delay: 0.25 }}
+        transition={{ duration: 0.35, delay: 0 }}
       >
         <img
           src="/images/profil.png"
           alt="Steve Andrianirina"
           className="profile-photo"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          width="340"
+          height="340"
         />
       </motion.div>
 
@@ -598,9 +622,58 @@ function Skills() {
 
 // ========================================
 // SECTION PROJETS
+// AVEC CARROUSEL E-COMMERCE
 // ========================================
 
 function Projects() {
+  const [currentImage, setCurrentImage] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  // Passer à l'image précédente
+  const previousImage = (images) => {
+    setCurrentImage((previous) =>
+      (previous - 1 + images.length) % images.length
+    );
+  };
+
+  // Passer à l'image suivante
+  const nextImage = (images) => {
+    setCurrentImage((previous) =>
+      (previous + 1) % images.length
+    );
+  };
+
+  // Navigation au clavier dans l'image agrandie
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setSelectedImage(null);
+      }
+
+      if (selectedImage && event.key === "ArrowRight") {
+        setSelectedImage((previous) => ({
+          ...previous,
+          index: (previous.index + 1) % previous.images.length
+        }));
+      }
+
+      if (selectedImage && event.key === "ArrowLeft") {
+        setSelectedImage((previous) => ({
+          ...previous,
+          index:
+            (previous.index - 1 + previous.images.length) %
+            previous.images.length
+        }));
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedImage]);
+
   return (
     <section className="projects section" id="projets">
 
@@ -625,7 +698,9 @@ function Projects() {
           amount: 0.15
         }}
       >
+
         {projects.map((project) => (
+
           <motion.article
             className="project-card"
             key={project.title}
@@ -640,18 +715,90 @@ function Projects() {
             style={{ transformPerspective: 1000 }}
           >
 
-            {/* IMAGE DU PROJET */}
-            <div className="project-image">
-              <motion.img
-                src={project.image}
-                alt={project.title}
-                loading="lazy"
-                whileHover={{ scale: 1.07 }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
+            {/* IMAGES DES TROIS PREMIERS PROJETS */}
+            {project.image && (
+              <div className="project-image">
+                <motion.img
+                  src={project.image}
+                  alt={project.title}
+                  loading="lazy"
+                  whileHover={{ scale: 1.07 }}
+                  transition={{ duration: 0.5 }}
+                />
+              </div>
+            )}
 
-            {/* CONTENU DU PROJET */}
+            {/* CARROUSEL DE LA BOUTIQUE E-COMMERCE */}
+            {project.images && (
+              <div className="project-carousel">
+
+                <button
+                  type="button"
+                  className="carousel-arrow carousel-prev"
+                  onClick={() => previousImage(project.images)}
+                  aria-label="Image précédente"
+                >
+                  <FaChevronLeft />
+                </button>
+
+                {/* IMAGE CLIQUABLE */}
+                <button
+                  type="button"
+                  className="carousel-image-button"
+                  onClick={() =>
+                    setSelectedImage({
+                      images: project.images,
+                      index: currentImage
+                    })
+                  }
+                  aria-label={`Agrandir ${project.images[currentImage].alt}`}
+                >
+                  <motion.img
+                    key={project.images[currentImage].src}
+                    src={project.images[currentImage].src}
+                    alt={project.images[currentImage].alt}
+                    className="carousel-image"
+                    loading="lazy"
+                    initial={{ opacity: 0, scale: 0.97 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.35 }}
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  className="carousel-arrow carousel-next"
+                  onClick={() => nextImage(project.images)}
+                  aria-label="Image suivante"
+                >
+                  <FaChevronRight />
+                </button>
+
+                {/* INDICATEURS DES IMAGES */}
+                <div className="carousel-indicators">
+                  {project.images.map((image, index) => (
+                    <button
+                      type="button"
+                      key={image.src}
+                      className={
+                        currentImage === index
+                          ? "carousel-dot active"
+                          : "carousel-dot"
+                      }
+                      onClick={() => setCurrentImage(index)}
+                      aria-label={`Afficher l'image ${index + 1}`}
+                    />
+                  ))}
+                </div>
+
+                {/* COMPTEUR DES IMAGES */}
+                <span className="carousel-counter">
+                  {currentImage + 1} / {project.images.length}
+                </span>
+
+              </div>
+            )}
+
             <div className="project-content">
 
               <motion.div
@@ -666,9 +813,9 @@ function Projects() {
               </motion.div>
 
               <h3>{project.title}</h3>
+
               <p>{project.description}</p>
 
-              {/* TECHNOLOGIES UTILISÉES */}
               <div className="project-technologies">
                 {project.technologies.map((technology, index) => (
                   <motion.span
@@ -684,9 +831,290 @@ function Projects() {
               </div>
 
             </div>
+
           </motion.article>
+
         ))}
+
       </motion.div>
+
+      {/* IMAGE AGRANDIE ET NAVIGATION */}
+      {selectedImage && (
+        <div
+          className="image-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Agrandissement des images E-commerce"
+          onClick={() => setSelectedImage(null)}
+        >
+
+          <button
+            type="button"
+            className="lightbox-close"
+            onClick={() => setSelectedImage(null)}
+            aria-label="Fermer l'image"
+          >
+            <FaTimes />
+          </button>
+
+          {/* IMAGE PRÉCÉDENTE */}
+          <button
+            type="button"
+            className="lightbox-arrow lightbox-prev"
+            onClick={(event) => {
+              event.stopPropagation();
+
+              setSelectedImage((previous) => ({
+                ...previous,
+                index:
+                  (previous.index - 1 + previous.images.length) %
+                  previous.images.length
+              }));
+            }}
+            aria-label="Image précédente"
+          >
+            <FaChevronLeft />
+          </button>
+
+          {/* IMAGE EN GRAND */}
+          <img
+            src={selectedImage.images[selectedImage.index].src}
+            alt={selectedImage.images[selectedImage.index].alt}
+            onClick={(event) => event.stopPropagation()}
+          />
+
+          {/* IMAGE SUIVANTE */}
+          <button
+            type="button"
+            className="lightbox-arrow lightbox-next"
+            onClick={(event) => {
+              event.stopPropagation();
+
+              setSelectedImage((previous) => ({
+                ...previous,
+                index: (previous.index + 1) % previous.images.length
+              }));
+            }}
+            aria-label="Image suivante"
+          >
+            <FaChevronRight />
+          </button>
+
+          <p className="lightbox-caption">
+            {selectedImage.images[selectedImage.index].alt}
+          </p>
+
+          <span className="lightbox-counter">
+            {selectedImage.index + 1} / {selectedImage.images.length}
+          </span>
+
+        </div>
+      )}
+
+    </section>
+  );
+}
+
+// ========================================
+// SECTION : MES OFFRES ET TARIFS
+// ========================================
+
+function Pricing() {
+
+  // Les deux offres proposées aux clients
+  const offers = [
+    {
+      title: "Création de portfolio professionnel",
+
+      description:
+        "Je vais créer votre portfolio professionnel pour présenter votre profil, vos compétences, vos réalisations et attirer de nouveaux clients.",
+
+      icon: <FaLaptopCode />,
+
+      originalPrice: "250 €",
+      discountedPrice: "212,50 €",
+
+      features: [
+        "Design moderne et personnalisé",
+        "Présentation de votre activité",
+        "Sections personnalisées",
+        "Formulaire de contact",
+        "Adaptation mobile et ordinateur"
+      ],
+
+      message:
+        "Bonjour Steve, je suis intéressé(e) par la création de votre portfolio professionnel. Je souhaite obtenir plus d'informations."
+    },
+
+    {
+      title: "Boutique en ligne E-commerce",
+
+      description:
+        "Je vais créer votre boutique en ligne E-commerce pour présenter vos produits, recevoir des commandes et développer votre activité sur Internet.",
+
+      icon: <FaShoppingCart />,
+
+      originalPrice: "700 €",
+      discountedPrice: "595 €",
+
+      features: [
+        "Design professionnel personnalisé",
+        "Catalogue de produits avec photos",
+        "Panier et système de commande",
+        "Gestion des produits et des stocks",
+        "Interface d'administration",
+        "Adaptation mobile et ordinateur"
+      ],
+
+      message:
+        "Bonjour Steve, je suis intéressé(e) par la création de votre boutique en ligne E-commerce. Je souhaite obtenir plus d'informations."
+    }
+  ];
+
+  return (
+    <section className="pricing section" id="offres">
+
+      {/* TITRE DE LA SECTION */}
+      <Reveal>
+        <h2 className="section-title">
+          Mes offres et tarifs
+        </h2>
+
+        <p className="section-description">
+          Vous avez un projet ? Je vous accompagne dans la création
+          d'une solution numérique adaptée à vos besoins.
+        </p>
+      </Reveal>
+
+      {/* BANNIÈRE PROMOTIONNELLE */}
+      <Reveal className="pricing-promo">
+
+        <div className="pricing-promo-icon">
+          <FaTags />
+        </div>
+
+        <div className="pricing-promo-content">
+
+          <span className="pricing-promo-label">
+            OFFRE DE LANCEMENT
+          </span>
+
+          <h3>
+            15 % de réduction pour les 5 premières commandes validées !
+          </h3>
+
+          <p>
+            Profitez de cette offre spéciale pour lancer votre projet
+            numérique à un tarif avantageux.
+          </p>
+
+        </div>
+      </Reveal>
+
+      {/* CARTES DES OFFRES */}
+      <motion.div
+        className="pricing-grid"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{
+          once: true,
+          amount: 0.15
+        }}
+      >
+
+        {offers.map((offer) => (
+
+          <motion.article
+            className="pricing-card"
+            key={offer.title}
+            variants={cardVariants}
+            whileHover={{
+              y: -8,
+              transition: { duration: 0.3 }
+            }}
+          >
+
+            {/* ICÔNE DE L'OFFRE */}
+            <div className="pricing-card-icon">
+              {offer.icon}
+            </div>
+
+            {/* TITRE ET DESCRIPTION */}
+            <h3>{offer.title}</h3>
+
+            <p className="pricing-description">
+              {offer.description}
+            </p>
+
+            {/* TARIF HABITUEL ET RÉDUCTION */}
+            <div className="pricing-price">
+
+              <span className="pricing-original">
+                Tarif habituel : à partir de {offer.originalPrice}
+              </span>
+
+              <span className="pricing-discount">
+                -15 %
+              </span>
+
+            </div>
+
+            {/* TARIF PROMOTIONNEL */}
+            <div className="pricing-discounted">
+
+              <span>
+                Offre de lancement : à partir de
+              </span>
+
+              <strong>
+                {offer.discountedPrice}
+              </strong>
+
+            </div>
+
+            {/* LISTE DES FONCTIONNALITÉS */}
+            <ul className="pricing-features">
+
+              {offer.features.map((feature, index) => (
+
+                <li key={index}>
+                  <span className="pricing-check">✓</span>
+                  <span>{feature}</span>
+                </li>
+
+              ))}
+
+            </ul>
+
+            {/* BOUTON WHATSAPP */}
+            <a
+              href={`https://wa.me/261385990110?text=${encodeURIComponent(
+                offer.message
+              )}`}
+              className="pricing-button"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaWhatsapp />
+              Commander cette offre
+            </a>
+
+          </motion.article>
+
+        ))}
+
+      </motion.div>
+
+      {/* NOTE SUR LES TARIFS */}
+      <Reveal>
+        <p className="pricing-note">
+          Les tarifs affichés sont des prix de départ.
+          Le prix final dépend des fonctionnalités et des besoins
+          de votre projet. La réduction de 15 % est réservée aux
+          cinq premières commandes validées.
+        </p>
+      </Reveal>
 
     </section>
   );
@@ -723,6 +1151,7 @@ function Contact() {
     event.preventDefault();
 
     setLoading(true);
+
     setFeedback({
       type: "",
       message: ""
@@ -757,6 +1186,7 @@ function Contact() {
       });
 
     } catch (error) {
+
       setFeedback({
         type: "error",
         message:
@@ -788,11 +1218,17 @@ function Contact() {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={{
+          once: true,
+          amount: 0.15
+        }}
       >
 
         {/* COORDONNÉES */}
-        <motion.div className="contact-info" variants={cardVariants}>
+        <motion.div
+          className="contact-info"
+          variants={cardVariants}
+        >
 
           <h3>Parlons de votre projet</h3>
 
@@ -881,7 +1317,10 @@ function Contact() {
 
           {/* MESSAGE DE CONFIRMATION OU ERREUR */}
           {feedback.message && (
-            <p className={`form-feedback ${feedback.type}`} role="status">
+            <p
+              className={`form-feedback ${feedback.type}`}
+              role="status"
+            >
               {feedback.message}
             </p>
           )}
@@ -900,7 +1339,9 @@ function Contact() {
           </button>
 
         </motion.form>
+
       </motion.div>
+
     </section>
   );
 }
@@ -955,6 +1396,7 @@ function App() {
         <About />
         <Skills />
         <Projects />
+        <Pricing />
         <Contact />
       </main>
 

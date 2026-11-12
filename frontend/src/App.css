@@ -1,4 +1,3 @@
-
 /* ========================================
    1. CONFIGURATION GÉNÉRALE
 ======================================== */
@@ -424,6 +423,7 @@ a {
   position: relative;
   z-index: 3;
   width: min(340px, 35%);
+  aspect-ratio: 1 / 1;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -451,13 +451,15 @@ a {
   animation: haloPulse 4s ease-in-out infinite;
 }
 
-/* Photo de profil */
+/* Photo de profil avec dimensions réservées */
 
 .profile-photo {
   position: relative;
   z-index: 1;
+  display: block;
   width: 100%;
-  aspect-ratio: 1;
+  height: 100%;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 50%;
   border: 4px solid rgba(255, 255, 255, 0.9);
@@ -1873,4 +1875,718 @@ body {
     0 0 8px #38bdf8,
     0 0 16px #8b5cf6,
     0 0 25px rgba(56, 189, 248, 0.6);
+}
+
+/* ========================================
+   20. NOUVELLE SECTION : MES OFFRES ET TARIFS
+======================================== */
+
+/* Fond de la section */
+.pricing {
+  background: #080f1e;
+}
+
+/* BANNIÈRE PROMOTIONNELLE */
+
+.pricing-promo {
+  max-width: 900px;
+  margin: 0 auto 45px;
+  padding: 25px 30px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  background: linear-gradient(
+    120deg,
+    rgba(56, 189, 248, 0.12),
+    rgba(139, 92, 246, 0.12)
+  );
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.pricing-promo-icon {
+  width: 65px;
+  height: 65px;
+  min-width: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  font-size: 30px;
+}
+
+.pricing-promo-content {
+  flex: 1;
+}
+
+.pricing-promo-label {
+  display: inline-block;
+  margin-bottom: 7px;
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.pricing-promo-content h3 {
+  color: #f1f5f9;
+  font-size: 19px;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.pricing-promo-content p {
+  color: #a0aec0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* GRILLE DES OFFRES */
+
+.pricing-grid {
+  max-width: 1050px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  align-items: stretch;
+}
+
+/* CARTES DES TARIFS */
+
+.pricing-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 28px;
+  background: #111c30;
+  border: 1px solid #263750;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s ease;
+  overflow: hidden;
+}
+
+/* Petite lumière décorative sur les cartes */
+
+.pricing-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #38bdf8, #8b5cf6);
+}
+
+/* Effet au survol */
+
+.pricing-card:hover {
+  border-color: #38bdf8;
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.3),
+    0 0 22px rgba(56, 189, 248, 0.12);
+}
+
+/* ICÔNE DES OFFRES */
+
+.pricing-card-icon {
+  width: 62px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+  border-radius: 17px;
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  font-size: 29px;
+}
+
+/* TITRE DES OFFRES */
+
+.pricing-card h3 {
+  color: #f1f5f9;
+  font-size: 19px;
+  line-height: 1.5;
+  margin-bottom: 13px;
+}
+
+/* DESCRIPTION */
+
+.pricing-description {
+  color: #a0aec0;
+  font-size: 13px;
+  line-height: 1.8;
+  margin-bottom: 24px;
+  min-height: 70px;
+}
+
+/* PRIX DE DÉPART */
+
+.pricing-price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.pricing-original {
+  color: #cbd5e1;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.pricing-discount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* PRIX PROMOTIONNEL */
+
+.pricing-discounted {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px;
+  margin-bottom: 25px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 12px;
+}
+
+.pricing-discounted span {
+  color: #a0aec0;
+  font-size: 12px;
+}
+
+.pricing-discounted strong {
+  color: #38bdf8;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+/* LISTE DES FONCTIONNALITÉS */
+
+.pricing-features {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  list-style: none;
+  margin-bottom: 28px;
+  flex-grow: 1;
+}
+
+.pricing-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #cbd5e1;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.pricing-check {
+  color: #4ade80;
+  font-size: 16px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* BOUTON WHATSAPP DES OFFRES */
+
+.pricing-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 50px;
+  padding: 13px 18px;
+  margin-top: auto;
+  overflow: hidden;
+  color: #ffffff;
+  background: linear-gradient(135deg, #128C7E, #25D366);
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 5px 18px rgba(37, 211, 102, 0.16);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    filter 0.3s ease;
+}
+
+.pricing-button svg {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.pricing-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+  filter: brightness(1.08);
+}
+
+.pricing-button:focus-visible {
+  outline: 3px solid #4ade80;
+  outline-offset: 4px;
+}
+
+.pricing-button:active {
+  transform: scale(0.98);
+}
+
+/* NOTE SOUS LES OFFRES */
+
+.pricing-note {
+  max-width: 850px;
+  margin: 30px auto 0;
+  color: #94a3b8;
+  font-size: 12px;
+  line-height: 1.8;
+  text-align: center;
+}
+
+/* ========================================
+   RESPONSIVE : SECTION TARIFS
+======================================== */
+
+@media (max-width: 768px) {
+  .pricing-promo {
+    padding: 22px;
+    gap: 16px;
+  }
+
+  .pricing-promo-icon {
+    width: 55px;
+    height: 55px;
+    min-width: 55px;
+    font-size: 25px;
+  }
+
+  .pricing-promo-content h3 {
+    font-size: 16px;
+  }
+
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+  }
+
+  .pricing-card {
+    padding: 28px 24px;
+  }
+
+  .pricing-description {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .pricing-promo {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .pricing-promo-content h3 {
+    font-size: 15px;
+  }
+
+  .pricing-promo-content p {
+    font-size: 12px;
+  }
+
+  .pricing-card {
+    padding: 24px 20px;
+  }
+
+  .pricing-card h3 {
+    font-size: 17px;
+  }
+
+  .pricing-discounted strong {
+    font-size: 29px;
+  }
+
+  .pricing-features li {
+    font-size: 12px;
+  }
+
+  .pricing-button {
+    font-size: 13px;
+  }
+}
+
+/* ACCESSIBILITÉ : TARIFS */
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing-card,
+  .pricing-button {
+    transition: none;
+  }
+
+  .pricing-card:hover,
+  .pricing-button:hover,
+  .pricing-button:active {
+    transform: none;
+  }
+}
+
+/* ========================================
+   GALERIE E-COMMERCE : CARROUSEL D'IMAGES
+   ======================================== */
+
+/* Conteneur général du carrousel */
+.project-carousel {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: #17243b;
+}
+
+/* Bouton contenant l'image */
+.carousel-image-button {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: zoom-in;
+  overflow: hidden;
+}
+
+/* Image affichée dans le carrousel */
+.carousel-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+/* Zoom au survol */
+.project-card:hover .carousel-image {
+  transform: scale(1.07);
+}
+
+/* Flèches gauche et droite */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  color: #ffffff;
+  background: rgba(5, 15, 30, 0.75);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-arrow:hover {
+  background: #0284c7;
+  border-color: #38bdf8;
+  transform: translateY(-50%) scale(1.12);
+}
+
+.carousel-arrow.left {
+  left: 12px;
+}
+
+.carousel-arrow.right {
+  right: 12px;
+}
+
+/* Indicateurs des images */
+.carousel-indicators {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateX(-50%);
+}
+
+/* Petit point indicateur */
+.carousel-dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+  width: 23px;
+  border-radius: 10px;
+  background: #38bdf8;
+  border-color: #38bdf8;
+}
+
+/* Numéro de l'image */
+.carousel-counter {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+  padding: 5px 10px;
+  color: #ffffff;
+  background: rgba(5, 15, 30, 0.75);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ========================================
+   AGRANDISSEMENT DES IMAGES : LIGHTBOX
+======================================== */
+
+.image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 35px;
+  background: rgba(0, 0, 0, 0.94);
+  backdrop-filter: blur(10px);
+  animation: lightboxAppear 0.25s ease;
+}
+
+/* Animation d'ouverture */
+@keyframes lightboxAppear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Image agrandie */
+.image-lightbox img {
+  display: block;
+  max-width: 90%;
+  max-height: 82vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* Bouton de fermeture */
+.lightbox-close {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  z-index: 10;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lightbox-close:hover {
+  color: #ffffff;
+  background: #e11d48;
+  transform: rotate(90deg);
+}
+
+/* Flèches de navigation dans l'image agrandie */
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 22px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lightbox-arrow:hover {
+  background: #0284c7;
+  border-color: #38bdf8;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-arrow.left {
+  left: 25px;
+}
+
+.lightbox-arrow.right {
+  right: 25px;
+}
+
+/* Légende sous l'image */
+.lightbox-caption {
+  position: absolute;
+  bottom: 35px;
+  left: 50%;
+  width: 80%;
+  transform: translateX(-50%);
+  color: #ffffff;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Compteur dans la fenêtre agrandie */
+.lightbox-counter {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffffff;
+  font-size: 13px;
+  padding: 7px 14px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+}
+
+/* ========================================
+   RESPONSIVE : GALERIE E-COMMERCE
+======================================== */
+
+@media (max-width: 768px) {
+  .project-carousel {
+    height: 230px;
+  }
+
+  .image-lightbox {
+    padding: 20px;
+  }
+
+  .image-lightbox img {
+    max-width: 100%;
+    max-height: 75vh;
+  }
+
+  .lightbox-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .lightbox-arrow.left {
+    left: 10px;
+  }
+
+  .lightbox-arrow.right {
+    right: 10px;
+  }
+
+  .lightbox-close {
+    top: 15px;
+    right: 15px;
+  }
+
+  .lightbox-caption {
+    bottom: 20px;
+    font-size: 12px;
+  }
+
+  .lightbox-counter {
+    top: 23px;
+  }
+}
+
+@media (max-width: 480px) {
+  .project-carousel {
+    height: 190px;
+  }
+
+  .carousel-arrow {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .carousel-dot {
+    width: 7px;
+    height: 7px;
+  }
+
+  .carousel-dot.active {
+    width: 19px;
+  }
+
+  .image-lightbox {
+    padding: 12px;
+  }
+
+  .image-lightbox img {
+    max-height: 70vh;
+  }
+
+  .lightbox-arrow {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
+}
+
+/* ACCESSIBILITÉ */
+@media (prefers-reduced-motion: reduce) {
+  .carousel-image,
+  .carousel-arrow,
+  .lightbox-arrow,
+  .lightbox-close {
+    transition: none;
+  }
+
+  .image-lightbox {
+    animation: none;
+  }
 }
