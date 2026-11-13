@@ -1,3 +1,6 @@
+// ========================================
+// 1. IMPORTATION DES OUTILS ET DES ICÔNES
+// ========================================
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -25,23 +28,62 @@ import {
   FaShoppingCart,
   FaTags,
   FaChevronLeft,
-  FaChevronRight
+  FaChevronRight,
+  FaCalendarAlt,
+  FaClock,
+  FaVideo
 } from "react-icons/fa";
 
 // ========================================
-// INFORMATIONS PERSONNELLES
+// 2. CONFIGURATION DU BACKEND
 // ========================================
 
-const API_URL =
-  "https://mon-portfolio-backend-twxs.onrender.com/api/contact";
+// Adresse principale du backend hébergé sur Render.
+// Les différentes fonctionnalités utilisent cette même adresse.
+const BACKEND_URL =
+  "https://mon-portfolio-backend-twxs.onrender.com";
 
+// Adresse du formulaire de contact.
+// On conserve exactement la route qui fonctionne déjà.
+const API_URL = `${BACKEND_URL}/api/contact`;
+
+// Lien WhatsApp utilisé sur le portfolio.
 const WHATSAPP_URL =
   "https://wa.me/261385990110?text=Bonjour%20Steve%2C%20je%20viens%20de%20visiter%20votre%20portfolio.";
 
+// Fuseau horaire utilisé pour les rendez-vous.
+const TIMEZONE = "Indian/Antananarivo";
+
 // ========================================
-// LISTE DES PROJETS
+// 3. FONCTION POUR OBTENIR LA DATE LOCALE
 // ========================================
 
+// Cette fonction évite les erreurs de date liées au décalage UTC.
+// Elle retourne une date au format YYYY-MM-DD à Madagascar.
+function getLocalDate() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(new Date());
+
+  const values = {};
+
+  parts.forEach((part) => {
+    if (part.type !== "literal") {
+      values[part.type] = part.value;
+    }
+  });
+
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+// ========================================
+// 4. LISTE DES PROJETS
+// ========================================
+
+// Les quatre projets existants sont conservés.
 const projects = [
   {
     title: "Application de gestion d'établissement scolaire",
@@ -118,9 +160,10 @@ const projects = [
 ];
 
 // ========================================
-// ANIMATIONS GÉNÉRALES
+// 5. CONFIGURATION DES ANIMATIONS
 // ========================================
 
+// Animation d'apparition progressive des éléments.
 const revealVariants = {
   hidden: {
     opacity: 0,
@@ -136,6 +179,7 @@ const revealVariants = {
   }
 };
 
+// Animation qui fait apparaître les cartes progressivement.
 const containerVariants = {
   hidden: {},
   visible: {
@@ -145,6 +189,7 @@ const containerVariants = {
   }
 };
 
+// Animation individuelle des cartes.
 const cardVariants = {
   hidden: {
     opacity: 0,
@@ -163,10 +208,11 @@ const cardVariants = {
 };
 
 // ========================================
-// EFFET 2 : SCROLL REVEAL
-// APPARITION PROGRESSIVE AU DÉFILEMENT
+// 6. EFFET SCROLL REVEAL
 // ========================================
 
+// Ce composant fait apparaître son contenu
+// lorsque l'utilisateur fait défiler la page.
 function Reveal({ children, className = "" }) {
   return (
     <motion.div
@@ -189,9 +235,11 @@ function Reveal({ children, className = "" }) {
 }
 
 // ========================================
-// EFFET 1 : TEXTE QUI S'ÉCRIT AUTOMATIQUEMENT
+// 7. EFFET TEXTE QUI S'ÉCRIT AUTOMATIQUEMENT
 // ========================================
 
+// Le texte change automatiquement pour présenter
+// les différents métiers et technologies.
 function TypingEffect() {
   const words = [
     "Développeur Full Stack",
@@ -243,9 +291,11 @@ function TypingEffect() {
 }
 
 // ========================================
-// EFFET 4 : ICÔNES TECHNOLOGIQUES FLOTTANTES
+// 8. EFFET ICÔNES TECHNOLOGIQUES FLOTTANTES
 // ========================================
 
+// Les icônes technologiques bougent doucement
+// autour du contenu de la section d'accueil.
 function FloatingIcons() {
   const icons = [
     {
@@ -294,9 +344,10 @@ function FloatingIcons() {
 }
 
 // ========================================
-// EFFET 6 : PARTICULES LUMINEUSES
+// 9. EFFET PARTICULES LUMINEUSES
 // ========================================
 
+// Création de petites particules animées.
 function Particles() {
   const particles = Array.from({ length: 22 }, (_, index) => ({
     id: index,
@@ -334,9 +385,10 @@ function Particles() {
 }
 
 // ========================================
-// BARRE DE NAVIGATION
+// 10. BARRE DE NAVIGATION
 // ========================================
 
+// Menu de navigation avec affichage mobile.
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -365,6 +417,10 @@ function Navbar() {
           <li><a href="#competences" onClick={closeMenu}>Compétences</a></li>
           <li><a href="#projets" onClick={closeMenu}>Mes projets</a></li>
           <li><a href="#offres" onClick={closeMenu}>Mes tarifs</a></li>
+
+          {/* Nouveau lien vers l'agenda de réservation */}
+          <li><a href="#reservation" onClick={closeMenu}>Réserver un rendez-vous</a></li>
+
           <li><a href="#contact" onClick={closeMenu}>Me contacter</a></li>
         </ul>
 
@@ -374,14 +430,14 @@ function Navbar() {
 }
 
 // ========================================
-// SECTION ACCUEIL AVEC VIDÉO CONSERVÉE
+// 11. SECTION ACCUEIL AVEC VIDÉO
 // ========================================
 
+// La vidéo d'origine et la photo de profil sont conservées.
 function Hero() {
   return (
     <section className="hero section" id="accueil">
 
-      {/* VIDÉO ORIGINALE : CONSERVÉE */}
       <video
         className="hero-video"
         autoPlay
@@ -398,7 +454,6 @@ function Hero() {
       <div className="hero-overlay" aria-hidden="true"></div>
 
       <Particles />
-
       <FloatingIcons />
 
       <motion.div
@@ -491,7 +546,7 @@ function Hero() {
 }
 
 // ========================================
-// SECTION À PROPOS DE MOI
+// 12. SECTION À PROPOS DE MOI
 // ========================================
 
 function About() {
@@ -565,7 +620,7 @@ function About() {
 }
 
 // ========================================
-// SECTION COMPÉTENCES
+// 13. SECTION COMPÉTENCES
 // ========================================
 
 function Skills() {
@@ -621,29 +676,30 @@ function Skills() {
 }
 
 // ========================================
-// SECTION PROJETS
-// AVEC CARROUSEL E-COMMERCE
+// 14. SECTION PROJETS
 // ========================================
 
+// Présentation des projets avec carrousel E-commerce
+// et affichage des images en grand format.
 function Projects() {
   const [currentImage, setCurrentImage] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Passer à l'image précédente
+  // Afficher l'image précédente du carrousel.
   const previousImage = (images) => {
     setCurrentImage((previous) =>
       (previous - 1 + images.length) % images.length
     );
   };
 
-  // Passer à l'image suivante
+  // Afficher l'image suivante du carrousel.
   const nextImage = (images) => {
     setCurrentImage((previous) =>
       (previous + 1) % images.length
     );
   };
 
-  // Navigation au clavier dans l'image agrandie
+  // Gérer les touches du clavier dans la fenêtre d'image agrandie.
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -715,7 +771,7 @@ function Projects() {
             style={{ transformPerspective: 1000 }}
           >
 
-            {/* IMAGES DES TROIS PREMIERS PROJETS */}
+            {/* Image des trois premiers projets */}
             {project.image && (
               <div className="project-image">
                 <motion.img
@@ -728,7 +784,7 @@ function Projects() {
               </div>
             )}
 
-            {/* CARROUSEL DE LA BOUTIQUE E-COMMERCE */}
+            {/* Carrousel réservé au projet E-commerce */}
             {project.images && (
               <div className="project-carousel">
 
@@ -741,7 +797,6 @@ function Projects() {
                   <FaChevronLeft />
                 </button>
 
-                {/* IMAGE CLIQUABLE */}
                 <button
                   type="button"
                   className="carousel-image-button"
@@ -774,7 +829,7 @@ function Projects() {
                   <FaChevronRight />
                 </button>
 
-                {/* INDICATEURS DES IMAGES */}
+                {/* Petits points permettant de choisir une image */}
                 <div className="carousel-indicators">
                   {project.images.map((image, index) => (
                     <button
@@ -791,7 +846,6 @@ function Projects() {
                   ))}
                 </div>
 
-                {/* COMPTEUR DES IMAGES */}
                 <span className="carousel-counter">
                   {currentImage + 1} / {project.images.length}
                 </span>
@@ -838,7 +892,7 @@ function Projects() {
 
       </motion.div>
 
-      {/* IMAGE AGRANDIE ET NAVIGATION */}
+      {/* Fenêtre d'agrandissement des images */}
       {selectedImage && (
         <div
           className="image-lightbox"
@@ -857,7 +911,6 @@ function Projects() {
             <FaTimes />
           </button>
 
-          {/* IMAGE PRÉCÉDENTE */}
           <button
             type="button"
             className="lightbox-arrow lightbox-prev"
@@ -876,14 +929,12 @@ function Projects() {
             <FaChevronLeft />
           </button>
 
-          {/* IMAGE EN GRAND */}
           <img
             src={selectedImage.images[selectedImage.index].src}
             alt={selectedImage.images[selectedImage.index].alt}
             onClick={(event) => event.stopPropagation()}
           />
 
-          {/* IMAGE SUIVANTE */}
           <button
             type="button"
             className="lightbox-arrow lightbox-next"
@@ -916,12 +967,11 @@ function Projects() {
 }
 
 // ========================================
-// SECTION : MES OFFRES ET TARIFS
+// 15. SECTION MES OFFRES ET TARIFS
 // ========================================
 
 function Pricing() {
-
-  // Les deux offres proposées aux clients
+  // Les deux offres commerciales conservées.
   const offers = [
     {
       title: "Création de portfolio professionnel",
@@ -974,7 +1024,6 @@ function Pricing() {
   return (
     <section className="pricing section" id="offres">
 
-      {/* TITRE DE LA SECTION */}
       <Reveal>
         <h2 className="section-title">
           Mes offres et tarifs
@@ -986,7 +1035,7 @@ function Pricing() {
         </p>
       </Reveal>
 
-      {/* BANNIÈRE PROMOTIONNELLE */}
+      {/* Bannière promotionnelle */}
       <Reveal className="pricing-promo">
 
         <div className="pricing-promo-icon">
@@ -1011,7 +1060,7 @@ function Pricing() {
         </div>
       </Reveal>
 
-      {/* CARTES DES OFFRES */}
+      {/* Cartes des offres */}
       <motion.div
         className="pricing-grid"
         variants={containerVariants}
@@ -1035,19 +1084,16 @@ function Pricing() {
             }}
           >
 
-            {/* ICÔNE DE L'OFFRE */}
             <div className="pricing-card-icon">
               {offer.icon}
             </div>
 
-            {/* TITRE ET DESCRIPTION */}
             <h3>{offer.title}</h3>
 
             <p className="pricing-description">
               {offer.description}
             </p>
 
-            {/* TARIF HABITUEL ET RÉDUCTION */}
             <div className="pricing-price">
 
               <span className="pricing-original">
@@ -1060,7 +1106,6 @@ function Pricing() {
 
             </div>
 
-            {/* TARIF PROMOTIONNEL */}
             <div className="pricing-discounted">
 
               <span>
@@ -1073,7 +1118,6 @@ function Pricing() {
 
             </div>
 
-            {/* LISTE DES FONCTIONNALITÉS */}
             <ul className="pricing-features">
 
               {offer.features.map((feature, index) => (
@@ -1087,7 +1131,6 @@ function Pricing() {
 
             </ul>
 
-            {/* BOUTON WHATSAPP */}
             <a
               href={`https://wa.me/261385990110?text=${encodeURIComponent(
                 offer.message
@@ -1106,7 +1149,6 @@ function Pricing() {
 
       </motion.div>
 
-      {/* NOTE SUR LES TARIFS */}
       <Reveal>
         <p className="pricing-note">
           Les tarifs affichés sont des prix de départ.
@@ -1121,9 +1163,491 @@ function Pricing() {
 }
 
 // ========================================
-// SECTION CONTACT
+// 16. NOUVELLE SECTION : RÉSERVATION
 // ========================================
 
+// Cette section permet aux visiteurs de :
+// 1. Choisir une date.
+// 2. Consulter les créneaux disponibles depuis le backend.
+// 3. Choisir un horaire.
+// 4. Remplir leurs coordonnées.
+// 5. Envoyer une demande de rendez-vous.
+
+// Le backend reste responsable de vérifier la disponibilité
+// et d'enregistrer le rendez-vous dans Supabase.
+
+function Reservation() {
+
+  // Date sélectionnée : aujourd'hui à Madagascar par défaut.
+  const [date, setDate] = useState(getLocalDate);
+
+  // Créneaux récupérés depuis le backend.
+  const [slots, setSlots] = useState([]);
+
+  // Horaire choisi par le visiteur.
+  const [selectedTime, setSelectedTime] = useState("");
+
+  // Informations demandées au visiteur.
+  const [formData, setFormData] = useState({
+    clientName: "",
+    clientPhone: "",
+    clientEmail: "",
+    projectDetails: ""
+  });
+
+  // États de chargement et de retour utilisateur.
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [bookingLoading, setBookingLoading] = useState(false);
+
+  const [feedback, setFeedback] = useState({
+    type: "",
+    message: ""
+  });
+
+  // La date minimale est aujourd'hui à Madagascar.
+  const minimumDate = getLocalDate();
+
+  // ----------------------------------------
+  // RÉCUPÉRATION DES CRÉNEAUX DISPONIBLES
+  // ----------------------------------------
+
+  useEffect(() => {
+    // Lorsqu'on change de date, on réinitialise l'ancien horaire.
+    setSelectedTime("");
+    setSlots([]);
+
+    setFeedback({
+      type: "",
+      message: ""
+    });
+
+    // Évite d'envoyer une date antérieure à aujourd'hui.
+    if (date < minimumDate) {
+      setFeedback({
+        type: "error",
+        message: "Veuillez sélectionner une date valide."
+      });
+
+      return;
+    }
+
+    // Permet d'annuler une ancienne requête si la date change.
+    const controller = new AbortController();
+
+    const fetchAvailability = async () => {
+      setLoadingSlots(true);
+
+      try {
+        // Appel à la route GET déjà créée dans le backend.
+        const response = await fetch(
+          `${BACKEND_URL}/api/creative-break/availability?date=${encodeURIComponent(date)}`,
+          {
+            method: "GET",
+            signal: controller.signal
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(
+            data.message || "Impossible de récupérer les disponibilités."
+          );
+        }
+
+        // Les créneaux sont fournis par le serveur.
+        // On ne fabrique donc pas de disponibilités fictives.
+        setSlots(Array.isArray(data.slots) ? data.slots : []);
+
+      } catch (error) {
+
+        // Une requête annulée lors d'un changement de date
+        // ne doit pas afficher un message d'erreur.
+        if (error.name !== "AbortError") {
+          setSlots([]);
+
+          setFeedback({
+            type: "error",
+            message:
+              error.message ||
+              "Erreur lors du chargement des disponibilités."
+          });
+        }
+
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoadingSlots(false);
+        }
+      }
+    };
+
+    fetchAvailability();
+
+    // Nettoyage de la requête si le composant est démonté
+    // ou si l'utilisateur choisit une autre date.
+    return () => controller.abort();
+
+  }, [date]);
+
+  // ----------------------------------------
+  // MODIFICATION DES CHAMPS DU FORMULAIRE
+  // ----------------------------------------
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value
+    }));
+  };
+
+  // ----------------------------------------
+  // ENVOI DE LA DEMANDE DE RENDEZ-VOUS
+  // ----------------------------------------
+
+  const handleBooking = async (event) => {
+    event.preventDefault();
+
+    // Vérification de l'horaire sélectionné.
+    if (!selectedTime) {
+      setFeedback({
+        type: "error",
+        message: "Veuillez choisir un créneau horaire."
+      });
+
+      return;
+    }
+
+    setBookingLoading(true);
+
+    setFeedback({
+      type: "",
+      message: ""
+    });
+
+    try {
+      // Envoi des données avec les noms de champs attendus
+      // par la route POST /api/creative-break/bookings.
+      const response = await fetch(
+        `${BACKEND_URL}/api/creative-break/bookings`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            clientName: formData.clientName,
+            clientPhone: formData.clientPhone,
+            clientEmail: formData.clientEmail,
+            projectDetails: formData.projectDetails,
+            date: date,
+            time: selectedTime
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.message || "Impossible d'enregistrer votre réservation."
+        );
+      }
+
+      // Confirmation affichée après la réponse positive du backend.
+      setFeedback({
+        type: "success",
+        message:
+          data.message ||
+          "Votre demande de rendez-vous a été enregistrée !"
+      });
+
+      // Réinitialisation du formulaire après l'enregistrement.
+      setFormData({
+        clientName: "",
+        clientPhone: "",
+        clientEmail: "",
+        projectDetails: ""
+      });
+
+      setSelectedTime("");
+
+      // Actualisation des créneaux pour tenir compte
+      // du rendez-vous qui vient d'être enregistré.
+      const availabilityResponse = await fetch(
+        `${BACKEND_URL}/api/creative-break/availability?date=${encodeURIComponent(date)}`
+      );
+
+      const availabilityData = await availabilityResponse.json();
+
+      if (
+        availabilityResponse.ok &&
+        availabilityData.success &&
+        Array.isArray(availabilityData.slots)
+      ) {
+        setSlots(availabilityData.slots);
+      }
+
+    } catch (error) {
+
+      setFeedback({
+        type: "error",
+        message:
+          error.message ||
+          "Une erreur est survenue. Veuillez réessayer."
+      });
+
+    } finally {
+      setBookingLoading(false);
+    }
+  };
+
+  return (
+    <section className="reservation section" id="reservation">
+
+      {/* Présentation de la réservation */}
+      <Reveal>
+        <h2 className="section-title">
+          Réserver un rendez-vous
+        </h2>
+
+        <p className="section-description">
+          Vous avez un projet ou souhaitez discuter de vos besoins ?
+          Choisissez une date et un horaire pour échanger avec moi.
+        </p>
+      </Reveal>
+
+      <div className="reservation-layout">
+
+        {/* Informations sur les rendez-vous */}
+        <Reveal className="reservation-info">
+
+          <div className="reservation-info-icon">
+            <FaCalendarAlt />
+          </div>
+
+          <h3>Planifions votre projet</h3>
+
+          <p>
+            Réservez gratuitement un rendez-vous en visioconférence
+            pour discuter de votre projet et de vos besoins.
+          </p>
+
+          <div className="reservation-detail">
+            <FaClock />
+            <div>
+              <strong>Durée du rendez-vous</strong>
+              <span>30 minutes</span>
+            </div>
+          </div>
+
+          <div className="reservation-detail">
+            <FaVideo />
+            <div>
+              <strong>Type de rendez-vous</strong>
+              <span>Visioconférence gratuite</span>
+            </div>
+          </div>
+
+          <div className="reservation-detail">
+            <FaCalendarAlt />
+            <div>
+              <strong>Disponibilités habituelles</strong>
+              <span>Du lundi au vendredi</span>
+              <span>09h00–13h00 et 14h00–18h00</span>
+            </div>
+          </div>
+
+          <p className="reservation-timezone">
+            Horaires affichés selon l'heure de Madagascar.
+          </p>
+
+        </Reveal>
+
+        {/* Formulaire de réservation */}
+        <Reveal className="reservation-form-wrapper">
+
+          <form
+            className="reservation-form"
+            onSubmit={handleBooking}
+          >
+
+            <h3>Vos informations</h3>
+
+            {/* Choix de la date */}
+            <label htmlFor="booking-date">
+              Choisir une date
+            </label>
+
+            <input
+              id="booking-date"
+              type="date"
+              value={date}
+              min={minimumDate}
+              onChange={(event) => setDate(event.target.value)}
+              required
+            />
+
+            {/* Affichage des créneaux */}
+            <div className="slots-heading">
+              <label>Choisir un horaire</label>
+
+              {loadingSlots && (
+                <span className="slots-loading">
+                  Chargement...
+                </span>
+              )}
+            </div>
+
+            {loadingSlots ? (
+              <p className="slots-message">
+                Recherche des disponibilités...
+              </p>
+            ) : slots.length > 0 ? (
+
+              <div className="reservation-slots">
+
+                {slots.map((slot) => (
+                  <button
+                    key={slot.time}
+                    type="button"
+                    className={
+                      selectedTime === slot.time
+                        ? "slot-button selected"
+                        : "slot-button"
+                    }
+                    onClick={() => setSelectedTime(slot.time)}
+                  >
+                    {slot.time}
+                  </button>
+                ))}
+
+              </div>
+
+            ) : (
+
+              <p className="slots-message">
+                Aucun créneau disponible pour cette date.
+                Essayez une autre journée.
+              </p>
+
+            )}
+
+            {/* Nom du visiteur */}
+            <label htmlFor="booking-name">
+              Nom complet
+            </label>
+
+            <input
+              id="booking-name"
+              type="text"
+              name="clientName"
+              placeholder="Votre nom complet"
+              value={formData.clientName}
+              onChange={handleChange}
+              autoComplete="name"
+              required
+            />
+
+            {/* Téléphone du visiteur */}
+            <label htmlFor="booking-phone">
+              Numéro de téléphone
+            </label>
+
+            <input
+              id="booking-phone"
+              type="tel"
+              name="clientPhone"
+              placeholder="Votre numéro de téléphone"
+              value={formData.clientPhone}
+              onChange={handleChange}
+              autoComplete="tel"
+              required
+            />
+
+            {/* Adresse email du visiteur */}
+            <label htmlFor="booking-email">
+              Adresse email
+            </label>
+
+            <input
+              id="booking-email"
+              type="email"
+              name="clientEmail"
+              placeholder="Votre adresse email"
+              value={formData.clientEmail}
+              onChange={handleChange}
+              autoComplete="email"
+              required
+            />
+
+            {/* Description du projet */}
+            <label htmlFor="booking-project">
+              Parlez-moi de votre projet
+            </label>
+
+            <textarea
+              id="booking-project"
+              name="projectDetails"
+              placeholder="Décrivez brièvement votre projet ou le sujet du rendez-vous..."
+              rows="4"
+              value={formData.projectDetails}
+              onChange={handleChange}
+              required
+            />
+
+            {/* Confirmation ou message d'erreur */}
+            {feedback.message && (
+              <p
+                className={`form-feedback ${feedback.type}`}
+                role="status"
+              >
+                {feedback.message}
+              </p>
+            )}
+
+            {/* Bouton d'envoi */}
+            <button
+              type="submit"
+              className="reservation-submit"
+              disabled={
+                bookingLoading ||
+                loadingSlots ||
+                slots.length === 0 ||
+                !selectedTime
+              }
+            >
+              {bookingLoading
+                ? "Enregistrement en cours..."
+                : "Confirmer ma demande"
+              }
+
+              {!bookingLoading && <FaCalendarAlt />}
+            </button>
+
+            <p className="reservation-note">
+              Votre demande sera enregistrée avec le statut
+              « en attente ». Le rendez-vous sera confirmé
+              après validation.
+            </p>
+
+          </form>
+
+        </Reveal>
+
+      </div>
+
+    </section>
+  );
+}
+
+// ========================================
+// 17. SECTION CONTACT
+// ========================================
+
+// Le formulaire existant est conservé.
+// Il continue d'utiliser /api/contact.
 function Contact() {
   const [formData, setFormData] = useState({
     name: "",
@@ -1138,7 +1662,7 @@ function Contact() {
     message: ""
   });
 
-  // Gestion des changements dans les champs
+  // Mise à jour des champs du formulaire.
   const handleChange = (event) => {
     setFormData({
       ...formData,
@@ -1146,7 +1670,7 @@ function Contact() {
     });
   };
 
-  // Envoi du formulaire vers le backend
+  // Envoi du message vers le backend.
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -1224,7 +1748,7 @@ function Contact() {
         }}
       >
 
-        {/* COORDONNÉES */}
+        {/* Coordonnées */}
         <motion.div
           className="contact-info"
           variants={cardVariants}
@@ -1267,7 +1791,7 @@ function Contact() {
             </a>
           </div>
 
-          {/* CONTACT WHATSAPP */}
+          {/* Contact WhatsApp */}
           <div className="whatsapp-contact">
             <a
               href={WHATSAPP_URL}
@@ -1281,7 +1805,7 @@ function Contact() {
 
         </motion.div>
 
-        {/* FORMULAIRE DE CONTACT */}
+        {/* Formulaire de contact */}
         <motion.form
           className="contact-form"
           onSubmit={handleSubmit}
@@ -1315,7 +1839,6 @@ function Contact() {
             required
           />
 
-          {/* MESSAGE DE CONFIRMATION OU ERREUR */}
           {feedback.message && (
             <p
               className={`form-feedback ${feedback.type}`}
@@ -1347,7 +1870,7 @@ function Contact() {
 }
 
 // ========================================
-// PIED DE PAGE
+// 18. PIED DE PAGE
 // ========================================
 
 function Footer() {
@@ -1383,9 +1906,12 @@ function Footer() {
 }
 
 // ========================================
-// COMPOSANT PRINCIPAL
+// 19. COMPOSANT PRINCIPAL DE L'APPLICATION
 // ========================================
 
+// C'est ici que toutes les sections sont assemblées.
+// La réservation est ajoutée après les tarifs,
+// sans déplacer les autres sections.
 function App() {
   return (
     <>
@@ -1397,6 +1923,7 @@ function App() {
         <Skills />
         <Projects />
         <Pricing />
+        <Reservation />
         <Contact />
       </main>
 
@@ -1405,4 +1932,5 @@ function App() {
   );
 }
 
+// Exportation du composant pour le démarrage de React.
 export default App;

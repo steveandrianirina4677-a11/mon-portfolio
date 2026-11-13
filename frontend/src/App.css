@@ -1,118 +1,148 @@
 /* ========================================
-   1. CONFIGURATION GÉNÉRALE
+   1. COULEURS ET CONFIGURATION GÉNÉRALE
 ======================================== */
 
+/* Variables globales pour modifier facilement le thème. */
 :root {
-  --primary: #0077b6;
-  --primary-dark: #005f92;
-  --accent: #00b4d8;
-  --dark: #101827;
-  --text: #334155;
-  --muted: #64748b;
-  --light: #f5f8fc;
-  --white: #ffffff;
-  --border: #e2e8f0;
-  --shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
-  --shadow-hover: 0 18px 45px rgba(0, 119, 182, 0.16);
+  --primary: #38bdf8;
+  --primary-dark: #0284c7;
+  --accent: #8b5cf6;
+
+  --dark: #f1f5f9;
+  --text: #dbe5f2;
+  --muted: #a0aec0;
+  --light: #111c30;
+  --white: #f8fafc;
+  --border: #263750;
+
+  --shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+  --shadow-hover: 0 18px 45px rgba(56, 189, 248, 0.16);
+
   --radius: 16px;
 }
 
+/* Réinitialisation des marges et dimensions. */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Défilement fluide entre les sections. */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 85px;
+  scroll-padding-top: 90px;
 }
 
+/* Style général de la page. */
 body {
   font-family: "Poppins", Arial, sans-serif;
+  background: #080f1e;
   color: var(--text);
-  background: var(--white);
-  overflow-x: hidden;
   line-height: 1.7;
+  overflow-x: hidden;
 }
 
+/* Empêche les images de dépasser leur conteneur. */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Style commun des liens. */
 a {
+  color: inherit;
   text-decoration: none;
 }
 
+/* Les boutons utilisent la même police que le site. */
 button,
 input,
 textarea {
   font: inherit;
 }
 
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
-}
-
+/* Style général des sections. */
 .section {
+  width: 100%;
   padding: 100px 8%;
-  scroll-margin-top: 70px;
-}
-
-.section-title {
-  text-align: center;
-  font-size: clamp(28px, 4vw, 38px);
-  font-weight: 700;
-  color: var(--dark);
-  margin-bottom: 18px;
   position: relative;
+  scroll-margin-top: 75px;
 }
 
+/* ========================================
+   2. TITRES ET TEXTES DES SECTIONS
+======================================== */
+
+/* Titre principal de chaque section. */
+.section-title {
+  color: var(--white);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 18px;
+  line-height: 1.25;
+}
+
+/* Petit trait lumineux sous les titres. */
 .section-title::after {
   content: "";
   display: block;
   width: 65px;
   height: 4px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
+  margin: 18px auto 0;
   border-radius: 10px;
-  margin: 15px auto 0;
+  background: linear-gradient(
+    90deg,
+    var(--primary),
+    var(--accent)
+  );
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
 }
 
+/* Texte introductif sous les titres. */
 .section-description {
-  max-width: 650px;
+  max-width: 720px;
+  margin: 0 auto 50px;
   text-align: center;
   color: var(--muted);
-  margin: 0 auto 45px;
-  font-size: 15px;
+  font-size: 1rem;
 }
 
 /* ========================================
-   2. BARRE DE NAVIGATION
+   3. BARRE DE NAVIGATION
 ======================================== */
 
+/* Barre de navigation fixe en haut de la page. */
 .navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 0 3px 15px rgba(15, 23, 42, 0.04);
+  background: rgba(8, 15, 30, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.12);
 }
 
+/* Conteneur intérieur de la navigation. */
 .nav-container {
   max-width: 1400px;
   min-height: 76px;
   margin: auto;
   padding: 0 8%;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  gap: 25px;
 }
 
+/* Logo Steve. */
 .logo {
-  font-size: 29px;
+  font-size: 1.8rem;
   font-weight: 800;
-  color: var(--dark);
+  color: var(--white);
   letter-spacing: -1px;
 }
 
@@ -120,21 +150,24 @@ a {
   color: var(--primary);
 }
 
+/* Liste des liens du menu. */
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 25px;
   list-style: none;
 }
 
+/* Liens individuels. */
 .nav-links a {
-  color: var(--dark);
-  font-size: 14px;
+  color: var(--text);
+  font-size: 0.9rem;
   font-weight: 500;
-  position: relative;
   transition: color 0.3s ease;
+  position: relative;
 }
 
+/* Effet lumineux au survol des liens. */
 .nav-links a::after {
   content: "";
   position: absolute;
@@ -154,390 +187,234 @@ a {
   width: 100%;
 }
 
+/* Bouton du menu mobile, caché sur ordinateur. */
 .menu-toggle {
   display: none;
-  background: transparent;
   border: none;
-  color: var(--dark);
-  font-size: 25px;
+  background: transparent;
+  color: var(--white);
+  font-size: 1.5rem;
   cursor: pointer;
 }
 
 /* ========================================
-   3. SECTION ACCUEIL
+   4. SECTION ACCUEIL
 ======================================== */
 
+/* Section d'accueil avec la vidéo en arrière-plan. */
 .hero {
-  position: relative;
-  min-height: 650px;
-  height: calc(100vh - 76px);
-  max-height: 850px;
-  padding: 70px 8%;
+  min-height: 100vh;
+  padding-top: 120px;
+  padding-bottom: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 45px;
-  isolation: isolate;
+  gap: 50px;
   overflow: hidden;
-  background: #101827;
-  color: var(--white);
+  isolation: isolate;
+  background: #080f1e;
 }
 
-/* VIDÉO ORIGINALE CONSERVÉE */
-
+/* Vidéo d'arrière-plan. */
 .hero-video {
   position: absolute;
   inset: 0;
+  z-index: -3;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: -3;
-  pointer-events: none;
+  opacity: 0.4;
 }
 
+/* Couche sombre au-dessus de la vidéo pour améliorer la lecture. */
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(
-      100deg,
-      rgba(8, 18, 35, 0.92) 0%,
-      rgba(8, 18, 35, 0.82) 55%,
-      rgba(8, 18, 35, 0.65) 100%
-    );
   z-index: -2;
+  background: linear-gradient(
+    110deg,
+    rgba(8, 15, 30, 0.96),
+    rgba(8, 15, 30, 0.78),
+    rgba(8, 15, 30, 0.9)
+  );
 }
 
-/* CONTENU DE L'ACCUEIL */
-
+/* Contenu textuel de l'accueil. */
 .hero-content {
   position: relative;
   z-index: 3;
-  max-width: 680px;
   flex: 1;
+  max-width: 720px;
 }
 
+/* Petit texte de présentation. */
 .hero-subtitle {
-  color: #8edfff;
-  font-size: 18px;
-  font-weight: 500;
+  color: var(--primary);
+  font-size: 1.1rem;
+  font-weight: 600;
   margin-bottom: 12px;
-  letter-spacing: 1px;
 }
 
-.hero h1 {
-  font-size: clamp(34px, 5vw, 58px);
-  line-height: 1.2;
-  font-weight: 800;
+/* Nom affiché dans le titre principal. */
+.hero-content h1 {
   color: var(--white);
+  font-size: clamp(2.5rem, 5vw, 4.4rem);
+  font-weight: 800;
+  line-height: 1.15;
   margin-bottom: 15px;
-  letter-spacing: -1.5px;
 }
 
-.hero h1 span {
-  color: #45c5f0;
+/* Mise en évidence du prénom ou du nom. */
+.hero-content h1 span {
+  color: var(--primary);
+  text-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
 }
 
+/* Texte animé sous le nom. */
 .typing-title {
   min-height: 42px;
-  font-size: clamp(21px, 3vw, 29px);
+  color: var(--accent);
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
   font-weight: 600;
-  color: #8edfff;
   margin-bottom: 22px;
 }
 
-/* CURSEUR DE SAISIE */
-
+/* Curseur de saisie clignotant. */
 .typing-cursor {
-  display: inline-block;
-  color: #ffffff;
-  margin-left: 3px;
-  animation: blinkCursor 0.8s infinite;
+  color: var(--primary);
+  animation: typingBlink 0.8s infinite;
 }
 
-@keyframes blinkCursor {
-  0%, 49% {
-    opacity: 1;
-  }
-
-  50%, 100% {
+@keyframes typingBlink {
+  50% {
     opacity: 0;
   }
 }
 
+/* Description de l'accueil. */
 .hero-description {
-  max-width: 590px;
-  font-size: 15px;
+  max-width: 620px;
+  color: var(--muted);
+  font-size: 1.05rem;
   line-height: 1.9;
-  color: rgba(255, 255, 255, 0.83);
   margin-bottom: 30px;
 }
 
-/* ========================================
-   4. BOUTONS
-======================================== */
-
+/* Conteneur des boutons d'accueil. */
 .hero-buttons {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
   gap: 16px;
-  margin-bottom: 30px;
+  margin-bottom: 32px;
 }
 
+/* Style commun des boutons principaux. */
 .btn-primary,
 .btn-secondary {
   min-height: 48px;
+  padding: 13px 24px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 13px 24px;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 10px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
   transition:
     transform 0.3s ease,
-    background 0.3s ease,
     box-shadow 0.3s ease,
-    border-color 0.3s ease;
+    background 0.3s ease;
 }
 
+/* Bouton principal lumineux. */
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  color: var(--white);
-  border: 1px solid transparent;
-  box-shadow: 0 5px 18px rgba(0, 119, 182, 0.22);
+  color: #06111f;
+  border: 1px solid var(--primary);
+  background: linear-gradient(
+    120deg,
+    var(--primary),
+    #67e8f9
+  );
+  box-shadow: 0 5px 22px rgba(56, 189, 248, 0.2);
 }
 
+/* Effet au survol du bouton principal. */
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 9px 28px rgba(56, 189, 248, 0.35);
+}
+
+/* Bouton secondaire transparent. */
 .btn-secondary {
-  background: transparent;
-  color: var(--white);
-  border: 1px solid rgba(255, 255, 255, 0.65);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  background: rgba(56, 189, 248, 0.05);
 }
 
-.btn-primary:hover,
+/* Effet au survol du bouton secondaire. */
 .btn-secondary:hover {
   transform: translateY(-3px);
+  color: #06111f;
+  background: var(--primary);
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.2);
 }
 
-.btn-primary:hover {
-  box-shadow: 0 8px 25px rgba(0, 180, 216, 0.4);
-  background: linear-gradient(135deg, var(--primary-dark), #009ac4);
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: #8edfff;
-  box-shadow: 0 5px 20px rgba(0, 180, 216, 0.2);
-}
-
-.btn-primary:focus-visible,
-.btn-secondary:focus-visible {
-  outline: 3px solid #8edfff;
-  outline-offset: 4px;
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* EFFET LUMINEUX AU SURVOL */
-
-.btn-primary::before,
-.btn-secondary::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -120%;
-  width: 70%;
-  height: 100%;
-  background: linear-gradient(
-    110deg,
-    transparent,
-    rgba(255, 255, 255, 0.25),
-    transparent
-  );
-  transition: left 0.6s ease;
-}
-
-.btn-primary:hover::before,
-.btn-secondary:hover::before {
-  left: 140%;
-}
-
-/* ========================================
-   5. RÉSEAUX SOCIAUX
-======================================== */
-
+/* Liens des réseaux sociaux. */
 .social-links {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 15px;
 }
 
-.social-links a,
-.footer-socials a {
+.social-links a {
   width: 43px;
   height: 43px;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  color: var(--primary);
+  font-size: 1.15rem;
+  border: 1px solid rgba(56, 189, 248, 0.4);
   border-radius: 50%;
-  color: var(--white);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  background: rgba(255, 255, 255, 0.08);
-  font-size: 19px;
+  background: rgba(56, 189, 248, 0.06);
   transition: all 0.3s ease;
 }
 
-.social-links a:hover,
-.footer-socials a:hover {
-  transform: translateY(-4px);
+.social-links a:hover {
+  color: #06111f;
   background: var(--primary);
-  border-color: var(--primary);
-  box-shadow: 0 6px 18px rgba(0, 180, 216, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
 }
 
-.social-links a.whatsapp-link {
-  background-color: #25D366;
-  color: #ffffff;
-  border-color: #25D366;
-}
-
-.social-links a.whatsapp-link:hover {
-  background-color: #128C7E;
-  border-color: #128C7E;
-}
-
-/* ========================================
-   6. PHOTO DE PROFIL ET HALO LUMINEUX
-======================================== */
-
+/* Image de profil à droite de l'accueil. */
 .hero-image {
   position: relative;
   z-index: 3;
-  width: min(340px, 35%);
-  aspect-ratio: 1 / 1;
-  flex-shrink: 0;
+  flex: 0 0 340px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  isolation: isolate;
+  align-items: center;
 }
 
-/* Halo lumineux bleu et violet derrière la photo */
-
-.hero-image::before {
-  content: "";
-  position: absolute;
-  width: 125%;
-  height: 125%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(108, 99, 255, 0.85) 0%,
-    rgba(0, 212, 255, 0.55) 35%,
-    transparent 72%
-  );
-  filter: blur(35px);
-  opacity: 0.65;
-  z-index: -1;
-  animation: haloPulse 4s ease-in-out infinite;
-}
-
-/* Photo de profil avec dimensions réservées */
-
+/* Photo de profil. */
 .profile-photo {
-  position: relative;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1 / 1;
+  width: 320px;
+  height: 320px;
   object-fit: cover;
   border-radius: 50%;
-  border: 4px solid rgba(255, 255, 255, 0.9);
+  border: 5px solid rgba(56, 189, 248, 0.75);
   box-shadow:
-    0 0 20px rgba(108, 99, 255, 0.4),
-    0 0 40px rgba(0, 212, 255, 0.25),
-    0 15px 45px rgba(0, 0, 0, 0.35);
-}
-
-/* Animation douce du halo */
-
-@keyframes haloPulse {
-  0%, 100% {
-    opacity: 0.45;
-    transform: scale(0.95);
-  }
-
-  50% {
-    opacity: 0.8;
-    transform: scale(1.08);
-  }
+    0 0 25px rgba(56, 189, 248, 0.35),
+    0 0 65px rgba(139, 92, 246, 0.15);
 }
 
 /* ========================================
-   7. ICÔNES TECHNOLOGIQUES FLOTTANTES
+   5. PARTICULES ET ICÔNES FLOTTANTES
 ======================================== */
 
-.floating-icons {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.floating-icon {
-  position: absolute;
-  width: 54px;
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 29px;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.09);
-  border: 1px solid rgba(142, 223, 255, 0.3);
-  border-radius: 14px;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-}
-
-.floating-python {
-  top: 13%;
-  left: 48%;
-  color: #ffd43b;
-}
-
-.floating-react {
-  top: 23%;
-  right: 9%;
-  color: #61dafb;
-}
-
-.floating-js {
-  bottom: 18%;
-  left: 45%;
-  color: #f7df1e;
-}
-
-.floating-database {
-  bottom: 14%;
-  right: 12%;
-  color: #8edfff;
-}
-
-/* ========================================
-   8. PARTICULES LUMINEUSES
-======================================== */
-
+/* Zone qui contient les particules animées. */
 .particles {
   position: absolute;
   inset: 0;
@@ -546,592 +423,1343 @@ a {
   pointer-events: none;
 }
 
+/* Apparence d'une particule. */
 .particle {
   position: absolute;
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #8edfff;
-  box-shadow:
-    0 0 8px #8edfff,
-    0 0 16px rgba(0, 180, 216, 0.6);
+  background: var(--primary);
+  box-shadow: 0 0 12px var(--primary);
+}
+
+/* Zone des icônes flottantes. */
+.floating-icons {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Style commun des icônes flottantes. */
+.floating-icon {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  opacity: 0.55;
+  filter: drop-shadow(0 0 12px currentColor);
+}
+
+/* Positionnement et couleurs des icônes. */
+.floating-python {
+  top: 20%;
+  left: 5%;
+  color: #facc15;
+}
+
+.floating-react {
+  top: 25%;
+  right: 8%;
+  color: #38bdf8;
+}
+
+.floating-js {
+  bottom: 18%;
+  left: 10%;
+  color: #facc15;
+}
+
+.floating-database {
+  bottom: 15%;
+  right: 10%;
+  color: #a78bfa;
 }
 
 /* ========================================
-   9. SECTION À PROPOS
+   6. SECTION À PROPOS
 ======================================== */
 
 .about {
-  background: var(--light);
+  background:
+    radial-gradient(
+      circle at 10% 20%,
+      rgba(56, 189, 248, 0.06),
+      transparent 30%
+    ),
+    #0b1425;
 }
 
+/* Organisation générale du contenu À propos. */
 .about-content {
-  max-width: 1150px;
+  max-width: 1100px;
   margin: 0 auto;
-}
-
-.about-text {
-  max-width: 850px;
-  margin: 0 auto 40px;
-  text-align: center;
-}
-
-.about-text p {
-  margin-bottom: 15px;
-  font-size: 15px;
-  line-height: 1.9;
-  color: var(--muted);
-}
-
-.about-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
-}
-
-.about-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 30px 22px;
-  text-align: center;
-  box-shadow: var(--shadow);
-  transition:
-    transform 0.35s ease,
-    box-shadow 0.35s ease,
-    border-color 0.35s ease;
-}
-
-.about-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(0, 119, 182, 0.4);
-  box-shadow: var(--shadow-hover);
-}
-
-.about-icon {
-  width: 65px;
-  height: 65px;
-  margin: 0 auto 20px;
-  border-radius: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 29px;
-  color: var(--primary);
-  background: #e5f5fc;
-  transition: all 0.3s ease;
-}
-
-.about-card:hover .about-icon {
-  background: var(--primary);
-  color: var(--white);
-  transform: rotate(-5deg) scale(1.06);
-}
-
-.about-card h3 {
-  color: var(--dark);
-  font-size: 18px;
-  margin-bottom: 12px;
-}
-
-.about-card p {
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.about-button {
-  text-align: center;
-  margin-top: 35px;
-}
-
-/* ========================================
-   10. SECTION COMPÉTENCES
-======================================== */
-
-.skills {
-  background: var(--white);
-}
-
-.skills-grid {
-  max-width: 1050px;
-  margin: auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-.skill-card {
-  min-height: 160px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 15px;
-  padding: 25px;
-  background: var(--light);
+}
+
+/* Texte de présentation. */
+.about-text {
+  max-width: 850px;
+  margin: 0 auto 35px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.about-text p + p {
+  margin-top: 16px;
+}
+
+/* Trois cartes de présentation. */
+.about-cards {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  margin-bottom: 35px;
+}
+
+/* Carte individuelle. */
+.about-card {
+  padding: 30px 22px;
+  text-align: center;
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  background: linear-gradient(
+    145deg,
+    rgba(20, 35, 57, 0.95),
+    rgba(13, 25, 43, 0.95)
+  );
   box-shadow: var(--shadow);
   transition:
-    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.about-card:hover {
+  border-color: rgba(56, 189, 248, 0.65);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Icône des cartes À propos. */
+.about-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1.7rem;
+  border-radius: 16px;
+  background: rgba(56, 189, 248, 0.1);
+}
+
+/* Titre des cartes. */
+.about-card h3 {
+  color: var(--white);
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+/* Description des cartes. */
+.about-card p {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+/* Bouton sous les cartes. */
+.about-button {
+  display: flex;
+  justify-content: center;
+}
+
+/* ========================================
+   7. SECTION COMPÉTENCES
+======================================== */
+
+.skills {
+  background: #080f1e;
+}
+
+/* Grille des compétences. */
+.skills-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+/* Carte d'une compétence. */
+.skill-card {
+  min-height: 160px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--light);
+  box-shadow: var(--shadow);
+  transition:
     border-color 0.3s ease,
     box-shadow 0.3s ease;
 }
 
 .skill-card:hover {
-  background: var(--white);
   border-color: var(--primary);
   box-shadow: var(--shadow-hover);
 }
 
+/* Icône de technologie. */
 .skill-icon {
-  font-size: 42px;
   color: var(--primary);
-  transition:
-    transform 0.3s ease,
-    color 0.3s ease;
+  font-size: 2.6rem;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.2));
 }
 
-.skill-card:hover .skill-icon {
-  transform: scale(1.15) rotate(5deg);
-  color: var(--accent);
-}
-
+/* Nom de la compétence. */
 .skill-card h3 {
-  color: var(--dark);
-  font-size: 16px;
-  font-weight: 600;
+  color: var(--white);
+  font-size: 1.05rem;
 }
 
 /* ========================================
-   11. SECTION PROJETS
+   8. SECTION PROJETS
 ======================================== */
 
 .projects {
-  background: var(--light);
+  background:
+    radial-gradient(
+      circle at 90% 15%,
+      rgba(139, 92, 246, 0.06),
+      transparent 30%
+    ),
+    #0b1425;
 }
 
+/* Grille des projets. */
 .projects-grid {
-  max-width: 1200px;
-  margin: auto;
+  max-width: 1250px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 28px;
-  perspective: 1000px;
 }
 
+/* Carte de projet.
+   Framer Motion gère déjà son mouvement 3D.
+   On ne met donc pas de transform sur son hover. */
 .project-card {
-  position: relative;
+  min-width: 0;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  background: var(--white);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  border: 1px solid rgba(100, 120, 255, 0.12);
+  background: linear-gradient(
+    145deg,
+    #142238,
+    #0e192b
+  );
   box-shadow: var(--shadow);
-  transition:
-    box-shadow 0.35s ease,
-    border-color 0.35s ease;
   transform-style: preserve-3d;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .project-card:hover {
-  border-color: rgba(0, 119, 182, 0.65);
-  box-shadow:
-    0 15px 35px rgba(60, 80, 180, 0.13),
-    0 0 18px rgba(0, 119, 182, 0.12);
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow: var(--shadow-hover);
 }
 
-/* IMAGE DES PROJETS */
-
+/* Image des projets classiques. */
 .project-image {
-  position: relative;
-  height: 220px;
+  height: 245px;
   overflow: hidden;
-  background: #e9f1f8;
-}
-
-.project-image::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(16, 24, 39, 0.12),
-    transparent 50%
-  );
-  pointer-events: none;
+  background: #101c30;
 }
 
 .project-image img {
   width: 100%;
   height: 100%;
-  display: block;
   object-fit: cover;
-  transition: transform 0.5s ease;
 }
 
-/* CONTENU DES PROJETS */
-
+/* Partie textuelle des projets. */
 .project-content {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
   padding: 25px;
 }
 
+/* Icône du projet. */
 .project-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
+  width: 52px;
+  height: 52px;
   margin-bottom: 17px;
-  background: #e5f5fc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: var(--primary);
-  font-size: 23px;
-  transition: all 0.3s ease;
+  font-size: 1.5rem;
+  border-radius: 14px;
+  background: rgba(56, 189, 248, 0.1);
 }
 
-.project-card:hover .project-icon {
-  background: var(--primary);
-  color: var(--white);
-}
-
+/* Titre du projet. */
 .project-content h3 {
-  color: var(--dark);
-  font-size: 18px;
-  line-height: 1.5;
+  color: var(--white);
+  font-size: 1.25rem;
   margin-bottom: 12px;
 }
 
+/* Description du projet. */
 .project-content p {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 0.94rem;
   line-height: 1.8;
   margin-bottom: 20px;
 }
 
-/* TECHNOLOGIES */
-
+/* Liste des technologies utilisées. */
 .project-technologies {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: auto;
+  gap: 9px;
 }
 
+/* Badge de technologie. */
 .project-technologies span {
-  display: inline-block;
   padding: 6px 11px;
-  color: var(--primary-dark);
-  background: #e9f6fc;
-  border: 1px solid #d5edf8;
-  border-radius: 20px;
-  font-size: 11px;
+  color: var(--primary);
+  font-size: 0.78rem;
   font-weight: 600;
-  transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    transform 0.3s ease;
-}
-
-.project-technologies span:hover {
-  color: var(--white);
-  background: var(--primary);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 20px;
+  background: rgba(56, 189, 248, 0.07);
 }
 
 /* ========================================
-   12. SECTION CONTACT
+   9. CARROUSEL E-COMMERCE
+======================================== */
+
+/* Conteneur de l'image du carrousel. */
+.project-carousel {
+  height: 245px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #07101e;
+}
+
+/* Bouton qui contient l'image. */
+.carousel-image-button {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+/* Image du carrousel. */
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Flèches du carrousel. */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 4;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  background: rgba(8, 15, 30, 0.8);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+}
+
+.carousel-arrow:hover {
+  color: #06111f;
+  background: var(--primary);
+}
+
+.carousel-prev {
+  left: 12px;
+}
+
+.carousel-next {
+  right: 12px;
+}
+
+/* Petits indicateurs du carrousel. */
+.carousel-indicators {
+  position: absolute;
+  bottom: 13px;
+  left: 50%;
+  z-index: 4;
+  display: flex;
+  gap: 8px;
+  transform: translateX(-50%);
+}
+
+/* Chaque point du carrousel. */
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Point correspondant à l'image active. */
+.carousel-dot.active {
+  width: 22px;
+  border-radius: 10px;
+  background: var(--primary);
+}
+
+/* Compteur d'images. */
+.carousel-counter {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 4;
+  padding: 5px 10px;
+  color: var(--white);
+  font-size: 0.75rem;
+  border-radius: 20px;
+  background: rgba(8, 15, 30, 0.8);
+}
+
+/* ========================================
+   10. FENÊTRE IMAGE AGRANDIE
+======================================== */
+
+/* Fond sombre qui recouvre la page. */
+.image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  padding: 65px 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: rgba(2, 6, 15, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+/* Image affichée en grand. */
+.image-lightbox img {
+  max-width: min(90vw, 1100px);
+  max-height: 78vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 0 35px rgba(56, 189, 248, 0.15);
+}
+
+/* Bouton de fermeture. */
+.lightbox-close {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--white);
+  font-size: 1.4rem;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: #142238;
+  cursor: pointer;
+}
+
+/* Flèches de navigation dans la fenêtre agrandie. */
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--white);
+  font-size: 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: rgba(20, 34, 56, 0.9);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+}
+
+.lightbox-arrow:hover,
+.lightbox-close:hover {
+  color: #06111f;
+  background: var(--primary);
+}
+
+.lightbox-prev {
+  left: 25px;
+}
+
+.lightbox-next {
+  right: 25px;
+}
+
+/* Légende de l'image agrandie. */
+.lightbox-caption {
+  margin-top: 18px;
+  color: var(--white);
+  text-align: center;
+}
+
+/* Compteur sous l'image. */
+.lightbox-counter {
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ========================================
+   11. SECTION TARIFS
+======================================== */
+
+.pricing {
+  background: #080f1e;
+}
+
+/* Bannière promotionnelle. */
+.pricing-promo {
+  max-width: 900px;
+  margin: 0 auto 45px;
+  padding: 25px 30px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: var(--radius);
+  background: linear-gradient(
+    120deg,
+    rgba(56, 189, 248, 0.1),
+    rgba(139, 92, 246, 0.1)
+  );
+  box-shadow: var(--shadow);
+}
+
+/* Icône de la promotion. */
+.pricing-promo-icon {
+  flex: 0 0 65px;
+  width: 65px;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1.9rem;
+  border-radius: 18px;
+  background: rgba(56, 189, 248, 0.13);
+}
+
+/* Texte de la promotion. */
+.pricing-promo-content {
+  flex: 1;
+}
+
+.pricing-promo-label {
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.pricing-promo-content h3 {
+  margin: 5px 0 7px;
+  color: var(--white);
+  font-size: 1.2rem;
+}
+
+.pricing-promo-content p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Grille des offres. */
+.pricing-grid {
+  max-width: 1050px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+/* Carte tarifaire. */
+.pricing-card {
+  padding: 30px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(
+    145deg,
+    #142238,
+    #0e192b
+  );
+  box-shadow: var(--shadow);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.pricing-card:hover {
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Icône de l'offre. */
+.pricing-card-icon {
+  width: 58px;
+  height: 58px;
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--primary);
+  font-size: 1.8rem;
+  border-radius: 16px;
+  background: rgba(56, 189, 248, 0.1);
+}
+
+/* Titre de l'offre. */
+.pricing-card h3 {
+  color: var(--white);
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+}
+
+/* Description de l'offre. */
+.pricing-description {
+  min-height: 105px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.8;
+}
+
+/* Tarif initial et réduction. */
+.pricing-price {
+  margin: 20px 0 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pricing-original {
+  color: var(--muted);
+  font-size: 0.83rem;
+  text-decoration: line-through;
+}
+
+.pricing-discount {
+  padding: 5px 10px;
+  color: #fef3c7;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 20px;
+  background: rgba(245, 158, 11, 0.18);
+}
+
+/* Prix promotionnel. */
+.pricing-discounted {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-radius: 12px;
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.pricing-discounted span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.pricing-discounted strong {
+  color: var(--primary);
+  font-size: 1.8rem;
+}
+
+/* Liste des avantages de l'offre. */
+.pricing-features {
+  margin: 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+}
+
+.pricing-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.pricing-check {
+  color: var(--primary);
+  font-weight: 800;
+}
+
+/* Bouton de commande WhatsApp. */
+.pricing-button {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color: #06111f;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: 10px;
+  background: linear-gradient(
+    120deg,
+    var(--primary),
+    #67e8f9
+  );
+  transition: all 0.3s ease;
+}
+
+.pricing-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.25);
+}
+
+/* Note sous les offres. */
+.pricing-note {
+  max-width: 850px;
+  margin: 35px auto 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  text-align: center;
+}
+
+/* ========================================
+   12. SECTION RÉSERVATION
+======================================== */
+
+/* Fond légèrement différent pour distinguer l'agenda. */
+.reservation {
+  background:
+    radial-gradient(
+      circle at 10% 15%,
+      rgba(56, 189, 248, 0.07),
+      transparent 32%
+    ),
+    #0b1425;
+}
+
+/* Disposition en deux colonnes :
+   informations à gauche et formulaire à droite. */
+.reservation-layout {
+  max-width: 1150px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  align-items: start;
+  gap: 30px;
+}
+
+/* Carte de présentation des rendez-vous. */
+.reservation-info {
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(
+    145deg,
+    #142238,
+    #0e192b
+  );
+  box-shadow: var(--shadow);
+}
+
+/* Icône de calendrier. */
+.reservation-info-icon {
+  width: 65px;
+  height: 65px;
+  margin-bottom: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--primary);
+  font-size: 1.9rem;
+  border-radius: 18px;
+  background: rgba(56, 189, 248, 0.1);
+}
+
+/* Titre de présentation. */
+.reservation-info h3 {
+  margin-bottom: 12px;
+  color: var(--white);
+  font-size: 1.4rem;
+}
+
+/* Texte explicatif. */
+.reservation-info > p {
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.8;
+}
+
+/* Informations pratiques du rendez-vous. */
+.reservation-detail {
+  margin-top: 25px;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  color: var(--primary);
+  font-size: 1.2rem;
+}
+
+/* Texte des informations pratiques. */
+.reservation-detail div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.reservation-detail strong {
+  color: var(--white);
+  font-size: 0.92rem;
+}
+
+.reservation-detail span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+/* Précision sur le fuseau horaire. */
+.reservation-info .reservation-timezone {
+  margin-top: 25px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  color: var(--primary);
+  font-size: 0.85rem;
+}
+
+/* Conteneur de la carte formulaire. */
+.reservation-form-wrapper {
+  min-width: 0;
+}
+
+/* Formulaire de réservation. */
+.reservation-form {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(
+    145deg,
+    #142238,
+    #0e192b
+  );
+  box-shadow: var(--shadow);
+}
+
+/* Titre du formulaire. */
+.reservation-form h3 {
+  margin-bottom: 10px;
+  color: var(--white);
+  font-size: 1.35rem;
+}
+
+/* Libellés des champs. */
+.reservation-form label {
+  margin-top: 7px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Champs texte, date et zone de texte. */
+.reservation-form input,
+.reservation-form textarea {
+  width: 100%;
+  padding: 13px 15px;
+  color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  outline: none;
+  background: #0a1526;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Couleur du texte indicatif. */
+.reservation-form input::placeholder,
+.reservation-form textarea::placeholder {
+  color: #718096;
+}
+
+/* Effet lorsque l'utilisateur sélectionne un champ. */
+.reservation-form input:focus,
+.reservation-form textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+}
+
+/* Icône du calendrier dans le champ date. */
+.reservation-form input[type="date"] {
+  color-scheme: dark;
+}
+
+/* Zone de texte redimensionnable verticalement. */
+.reservation-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* Ligne du titre des créneaux et du chargement. */
+.slots-heading {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.slots-heading label {
+  margin: 0;
+}
+
+/* Petit indicateur de chargement. */
+.slots-loading {
+  color: var(--primary);
+  font-size: 0.8rem;
+}
+
+/* Grille des boutons horaires. */
+.reservation-slots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* Bouton d'un créneau horaire. */
+.slot-button {
+  min-height: 42px;
+  padding: 9px;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #0a1526;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Survol d'un créneau disponible. */
+.slot-button:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: rgba(56, 189, 248, 0.08);
+}
+
+/* Créneau sélectionné par le visiteur. */
+.slot-button.selected {
+  color: #06111f;
+  font-weight: 700;
+  border-color: var(--primary);
+  background: var(--primary);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+}
+
+/* Message quand il n'y a aucun créneau. */
+.slots-message {
+  padding: 13px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  background: rgba(10, 21, 38, 0.6);
+}
+
+/* Bouton d'envoi de la réservation. */
+.reservation-submit {
+  min-height: 50px;
+  margin-top: 12px;
+  padding: 13px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color: #06111f;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(
+    120deg,
+    var(--primary),
+    #67e8f9
+  );
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Survol du bouton de réservation. */
+.reservation-submit:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.3);
+}
+
+/* Apparence du bouton lorsqu'il est désactivé. */
+.reservation-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Note sur le statut de la demande. */
+.reservation-note {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* ========================================
+   13. SECTION CONTACT
 ======================================== */
 
 .contact {
-  background: var(--white);
+  background: #080f1e;
 }
 
+/* Conteneur des coordonnées et du formulaire. */
 .contact-container {
   max-width: 1100px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 45px;
-  align-items: start;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 30px;
+  align-items: stretch;
 }
 
+/* Carte des coordonnées. */
 .contact-info {
-  padding: 30px;
-  background: var(--light);
+  padding: 32px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  background: linear-gradient(
+    145deg,
+    #142238,
+    #0e192b
+  );
   box-shadow: var(--shadow);
 }
 
+/* Titre des coordonnées. */
 .contact-info h3 {
-  font-size: 23px;
-  color: var(--dark);
-  margin-bottom: 15px;
+  color: var(--white);
+  font-size: 1.4rem;
+  margin-bottom: 14px;
 }
 
+/* Texte de présentation des coordonnées. */
 .contact-info > p {
+  margin-bottom: 28px;
   color: var(--muted);
-  font-size: 14px;
-  line-height: 1.9;
-  margin-bottom: 25px;
+  font-size: 0.93rem;
 }
 
+/* Ligne d'une coordonnée. */
 .contact-item {
+  margin: 20px 0;
   display: flex;
   align-items: center;
   gap: 13px;
-  margin-bottom: 19px;
-  font-size: 14px;
-  overflow-wrap: anywhere;
-}
-
-.contact-item svg {
-  min-width: 20px;
-  font-size: 19px;
   color: var(--primary);
+  font-size: 1.1rem;
 }
 
-.contact-item a {
+/* Liens et textes des coordonnées. */
+.contact-item a,
+.contact-item span {
   color: var(--text);
-  transition: color 0.3s ease;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
 }
 
 .contact-item a:hover {
   color: var(--primary);
 }
 
-/* ========================================
-   13. WHATSAPP
-======================================== */
-
+/* Bouton WhatsApp dans les coordonnées. */
 .whatsapp-contact {
-  margin-top: 25px;
-  margin-bottom: 10px;
+  margin-top: 28px;
 }
 
 .whatsapp-contact a {
-  display: inline-flex;
-  align-items: center;
+  min-height: 48px;
+  padding: 12px 16px;
+  display: flex;
   justify-content: center;
-  gap: 12px;
-  padding: 14px 20px;
-  background-color: #25D366;
-  color: #ffffff;
-  border-radius: 10px;
-  font-size: 15px;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-size: 0.9rem;
   font-weight: 600;
-  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.2);
+  border-radius: 9px;
+  background: #16a34a;
   transition: all 0.3s ease;
 }
 
-.whatsapp-contact a svg {
-  font-size: 25px;
-  flex-shrink: 0;
-}
-
 .whatsapp-contact a:hover {
-  background-color: #128C7E;
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+  background: #15803d;
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.2);
 }
 
-.whatsapp-contact a:focus-visible {
-  outline: 3px solid #128C7E;
-  outline-offset: 4px;
-}
-
-/* ========================================
-   14. FORMULAIRE DE CONTACT
-======================================== */
-
+/* Formulaire de contact. */
 .contact-form {
+  padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 17px;
-  padding: 30px;
-  background: var(--white);
+  gap: 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  background: linear-gradient(
+    145deg,
+    #142238,
+    #0e192b
+  );
   box-shadow: var(--shadow);
 }
 
+/* Champs du formulaire de contact. */
 .contact-form input,
 .contact-form textarea {
   width: 100%;
-  padding: 15px 17px;
+  padding: 14px 16px;
+  color: var(--white);
   border: 1px solid var(--border);
   border-radius: 9px;
-  background: #fbfdff;
-  color: var(--dark);
-  font-size: 14px;
   outline: none;
+  background: #0a1526;
   transition:
     border-color 0.3s ease,
-    box-shadow 0.3s ease,
-    background 0.3s ease;
-}
-
-.contact-form textarea {
-  resize: vertical;
-  min-height: 145px;
+    box-shadow 0.3s ease;
 }
 
 .contact-form input::placeholder,
 .contact-form textarea::placeholder {
-  color: #94a3b8;
+  color: #718096;
 }
 
 .contact-form input:focus,
 .contact-form textarea:focus {
-  background: var(--white);
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.09);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
 }
 
+.contact-form textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+/* Bouton d'envoi du formulaire de contact. */
 .contact-form .btn-primary {
-  width: 100%;
   border: none;
-  font-size: 15px;
 }
 
-/* MESSAGES DU FORMULAIRE */
+/* Bouton désactivé pendant l'envoi. */
+.contact-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
 
+/* Messages de confirmation et d'erreur. */
 .form-feedback {
-  padding: 12px 15px;
+  padding: 12px 14px;
   border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 0.88rem;
 }
 
+/* Message positif. */
 .form-feedback.success {
-  color: #166534;
-  background: #dcfce7;
-  border: 1px solid #bbf7d0;
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.08);
 }
 
+/* Message d'erreur. */
 .form-feedback.error {
-  color: #991b1b;
-  background: #fee2e2;
-  border: 1px solid #fecaca;
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.08);
 }
 
 /* ========================================
-   15. PIED DE PAGE
+   14. PIED DE PAGE
 ======================================== */
 
 .footer {
   min-height: 100px;
   padding: 25px 8%;
-  background: var(--dark);
-  color: rgba(255, 255, 255, 0.8);
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   gap: 20px;
+  border-top: 1px solid var(--border);
+  background: #060c17;
 }
 
+/* Texte du pied de page. */
 .footer p {
-  font-size: 13px;
+  color: var(--muted);
+  font-size: 0.88rem;
 }
 
+/* Réseaux sociaux du pied de page. */
 .footer-socials {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  gap: 14px;
 }
 
 .footer-socials a {
   width: 38px;
   height: 38px;
-  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--primary);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.footer-socials a:hover {
+  color: #06111f;
+  border-color: var(--primary);
+  background: var(--primary);
+  transform: translateY(-3px);
 }
 
 /* ========================================
-   16. RESPONSIVE TABLETTES
+   15. ADAPTATION TABLETTES
 ======================================== */
 
 @media (max-width: 1024px) {
+
+  /* Réduire légèrement les marges des sections. */
   .section {
-    padding: 80px 6%;
+    padding: 85px 6%;
   }
 
+  /* Navigation plus compacte. */
   .nav-container {
     padding: 0 6%;
   }
 
   .nav-links {
+    gap: 17px;
+  }
+
+  .nav-links a {
+    font-size: 0.83rem;
+  }
+
+  /* Photo de profil légèrement plus petite. */
+  .hero-image {
+    flex-basis: 280px;
+  }
+
+  .profile-photo {
+    width: 270px;
+    height: 270px;
+  }
+
+  /* Réduire l'espace entre les cartes. */
+  .projects-grid,
+  .pricing-grid,
+  .skills-grid {
     gap: 20px;
   }
 
-  .hero {
-    padding: 65px 6%;
-    gap: 25px;
-  }
-
-  .hero-image {
-    width: min(280px, 32%);
-  }
-
-  .projects-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .contact-container {
-    gap: 25px;
+  /* Réduire la largeur de l'agenda. */
+  .reservation-layout {
+    gap: 20px;
   }
 }
 
 /* ========================================
-   17. RESPONSIVE SMARTPHONES
+   16. ADAPTATION TÉLÉPHONES
 ======================================== */
 
 @media (max-width: 768px) {
-  html {
-    scroll-padding-top: 70px;
-  }
 
+  /* Espacement général des sections sur mobile. */
   .section {
-    padding: 70px 6%;
+    padding: 75px 6%;
   }
 
+  /* Barre de navigation mobile. */
   .nav-container {
     min-height: 68px;
-    padding: 0 6%;
   }
 
-  .logo {
-    font-size: 25px;
-  }
-
+  /* Afficher le bouton du menu mobile. */
   .menu-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
   }
 
+  /* Menu caché par défaut sur téléphone. */
   .nav-links {
     position: absolute;
     top: 68px;
     left: 0;
     width: 100%;
+    padding: 20px 6% 25px;
     display: none;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    padding: 10px 6% 20px;
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(15px);
-    box-shadow: 0 12px 20px rgba(15, 23, 42, 0.08);
+    border-bottom: 1px solid var(--border);
+    background: rgba(8, 15, 30, 0.98);
+    box-shadow: var(--shadow);
   }
 
+  /* Afficher le menu lorsqu'il est ouvert. */
   .nav-links.active {
     display: flex;
-    animation: menuAppear 0.25s ease;
   }
 
   .nav-links li {
@@ -1140,1068 +1768,180 @@ a {
 
   .nav-links a {
     display: block;
-    padding: 13px 5px;
+    padding: 12px 0;
+    font-size: 0.95rem;
   }
 
   .nav-links a::after {
     display: none;
   }
 
-  @keyframes menuAppear {
-    from {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* ACCUEIL MOBILE */
-
+  /* Accueil en colonne sur téléphone. */
   .hero {
-    height: auto;
-    min-height: 760px;
-    max-height: none;
-    padding: 65px 6%;
+    min-height: auto;
+    padding-top: 115px;
+    padding-bottom: 75px;
     flex-direction: column-reverse;
-    justify-content: center;
     text-align: center;
     gap: 35px;
   }
 
   .hero-content {
-    width: 100%;
-    max-width: 600px;
-  }
-
-  .hero h1 {
-    font-size: clamp(32px, 8vw, 45px);
-  }
-
-  .hero-subtitle {
-    font-size: 16px;
-  }
-
-  .typing-title {
-    font-size: 23px;
-    min-height: 38px;
+    max-width: 100%;
   }
 
   .hero-description {
-    font-size: 14px;
     margin-left: auto;
     margin-right: auto;
   }
 
-  .hero-buttons {
-    justify-content: center;
-  }
-
+  .hero-buttons,
   .social-links {
     justify-content: center;
   }
 
   .hero-image {
-    width: 190px;
+    flex: none;
   }
 
-  /* HALO PHOTO SUR MOBILE */
-
-  .hero-image::before {
-    width: 115%;
-    height: 115%;
-    filter: blur(28px);
-  }
-
-  .floating-icon {
-    width: 42px;
-    height: 42px;
-    font-size: 23px;
-  }
-
-  .floating-python {
-    top: 7%;
-    left: 12%;
-  }
-
-  .floating-react {
-    top: 12%;
-    right: 9%;
-  }
-
-  .floating-js {
-    bottom: 12%;
-    left: 8%;
-  }
-
-  .floating-database {
-    bottom: 8%;
-    right: 9%;
-  }
-
-  /* AUTRES SECTIONS */
-
-  .about-cards {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-
-  .about-card {
-    padding: 28px 22px;
-  }
-
-  .skills-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 15px;
-  }
-
-  .skill-card {
-    min-height: 140px;
-  }
-
-  .projects-grid {
-    grid-template-columns: 1fr;
-    max-width: 520px;
-  }
-
-  .project-image {
+  .profile-photo {
+    width: 230px;
     height: 230px;
   }
 
+  /* Réorganiser les cartes À propos. */
+  .about-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Réorganiser les compétences. */
+  .skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Une colonne pour les projets. */
+  .projects-grid {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+  }
+
+  /* Les cartes de prix passent en une colonne. */
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+  }
+
+  /* Présentation de la réservation en une colonne. */
+  .reservation-layout {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+  }
+
+  /* Contact en une colonne. */
   .contact-container {
     grid-template-columns: 1fr;
-    max-width: 550px;
+    max-width: 600px;
   }
 
-  .contact-info,
-  .contact-form {
-    padding: 24px;
+  /* Promotion plus compacte. */
+  .pricing-promo {
+    padding: 22px;
   }
 
+  /* Pied de page sur deux lignes. */
   .footer {
     flex-direction: column;
     text-align: center;
-    padding: 30px 6%;
   }
 }
 
 /* ========================================
-   18. PETITS SMARTPHONES
+   17. PETITS ÉCRANS
 ======================================== */
 
 @media (max-width: 480px) {
+
+  /* Réduire les marges sur les petits téléphones. */
   .section {
-    padding: 60px 5%;
+    padding: 65px 5%;
   }
 
   .section-title {
-    font-size: 27px;
+    font-size: 1.85rem;
   }
 
   .section-description {
-    font-size: 13px;
-    margin-bottom: 32px;
+    font-size: 0.9rem;
+    margin-bottom: 35px;
   }
 
-  .hero {
-    min-height: 730px;
-    padding: 55px 5%;
-  }
-
-  .hero-image {
-    width: 155px;
-  }
-
-  .hero h1 {
-    font-size: 33px;
+  /* Ajuster le titre d'accueil. */
+  .hero-content h1 {
+    font-size: 2.35rem;
   }
 
   .typing-title {
-    font-size: 20px;
+    font-size: 1.2rem;
   }
 
   .hero-description {
-    font-size: 13px;
+    font-size: 0.94rem;
   }
 
+  /* Boutons d'accueil sur toute la largeur. */
   .hero-buttons {
     flex-direction: column;
-    width: 100%;
+    align-items: stretch;
   }
 
   .hero-buttons a {
     width: 100%;
   }
 
-  .floating-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 19px;
+  .profile-photo {
+    width: 195px;
+    height: 195px;
   }
 
+  /* Une carte À propos par ligne. */
+  .about-cards {
+    grid-template-columns: 1fr;
+  }
+
+  /* Compétences en deux colonnes compactes. */
   .skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
 
   .skill-card {
-    min-height: 125px;
-    padding: 15px 8px;
+    min-height: 135px;
+    padding: 18px 10px;
   }
 
   .skill-icon {
-    font-size: 35px;
+    font-size: 2.1rem;
   }
 
   .skill-card h3 {
-    font-size: 13px;
+    font-size: 0.9rem;
   }
 
-  .project-image {
-    height: 190px;
+  /* Images de projets plus basses. */
+  .project-image,
+  .project-carousel {
+    height: 205px;
   }
 
   .project-content {
     padding: 21px;
   }
 
-  .contact-info,
-  .contact-form {
-    padding: 20px;
+  .project-content h3 {
+    font-size: 1.1rem;
   }
 
-  .whatsapp-contact a {
-    width: 100%;
-    padding: 13px 10px;
-    font-size: 13px;
-  }
-
-  .footer p {
-    font-size: 12px;
-  }
-}
-
-/* ========================================
-   19. ACCESSIBILITÉ : ANIMATIONS RÉDUITES
-======================================== */
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ========================================
-   EFFET 3 : CARTES DE PROJETS INTERACTIVES 3D
-======================================== */
-
-/* Perspective générale des cartes */
-.projects-grid {
-  perspective: 1200px;
-}
-
-/* Carte de projet */
-.project-card {
-  position: relative;
-  overflow: hidden;
-  transform-style: preserve-3d;
-  transition:
-    transform 0.45s ease,
-    box-shadow 0.45s ease,
-    border-color 0.45s ease;
-  will-change: transform;
-}
-
-/* Survol de la carte */
-.project-card:hover {
-  transform:
-    translateY(-10px)
-    rotateX(3deg)
-    rotateY(-3deg)
-    scale(1.015);
-
-  box-shadow:
-    0 25px 50px rgba(0, 119, 182, 0.18),
-    0 10px 25px rgba(16, 24, 39, 0.10);
-
-  border-color: rgba(0, 180, 216, 0.65);
-}
-
-/* Conteneur de l'image */
-.project-image {
-  overflow: hidden;
-  position: relative;
-}
-
-/* Image du projet */
-.project-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition:
-    transform 0.6s ease,
-    filter 0.6s ease;
-}
-
-/* Zoom de l'image au survol */
-.project-card:hover .project-image img {
-  transform: scale(1.09);
-  filter: brightness(1.05);
-}
-
-/* Petit effet de profondeur sur le contenu */
-.project-content {
-  position: relative;
-  transform: translateZ(12px);
-}
-
-/* Mise en valeur de l'icône */
-.project-icon {
-  transition:
-    transform 0.4s ease,
-    color 0.4s ease;
-}
-
-.project-card:hover .project-icon {
-  transform: translateZ(20px) scale(1.12);
-}
-
-/* Adaptation smartphone et tablette */
-@media (max-width: 768px) {
-  .project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0, 119, 182, 0.12);
-  }
-
-  .project-card:hover .project-image img {
-    transform: scale(1.04);
-  }
-}
-
-/* Respect des préférences de mouvement */
-@media (prefers-reduced-motion: reduce) {
-  .project-card,
-  .project-image img,
-  .project-icon {
-    transition: none;
-  }
-
-  .project-card:hover {
-    transform: none;
-  }
-
-  .project-card:hover .project-image img {
-    transform: none;
-  }
-}
-
-/* ========================================
-   EFFET 5 : PARTICULES LUMINEUSES
-======================================== */
-
-.particles {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.particle {
-  position: absolute;
-  display: block;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #67e8f9;
-  box-shadow:
-    0 0 6px #67e8f9,
-    0 0 14px #00b4d8,
-    0 0 25px rgba(0, 180, 216, 0.8);
-}
-
-/* Quelques particules plus grandes */
-.particle:nth-child(3n) {
-  width: 6px;
-  height: 6px;
-  background: #ffffff;
-  box-shadow:
-    0 0 8px #ffffff,
-    0 0 18px #67e8f9;
-}
-
-/* Adaptation smartphone */
-@media (max-width: 768px) {
-  .particle {
-    width: 3px;
-    height: 3px;
-  }
-
-  .particle:nth-child(3n) {
-    width: 4px;
-    height: 4px;
-  }
-}
-
-/* Accessibilité */
-@media (prefers-reduced-motion: reduce) {
-  .particle {
-    animation: none;
-  }
-}
-
-/* ========================================
-   EFFET 6 : BOUTONS LUMINEUX INTERACTIFS
-======================================== */
-
-.btn-primary,
-.btn-secondary {
-  position: relative;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    filter 0.3s ease;
-}
-
-/* Lueur du bouton principal */
-.btn-primary {
-  box-shadow: 0 5px 18px rgba(0, 119, 182, 0.22);
-}
-
-/* Effet lumineux au survol */
-.btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow:
-    0 0 10px rgba(0, 180, 216, 0.55),
-    0 0 22px rgba(0, 119, 182, 0.35),
-    0 10px 25px rgba(0, 119, 182, 0.25);
-  filter: brightness(1.06);
-}
-
-/* Effet lumineux du bouton secondaire */
-.btn-secondary:hover {
-  transform: translateY(-3px);
-  box-shadow:
-    0 0 10px rgba(0, 180, 216, 0.35),
-    0 8px 20px rgba(0, 119, 182, 0.18);
-}
-
-/* Petit effet au clic */
-.btn-primary:active,
-.btn-secondary:active {
-  transform: translateY(0) scale(0.98);
-}
-
-/* Contour lumineux pour la navigation au clavier */
-.btn-primary:focus-visible,
-.btn-secondary:focus-visible {
-  outline: 3px solid rgba(0, 180, 216, 0.65);
-  outline-offset: 4px;
-}
-
-/* Respect des préférences de mouvement */
-@media (prefers-reduced-motion: reduce) {
-  .btn-primary,
-  .btn-secondary {
-    transition: none;
-  }
-
-  .btn-primary:hover,
-  .btn-secondary:hover,
-  .btn-primary:active,
-  .btn-secondary:active {
-    transform: none;
-  }
-}
-
-/* ========================================
-   NOUVEAU THÈME : BLEU NUIT TECHNOLOGIQUE
-   Conserve les animations et la vidéo existantes
-======================================== */
-
-:root {
-  --primary: #38bdf8;
-  --primary-dark: #0284c7;
-  --accent: #8b5cf6;
-
-  --dark: #f1f5f9;
-  --text: #dbe5f2;
-  --muted: #a0aec0;
-
-  --light: #111c30;
-  --white: #f8fafc;
-  --border: #263750;
-
-  --shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
-  --shadow-hover: 0 18px 45px rgba(56, 189, 248, 0.16);
-}
-
-/* FOND GÉNÉRAL */
-body {
-  background: #080f1e;
-  color: var(--text);
-}
-
-/* BARRE DE NAVIGATION */
-.navbar {
-  background: rgba(8, 15, 30, 0.92);
-  border-bottom: 1px solid rgba(56, 189, 248, 0.15);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-}
-
-.logo,
-.nav-links a,
-.menu-toggle {
-  color: #f1f5f9;
-}
-
-.logo span,
-.nav-links a:hover {
-  color: #38bdf8;
-}
-
-.nav-links a::after {
-  background: linear-gradient(90deg, #38bdf8, #8b5cf6);
-}
-
-/* FONDS DES SECTIONS */
-.about,
-.projects {
-  background: #0d1729;
-}
-
-.skills,
-.contact {
-  background: #080f1e;
-}
-
-/* TITRES ET DESCRIPTIONS */
-.section-title,
-.about-card h3,
-.skill-card h3,
-.project-content h3,
-.contact-info h3 {
-  color: #f1f5f9;
-}
-
-.section-description,
-.about-text p,
-.about-card p,
-.project-content p,
-.contact-info > p {
-  color: #a0aec0;
-}
-
-/* CARTES À PROPOS */
-.about-card {
-  background: #111c30;
-  border-color: #263750;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.about-card:hover {
-  border-color: #38bdf8;
-  box-shadow: 0 15px 35px rgba(56, 189, 248, 0.12);
-}
-
-.about-icon {
-  background: rgba(56, 189, 248, 0.12);
-  color: #38bdf8;
-}
-
-.about-card:hover .about-icon {
-  background: #0284c7;
-  color: #ffffff;
-}
-
-/* CARTES DE COMPÉTENCES */
-.skill-card {
-  background: #111c30;
-  border-color: #263750;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
-
-.skill-card:hover {
-  background: #17243b;
-  border-color: #38bdf8;
-  box-shadow: 0 12px 30px rgba(56, 189, 248, 0.14);
-}
-
-.skill-icon {
-  color: #38bdf8;
-}
-
-/* CARTES DE PROJETS */
-.project-card {
-  background: #111c30;
-  border-color: #263750;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
-
-.project-card:hover {
-  border-color: #38bdf8;
-  box-shadow:
-    0 25px 50px rgba(0, 0, 0, 0.35),
-    0 0 22px rgba(56, 189, 248, 0.16);
-}
-
-.project-image {
-  background: #17243b;
-}
-
-.project-icon {
-  background: rgba(56, 189, 248, 0.12);
-  color: #38bdf8;
-}
-
-.project-card:hover .project-icon {
-  background: #0284c7;
-  color: #ffffff;
-}
-
-/* TECHNOLOGIES DES PROJETS */
-.project-technologies span {
-  color: #7dd3fc;
-  background: rgba(56, 189, 248, 0.10);
-  border-color: rgba(56, 189, 248, 0.2);
-}
-
-.project-technologies span:hover {
-  color: #ffffff;
-  background: #0284c7;
-}
-
-/* CONTACT */
-.contact-info,
-.contact-form {
-  background: #111c30;
-  border-color: #263750;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.contact-item {
-  color: #dbe5f2;
-}
-
-.contact-item a {
-  color: #dbe5f2;
-}
-
-.contact-item svg {
-  color: #38bdf8;
-}
-
-.contact-item a:hover {
-  color: #38bdf8;
-}
-
-/* CHAMPS DU FORMULAIRE */
-.contact-form input,
-.contact-form textarea {
-  background: #0b1526;
-  color: #f1f5f9;
-  border-color: #34445e;
-}
-
-.contact-form input::placeholder,
-.contact-form textarea::placeholder {
-  color: #94a3b8;
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-  background: #0b1526;
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.13);
-}
-
-/* BOUTONS LUMINEUX */
-.btn-primary {
-  background: linear-gradient(135deg, #0284c7, #38bdf8);
-  box-shadow: 0 0 18px rgba(56, 189, 248, 0.25);
-}
-
-.btn-primary:hover {
-  background: linear-gradient(135deg, #0369a1, #0ea5e9);
-  box-shadow:
-    0 0 12px rgba(56, 189, 248, 0.55),
-    0 0 28px rgba(139, 92, 246, 0.3);
-}
-
-.btn-secondary {
-  color: #f1f5f9;
-  border-color: rgba(56, 189, 248, 0.6);
-}
-
-.btn-secondary:hover {
-  background: rgba(56, 189, 248, 0.1);
-  border-color: #38bdf8;
-}
-
-/* PIED DE PAGE */
-.footer {
-  background: #050b16;
-  border-top: 1px solid rgba(56, 189, 248, 0.15);
-}
-
-/* MENU MOBILE */
-@media (max-width: 768px) {
-  .nav-links {
-    background: rgba(8, 15, 30, 0.98);
-    border-top: 1px solid #263750;
-  }
-
-  .nav-links a {
-    color: #f1f5f9;
-  }
-}
-
-/* COULEURS DES PARTICULES */
-.particle {
-  background: #7dd3fc;
-  box-shadow:
-    0 0 8px #38bdf8,
-    0 0 16px #8b5cf6,
-    0 0 25px rgba(56, 189, 248, 0.6);
-}
-
-/* ========================================
-   20. NOUVELLE SECTION : MES OFFRES ET TARIFS
-======================================== */
-
-/* Fond de la section */
-.pricing {
-  background: #080f1e;
-}
-
-/* BANNIÈRE PROMOTIONNELLE */
-
-.pricing-promo {
-  max-width: 900px;
-  margin: 0 auto 45px;
-  padding: 25px 30px;
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  background: linear-gradient(
-    120deg,
-    rgba(56, 189, 248, 0.12),
-    rgba(139, 92, 246, 0.12)
-  );
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
-}
-
-.pricing-promo-icon {
-  width: 65px;
-  height: 65px;
-  min-width: 65px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 18px;
-  background: rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
-  font-size: 30px;
-}
-
-.pricing-promo-content {
-  flex: 1;
-}
-
-.pricing-promo-label {
-  display: inline-block;
-  margin-bottom: 7px;
-  color: #38bdf8;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-}
-
-.pricing-promo-content h3 {
-  color: #f1f5f9;
-  font-size: 19px;
-  line-height: 1.5;
-  margin-bottom: 6px;
-}
-
-.pricing-promo-content p {
-  color: #a0aec0;
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-/* GRILLE DES OFFRES */
-
-.pricing-grid {
-  max-width: 1050px;
-  margin: auto;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px;
-  align-items: stretch;
-}
-
-/* CARTES DES TARIFS */
-
-.pricing-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  padding: 32px 28px;
-  background: #111c30;
-  border: 1px solid #263750;
-  border-radius: 18px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
-  transition:
-    border-color 0.35s ease,
-    box-shadow 0.35s ease,
-    transform 0.35s ease;
-  overflow: hidden;
-}
-
-/* Petite lumière décorative sur les cartes */
-
-.pricing-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, #38bdf8, #8b5cf6);
-}
-
-/* Effet au survol */
-
-.pricing-card:hover {
-  border-color: #38bdf8;
-  box-shadow:
-    0 18px 40px rgba(0, 0, 0, 0.3),
-    0 0 22px rgba(56, 189, 248, 0.12);
-}
-
-/* ICÔNE DES OFFRES */
-
-.pricing-card-icon {
-  width: 62px;
-  height: 62px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 22px;
-  border-radius: 17px;
-  background: rgba(56, 189, 248, 0.12);
-  color: #38bdf8;
-  font-size: 29px;
-}
-
-/* TITRE DES OFFRES */
-
-.pricing-card h3 {
-  color: #f1f5f9;
-  font-size: 19px;
-  line-height: 1.5;
-  margin-bottom: 13px;
-}
-
-/* DESCRIPTION */
-
-.pricing-description {
-  color: #a0aec0;
-  font-size: 13px;
-  line-height: 1.8;
-  margin-bottom: 24px;
-  min-height: 70px;
-}
-
-/* PRIX DE DÉPART */
-
-.pricing-price {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.pricing-original {
-  color: #cbd5e1;
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.pricing-discount {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px 10px;
-  color: #4ade80;
-  background: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.25);
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-/* PRIX PROMOTIONNEL */
-
-.pricing-discounted {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 18px;
-  margin-bottom: 25px;
-  background: rgba(56, 189, 248, 0.08);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  border-radius: 12px;
-}
-
-.pricing-discounted span {
-  color: #a0aec0;
-  font-size: 12px;
-}
-
-.pricing-discounted strong {
-  color: #38bdf8;
-  font-size: 32px;
-  font-weight: 800;
-  line-height: 1.3;
-}
-
-/* LISTE DES FONCTIONNALITÉS */
-
-.pricing-features {
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-  list-style: none;
-  margin-bottom: 28px;
-  flex-grow: 1;
-}
-
-.pricing-features li {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  color: #cbd5e1;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.pricing-check {
-  color: #4ade80;
-  font-size: 16px;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-
-/* BOUTON WHATSAPP DES OFFRES */
-
-.pricing-button {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  min-height: 50px;
-  padding: 13px 18px;
-  margin-top: auto;
-  overflow: hidden;
-  color: #ffffff;
-  background: linear-gradient(135deg, #128C7E, #25D366);
-  border-radius: 9px;
-  font-size: 14px;
-  font-weight: 700;
-  text-align: center;
-  box-shadow: 0 5px 18px rgba(37, 211, 102, 0.16);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    filter 0.3s ease;
-}
-
-.pricing-button svg {
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
-.pricing-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
-  filter: brightness(1.08);
-}
-
-.pricing-button:focus-visible {
-  outline: 3px solid #4ade80;
-  outline-offset: 4px;
-}
-
-.pricing-button:active {
-  transform: scale(0.98);
-}
-
-/* NOTE SOUS LES OFFRES */
-
-.pricing-note {
-  max-width: 850px;
-  margin: 30px auto 0;
-  color: #94a3b8;
-  font-size: 12px;
-  line-height: 1.8;
-  text-align: center;
-}
-
-/* ========================================
-   RESPONSIVE : SECTION TARIFS
-======================================== */
-
-@media (max-width: 768px) {
-  .pricing-promo {
-    padding: 22px;
-    gap: 16px;
-  }
-
-  .pricing-promo-icon {
-    width: 55px;
-    height: 55px;
-    min-width: 55px;
-    font-size: 25px;
-  }
-
-  .pricing-promo-content h3 {
-    font-size: 16px;
-  }
-
-  .pricing-grid {
-    grid-template-columns: 1fr;
-    max-width: 520px;
-  }
-
-  .pricing-card {
-    padding: 28px 24px;
-  }
-
-  .pricing-description {
-    min-height: auto;
-  }
-}
-
-@media (max-width: 480px) {
+  /* Promotion en colonne. */
   .pricing-promo {
     flex-direction: column;
     align-items: flex-start;
@@ -2209,384 +1949,111 @@ body {
   }
 
   .pricing-promo-content h3 {
-    font-size: 15px;
+    font-size: 1.05rem;
   }
 
-  .pricing-promo-content p {
-    font-size: 12px;
-  }
-
+  /* Cartes tarifaires plus compactes. */
   .pricing-card {
-    padding: 24px 20px;
+    padding: 23px;
   }
 
-  .pricing-card h3 {
-    font-size: 17px;
+  .pricing-description {
+    min-height: auto;
   }
 
-  .pricing-discounted strong {
-    font-size: 29px;
+  /* Cartes de réservation plus compactes. */
+  .reservation-info,
+  .reservation-form {
+    padding: 22px;
   }
 
-  .pricing-features li {
-    font-size: 12px;
+  /* Deux colonnes de créneaux sur petit écran. */
+  .reservation-slots {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .pricing-button {
-    font-size: 13px;
-  }
-}
-
-/* ACCESSIBILITÉ : TARIFS */
-
-@media (prefers-reduced-motion: reduce) {
-  .pricing-card,
-  .pricing-button {
-    transition: none;
+  .slot-button {
+    font-size: 0.88rem;
   }
 
-  .pricing-card:hover,
-  .pricing-button:hover,
-  .pricing-button:active {
-    transform: none;
-  }
-}
-
-/* ========================================
-   GALERIE E-COMMERCE : CARROUSEL D'IMAGES
-   ======================================== */
-
-/* Conteneur général du carrousel */
-.project-carousel {
-  position: relative;
-  width: 100%;
-  height: 220px;
-  overflow: hidden;
-  background: #17243b;
-}
-
-/* Bouton contenant l'image */
-.carousel-image-button {
-  display: block;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: zoom-in;
-  overflow: hidden;
-}
-
-/* Image affichée dans le carrousel */
-.carousel-image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-/* Zoom au survol */
-.project-card:hover .carousel-image {
-  transform: scale(1.07);
-}
-
-/* Flèches gauche et droite */
-.carousel-arrow {
-  position: absolute;
-  top: 50%;
-  z-index: 5;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: translateY(-50%);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 50%;
-  color: #ffffff;
-  background: rgba(5, 15, 30, 0.75);
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.carousel-arrow:hover {
-  background: #0284c7;
-  border-color: #38bdf8;
-  transform: translateY(-50%) scale(1.12);
-}
-
-.carousel-arrow.left {
-  left: 12px;
-}
-
-.carousel-arrow.right {
-  right: 12px;
-}
-
-/* Indicateurs des images */
-.carousel-indicators {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transform: translateX(-50%);
-}
-
-/* Petit point indicateur */
-.carousel-dot {
-  width: 9px;
-  height: 9px;
-  padding: 0;
-  border: 1px solid #ffffff;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.45);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.carousel-dot.active {
-  width: 23px;
-  border-radius: 10px;
-  background: #38bdf8;
-  border-color: #38bdf8;
-}
-
-/* Numéro de l'image */
-.carousel-counter {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 5;
-  padding: 5px 10px;
-  color: #ffffff;
-  background: rgba(5, 15, 30, 0.75);
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-/* ========================================
-   AGRANDISSEMENT DES IMAGES : LIGHTBOX
-======================================== */
-
-.image-lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 35px;
-  background: rgba(0, 0, 0, 0.94);
-  backdrop-filter: blur(10px);
-  animation: lightboxAppear 0.25s ease;
-}
-
-/* Animation d'ouverture */
-@keyframes lightboxAppear {
-  from {
-    opacity: 0;
+  /* Coordonnées et formulaire plus compacts. */
+  .contact-info,
+  .contact-form {
+    padding: 22px;
   }
 
-  to {
-    opacity: 1;
-  }
-}
-
-/* Image agrandie */
-.image-lightbox img {
-  display: block;
-  max-width: 90%;
-  max-height: 82vh;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  border-radius: 10px;
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
-}
-
-/* Bouton de fermeture */
-.lightbox-close {
-  position: absolute;
-  top: 25px;
-  right: 30px;
-  z-index: 10;
-  width: 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
-  font-size: 25px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.lightbox-close:hover {
-  color: #ffffff;
-  background: #e11d48;
-  transform: rotate(90deg);
-}
-
-/* Flèches de navigation dans l'image agrandie */
-.lightbox-arrow {
-  position: absolute;
-  top: 50%;
-  z-index: 10;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: translateY(-50%);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 50%;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.12);
-  font-size: 22px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.lightbox-arrow:hover {
-  background: #0284c7;
-  border-color: #38bdf8;
-  transform: translateY(-50%) scale(1.1);
-}
-
-.lightbox-arrow.left {
-  left: 25px;
-}
-
-.lightbox-arrow.right {
-  right: 25px;
-}
-
-/* Légende sous l'image */
-.lightbox-caption {
-  position: absolute;
-  bottom: 35px;
-  left: 50%;
-  width: 80%;
-  transform: translateX(-50%);
-  color: #ffffff;
-  font-size: 14px;
-  text-align: center;
-}
-
-/* Compteur dans la fenêtre agrandie */
-.lightbox-counter {
-  position: absolute;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #ffffff;
-  font-size: 13px;
-  padding: 7px 14px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
-}
-
-/* ========================================
-   RESPONSIVE : GALERIE E-COMMERCE
-======================================== */
-
-@media (max-width: 768px) {
-  .project-carousel {
-    height: 230px;
+  .contact-item {
+    align-items: flex-start;
+    font-size: 1rem;
   }
 
+  /* Fenêtre d'image agrandie sur téléphone. */
   .image-lightbox {
-    padding: 20px;
+    padding: 60px 15px;
   }
 
   .image-lightbox img {
-    max-width: 100%;
-    max-height: 75vh;
+    max-width: 94vw;
+    max-height: 65vh;
+  }
+
+  .lightbox-prev {
+    left: 8px;
+  }
+
+  .lightbox-next {
+    right: 8px;
   }
 
   .lightbox-arrow {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
-  }
-
-  .lightbox-arrow.left {
-    left: 10px;
-  }
-
-  .lightbox-arrow.right {
-    right: 10px;
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
   }
 
   .lightbox-close {
-    top: 15px;
-    right: 15px;
+    top: 12px;
+    right: 12px;
   }
 
-  .lightbox-caption {
-    bottom: 20px;
-    font-size: 12px;
+  /* Pied de page compact. */
+  .footer {
+    padding: 25px 5%;
   }
 
-  .lightbox-counter {
-    top: 23px;
-  }
-}
-
-@media (max-width: 480px) {
-  .project-carousel {
-    height: 190px;
+  .footer p {
+    font-size: 0.8rem;
   }
 
-  .carousel-arrow {
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
-  }
-
-  .carousel-dot {
-    width: 7px;
-    height: 7px;
-  }
-
-  .carousel-dot.active {
-    width: 19px;
-  }
-
-  .image-lightbox {
-    padding: 12px;
-  }
-
-  .image-lightbox img {
-    max-height: 70vh;
-  }
-
-  .lightbox-arrow {
-    width: 34px;
-    height: 34px;
-    font-size: 16px;
+  /* Réduire les icônes flottantes sur petit écran. */
+  .floating-icon {
+    font-size: 1.8rem;
+    opacity: 0.35;
   }
 }
 
-/* ACCESSIBILITÉ */
+/* ========================================
+   18. ACCESSIBILITÉ : ANIMATIONS RÉDUITES
+======================================== */
+
+/* Respecter le réglage système de réduction des animations. */
 @media (prefers-reduced-motion: reduce) {
-  .carousel-image,
-  .carousel-arrow,
-  .lightbox-arrow,
-  .lightbox-close {
-    transition: none;
+
+  html {
+    scroll-behavior: auto;
   }
 
-  .image-lightbox {
+  .typing-cursor {
     animation: none;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .nav-links a,
+  .social-links a,
+  .footer-socials a,
+  .pricing-button,
+  .reservation-submit {
+    transition: none;
   }
 }

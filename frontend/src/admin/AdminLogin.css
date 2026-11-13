@@ -1,0 +1,124 @@
+
+/* ========================================
+   PAGE DE CONNEXION ADMINISTRATEUR
+======================================== */
+
+.admin-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  background:
+    radial-gradient(circle at top right, #123b60, transparent 45%),
+    linear-gradient(135deg, #07111f, #101d32);
+  font-family: Arial, sans-serif;
+}
+
+.admin-login-card {
+  width: 100%;
+  max-width: 430px;
+  padding: 40px 32px;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.admin-login-icon {
+  font-size: 42px;
+  margin-bottom: 15px;
+}
+
+.admin-login-card h1 {
+  color: #101827;
+  font-size: 25px;
+  margin-bottom: 12px;
+}
+
+.admin-login-description {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.admin-form-group {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.admin-form-group label {
+  display: block;
+  color: #334155;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.admin-form-group input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #dbe3ed;
+  border-radius: 9px;
+  outline: none;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.admin-form-group input:focus {
+  border-color: #0077b6;
+  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.12);
+}
+
+.admin-login-button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 9px;
+  background: #0077b6;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.admin-login-button:hover:not(:disabled) {
+  background: #005f92;
+  transform: translateY(-2px);
+}
+
+.admin-login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-login-error {
+  padding: 12px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 13px;
+  text-align: left;
+}
+
+.admin-login-footer {
+  margin-top: 25px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+/* Adaptation aux téléphones */
+
+@media (max-width: 480px) {
+  .admin-login-card {
+    padding: 30px 22px;
+  }
+
+  .admin-login-card h1 {
+    font-size: 22px;
+  }
+}
