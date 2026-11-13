@@ -49,7 +49,8 @@ app.use(express.json());
 // Informations de connexion provenant des variables d'environnement
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY;
-const ADMIN_USER_ID = process.env.ADMIN_USER_ID;
+// Récupérer l'identifiant administrateur en supprimant les espaces inutiles
+const ADMIN_USER_ID = process.env.ADMIN_USER_ID?.trim();
 
 // Création du client Supabase
 const supabase = SUPABASE_URL && SUPABASE_SECRET_KEY
@@ -60,6 +61,12 @@ const supabase = SUPABASE_URL && SUPABASE_SECRET_KEY
         }
     })
     : null;
+
+// Vérifier la configuration sans afficher les informations secrètes
+console.log("Vérification de la configuration :", {
+    supabaseConfigured: Boolean(supabase),
+    adminUserIdConfigured: Boolean(ADMIN_USER_ID)
+});    
 
 // Fuseau horaire utilisé pour les rendez-vous
 const DEFAULT_TIMEZONE = "Indian/Antananarivo";
