@@ -3,10 +3,19 @@
    1. IMPORTATION DES MODULES
 ============================================ */
 
+// Express : création du serveur et des routes API
 import express from "express";
+
+// CORS : autoriser les requêtes depuis le frontend
 import cors from "cors";
+
+// dotenv : lecture des variables du fichier .env
 import dotenv from "dotenv";
+
+// Supabase : connexion à la base de données
 import { createClient } from "@supabase/supabase-js";
+
+// Luxon : gestion des dates, heures et fuseaux horaires
 import { DateTime } from "luxon";
 
 dotenv.config();
@@ -15,26 +24,34 @@ dotenv.config();
    2. CONFIGURATION DU SERVEUR
 ============================================ */
 
+// Création de l'application Express
 const app = express();
+
+// Port utilisé par Render ou en local
 const PORT = process.env.PORT || 5000;
 
+// Adresses autorisées à communiquer avec le backend
 const allowedOrigins = [
     "http://localhost:5173",
     process.env.FRONTEND_URL
 ].filter(Boolean);
 
+// Autoriser les requêtes provenant du frontend
 app.use(cors({ origin: allowedOrigins }));
+
+// Permettre au serveur de lire les données JSON
 app.use(express.json());
 
 /* ============================================
    3. CONNEXION À SUPABASE
 ============================================ */
 
+// Informations de connexion provenant des variables d'environnement
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY;
 const ADMIN_USER_ID = process.env.ADMIN_USER_ID;
 
-// Clé secrète utilisée uniquement côté backend
+// Création du client Supabase
 const supabase = SUPABASE_URL && SUPABASE_SECRET_KEY
     ? createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, {
         auth: {
@@ -44,14 +61,25 @@ const supabase = SUPABASE_URL && SUPABASE_SECRET_KEY
     })
     : null;
 
+// Fuseau horaire utilisé pour les rendez-vous
 const DEFAULT_TIMEZONE = "Indian/Antananarivo";
+
+// Durée de chaque rendez-vous : 30 minutes
 const BOOKING_DURATION = 30;
+
+// Liste des statuts professionnels autorisés
+const PROFESSIONAL_STATUSES = [
+    "Disponible",
+    "En pause",
+    "Hors ligne",
+    "Indisponible"
+];
 
 /* ============================================
    4. FONCTIONS UTILITAIRES
 ============================================ */
 
-// Vérifier la connexion Supabase
+// Vérifier que Supabase est correctement configuré
 function checkSupabase(res) {
     if (!supabase) {
         res.status(503).json({
@@ -65,7 +93,7 @@ function checkSupabase(res) {
     return true;
 }
 
-// Récupérer les paramètres professionnels
+// Récupérer les paramètres professionnels dans Supabase
 async function getProfessionalSettings() {
     const { data, error } = await supabase
         .from("professional_settings")
@@ -78,14 +106,14 @@ async function getProfessionalSettings() {
     return data;
 }
 
-// Convertir une heure SQL en heure et minutes
+// Convertir une heure SQL en heures et minutes
 function parseTime(time) {
     const [hour, minute] = time.split(":").map(Number);
 
     return { hour, minute };
 }
 
-// Vérifier le format d'une date
+// Vérifier qu'une date respecte le format YYYY-MM-DD
 function isValidDate(date) {
     if (
         typeof date !== "string" ||
@@ -105,8 +133,10 @@ function isValidDate(date) {
    5. SÉCURITÉ ADMINISTRATEUR
 ============================================ */
 
+// Cette fonction protège les routes réservées à l'administrateur
 async function requireAdmin(req, res, next) {
     try {
+        // Vérifier la configuration de Supabase et de l'administrateur
         if (!supabase || !ADMIN_USER_ID) {
             return res.status(503).json({
                 success: false,
@@ -114,12 +144,15 @@ async function requireAdmin(req, res, next) {
             });
         }
 
+        // Récupérer le jeton envoyé par le frontend
         const authorization = req.headers.authorization || "";
 
+        // Extraire le jeton Bearer
         const token = authorization.startsWith("Bearer ")
             ? authorization.slice(7).trim()
             : "";
 
+        // Refuser si aucun jeton n'est fourni
         if (!token) {
             return res.status(401).json({
                 success: false,
@@ -127,6 +160,7 @@ async function requireAdmin(req, res, next) {
             });
         }
 
+        // Vérifier le jeton auprès de Supabase Auth
         const { data, error } = await supabase.auth.getUser(token);
 
         if (error || !data?.user) {
@@ -136,6 +170,7 @@ async function requireAdmin(req, res, next) {
             });
         }
 
+        // Vérifier que l'utilisateur connecté est bien l'administrateur
         if (data.user.id !== ADMIN_USER_ID) {
             return res.status(403).json({
                 success: false,
@@ -143,8 +178,10 @@ async function requireAdmin(req, res, next) {
             });
         }
 
+        // Conserver les informations de l'administrateur
         req.adminUser = data.user;
 
+        // Autoriser l'accès à la route
         return next();
 
     } catch (error) {
@@ -161,6 +198,7 @@ async function requireAdmin(req, res, next) {
    6. ROUTE D'ACCUEIL
 ============================================ */
 
+// Vérifier que le backend fonctionne
 app.get("/", (req, res) => {
     res.json({
         success: true,
@@ -195,6 +233,46 @@ app.get("/api/creative-break/health", async (req, res) => {
 });
 
 /* ============================================
+   7.1. STATUT PROFESSIONNEL PUBLIC
+
+   Cette route permet au portfolio de consulter
+   ton statut sans connexion administrateur.
+============================================ */
+
+app.get("/api/creative-break/status", async (req, res) => {
+    try {
+        // Vérifier la connexion à Supabase
+        if (!checkSupabase(res)) return;
+
+        // Récupérer les paramètres professionnels
+        const settings = await getProfessionalSettings();
+
+        // Vérifier que les paramètres existent
+        if (!settings) {
+            return res.status(404).json({
+                success: false,
+                message: "Statut professionnel introuvable."
+            });
+        }
+
+        // Renvoyer le statut au portfolio
+        return res.json({
+            success: true,
+            status: settings.professional_status,
+            timezone: settings.timezone || DEFAULT_TIMEZONE
+        });
+
+    } catch (error) {
+        console.error("Erreur récupération statut public :", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Impossible de récupérer le statut professionnel."
+        });
+    }
+});
+
+/* ============================================
    8. TEST DE CONNEXION ADMINISTRATEUR
 ============================================ */
 
@@ -215,10 +293,12 @@ app.get(
 
 app.get("/api/creative-break/availability", async (req, res) => {
     try {
+        // Vérifier la connexion Supabase
         if (!checkSupabase(res)) return;
 
         const { date } = req.query;
 
+        // Vérifier le format de la date demandée
         if (!isValidDate(date)) {
             return res.status(400).json({
                 success: false,
@@ -226,6 +306,7 @@ app.get("/api/creative-break/availability", async (req, res) => {
             });
         }
 
+        // Récupérer les paramètres professionnels
         const settings = await getProfessionalSettings();
 
         if (!settings) {
@@ -235,8 +316,11 @@ app.get("/api/creative-break/availability", async (req, res) => {
             });
         }
 
+        // Déterminer le fuseau horaire
         const timezone = settings.timezone || DEFAULT_TIMEZONE;
 
+        // Vérifier le statut professionnel
+        // Seul le statut Disponible autorise les réservations
         if (settings.professional_status !== "Disponible") {
             return res.json({
                 success: true,
@@ -246,13 +330,17 @@ app.get("/api/creative-break/availability", async (req, res) => {
             });
         }
 
+        // Définir le début et la fin de la journée demandée
         const dayStart = DateTime.fromISO(date, {
             zone: timezone
         }).startOf("day");
 
         const dayEnd = dayStart.plus({ days: 1 });
+
+        // Numéro du jour de la semaine : lundi = 1, dimanche = 7
         const weekday = dayStart.weekday;
 
+        // Récupérer les horaires de travail pour ce jour
         const { data: schedules, error: scheduleError } = await supabase
             .from("availability")
             .select("start_time, end_time")
@@ -261,6 +349,7 @@ app.get("/api/creative-break/availability", async (req, res) => {
 
         if (scheduleError) throw scheduleError;
 
+        // Récupérer les rendez-vous déjà réservés
         const { data: bookings, error: bookingError } = await supabase
             .from("bookings")
             .select("starts_at, ends_at")
@@ -270,9 +359,13 @@ app.get("/api/creative-break/availability", async (req, res) => {
 
         if (bookingError) throw bookingError;
 
+        // Heure actuelle dans le fuseau horaire professionnel
         const now = DateTime.now().setZone(timezone);
+
+        // Tableau qui contiendra les créneaux disponibles
         const slots = [];
 
+        // Parcourir les horaires de travail
         for (const schedule of schedules || []) {
             const startParts = parseTime(schedule.start_time);
             const endParts = parseTime(schedule.end_time);
@@ -280,6 +373,7 @@ app.get("/api/creative-break/availability", async (req, res) => {
             let slotStart = dayStart.set(startParts);
             const scheduleEnd = dayStart.set(endParts);
 
+            // Générer les créneaux de 30 minutes
             while (
                 slotStart.plus({ minutes: BOOKING_DURATION }) <= scheduleEnd
             ) {
@@ -287,8 +381,10 @@ app.get("/api/creative-break/availability", async (req, res) => {
                     minutes: BOOKING_DURATION
                 });
 
+                // Vérifier que le créneau est dans le futur
                 const isFuture = slotStart > now;
 
+                // Vérifier qu'il n'est pas déjà réservé
                 const isBooked = (bookings || []).some(booking => {
                     const existingStart = DateTime
                         .fromISO(booking.starts_at)
@@ -304,6 +400,7 @@ app.get("/api/creative-break/availability", async (req, res) => {
                     );
                 });
 
+                // Ajouter uniquement les créneaux libres et futurs
                 if (isFuture && !isBooked) {
                     slots.push({
                         time: slotStart.toFormat("HH:mm"),
@@ -312,10 +409,12 @@ app.get("/api/creative-break/availability", async (req, res) => {
                     });
                 }
 
+                // Passer au créneau suivant
                 slotStart = slotEnd;
             }
         }
 
+        // Retourner les créneaux au frontend
         return res.json({
             success: true,
             date,
@@ -345,8 +444,10 @@ app.post("/api/creative-break/bookings", async (req, res) => {
         console.log("DONNEES RECUES :", req.body);
         console.log("====================================");
 
+        // Vérifier la connexion Supabase
         if (!checkSupabase(res)) return;
 
+        // Récupérer les informations du formulaire
         const {
             clientName,
             clientPhone,
@@ -356,6 +457,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             time
         } = req.body || {};
 
+        // Vérifier les champs obligatoires
         if (
             typeof clientName !== "string" ||
             typeof clientPhone !== "string" ||
@@ -386,6 +488,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
+        // Vérifier le format de l'adresse email
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientEmail.trim())) {
             return res.status(400).json({
                 success: false,
@@ -393,6 +496,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
+        // Limiter la longueur des champs
         if (
             clientName.trim().length > 120 ||
             clientPhone.trim().length > 40 ||
@@ -405,6 +509,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
+        // Récupérer les paramètres professionnels
         const settings = await getProfessionalSettings();
 
         if (!settings) {
@@ -414,6 +519,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
+        // Bloquer les réservations si le statut n'est pas Disponible
         if (settings.professional_status !== "Disponible") {
             return res.status(409).json({
                 success: false,
@@ -421,8 +527,10 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
+        // Déterminer le fuseau horaire
         const timezone = settings.timezone || DEFAULT_TIMEZONE;
 
+        // Construire la date et l'heure du rendez-vous
         const startsAt = DateTime.fromISO(`${date}T${time}`, {
             zone: timezone
         });
@@ -434,10 +542,12 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
+        // Calculer la fin du rendez-vous
         const endsAt = startsAt.plus({
             minutes: BOOKING_DURATION
         });
 
+        // Refuser les rendez-vous passés
         if (startsAt <= DateTime.now().setZone(timezone)) {
             return res.status(400).json({
                 success: false,
@@ -445,6 +555,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
+        // Récupérer les horaires de travail du jour
         const { data: schedules, error: scheduleError } = await supabase
             .from("availability")
             .select("start_time, end_time")
@@ -452,6 +563,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
 
         if (scheduleError) throw scheduleError;
 
+        // Vérifier que le rendez-vous respecte les horaires
         const withinSchedule = (schedules || []).some(schedule => {
             const startParts = parseTime(schedule.start_time);
             const endParts = parseTime(schedule.end_time);
@@ -469,6 +581,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
+        // Vérifier qu'aucun autre rendez-vous ne chevauche ce créneau
         const { data: conflicts, error: conflictError } = await supabase
             .from("bookings")
             .select("id")
@@ -486,6 +599,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
+        // Enregistrer le rendez-vous dans Supabase
         const { data: booking, error: insertError } = await supabase
             .from("bookings")
             .insert({
@@ -518,6 +632,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
 
         console.log("RESERVATION ENREGISTREE :", booking.id);
 
+        // Confirmer l'enregistrement au frontend
         return res.status(201).json({
             success: true,
             message: "Votre demande de rendez-vous a été enregistrée !",
@@ -549,6 +664,7 @@ app.get(
     requireAdmin,
     async (req, res) => {
         try {
+            // Récupérer toutes les réservations
             const { data, error } = await supabase
                 .from("bookings")
                 .select("*")
@@ -581,9 +697,13 @@ app.patch(
     requireAdmin,
     async (req, res) => {
         try {
+            // Récupérer l'identifiant de la réservation
             const bookingId = Number(req.params.id);
+
+            // Récupérer les modifications demandées
             const { status, meeting_link } = req.body || {};
 
+            // Vérifier l'identifiant
             if (!Number.isInteger(bookingId) || bookingId <= 0) {
                 return res.status(400).json({
                     success: false,
@@ -591,6 +711,7 @@ app.patch(
                 });
             }
 
+            // Statuts autorisés pour les rendez-vous
             const allowedStatuses = [
                 "pending",
                 "accepted",
@@ -598,6 +719,7 @@ app.patch(
                 "cancelled"
             ];
 
+            // Vérifier le statut du rendez-vous
             if (!allowedStatuses.includes(status)) {
                 return res.status(400).json({
                     success: false,
@@ -605,6 +727,7 @@ app.patch(
                 });
             }
 
+            // Vérifier le lien de visioconférence s'il est fourni
             if (
                 meeting_link !== undefined &&
                 meeting_link !== null &&
@@ -624,12 +747,14 @@ app.patch(
                 }
             }
 
+            // Préparer les informations à modifier
             const updateData = { status };
 
             if (meeting_link !== undefined) {
                 updateData.meeting_link = meeting_link || null;
             }
 
+            // Mettre à jour la réservation
             const { data, error } = await supabase
                 .from("bookings")
                 .update(updateData)
@@ -672,6 +797,7 @@ app.get(
     requireAdmin,
     async (req, res) => {
         try {
+            // Récupérer les messages du formulaire de contact
             const { data, error } = await supabase
                 .from("messages")
                 .select("*")
@@ -704,8 +830,10 @@ app.patch(
     requireAdmin,
     async (req, res) => {
         try {
+            // Récupérer l'identifiant du message
             const messageId = Number(req.params.id);
 
+            // Vérifier l'identifiant
             if (!Number.isInteger(messageId) || messageId <= 0) {
                 return res.status(400).json({
                     success: false,
@@ -713,6 +841,7 @@ app.patch(
                 });
             }
 
+            // Modifier le message pour le marquer comme lu
             const { data, error } = await supabase
                 .from("messages")
                 .update({ is_read: true })
@@ -755,6 +884,7 @@ app.get(
     requireAdmin,
     async (req, res) => {
         try {
+            // Récupérer les paramètres professionnels
             const settings = await getProfessionalSettings();
 
             return res.json({
@@ -775,6 +905,14 @@ app.get(
 
 /* ============================================
    16. ADMIN : MODIFIER LE STATUT PROFESSIONNEL
+
+   Quatre statuts possibles :
+   - Disponible
+   - En pause
+   - Hors ligne
+   - Indisponible
+
+   Seul l'administrateur peut modifier le statut.
 ============================================ */
 
 app.patch(
@@ -782,15 +920,19 @@ app.patch(
     requireAdmin,
     async (req, res) => {
         try {
+            // Récupérer le nouveau statut envoyé par l'administrateur
             const { status } = req.body || {};
 
-            if (!["Disponible", "Indisponible"].includes(status)) {
+            // Vérifier que le statut fait partie des quatre statuts autorisés
+            if (!PROFESSIONAL_STATUSES.includes(status)) {
                 return res.status(400).json({
                     success: false,
-                    message: "Statut professionnel invalide."
+                    message: "Statut professionnel invalide.",
+                    allowedStatuses: PROFESSIONAL_STATUSES
                 });
             }
 
+            // Mettre à jour le statut dans Supabase
             const { data, error } = await supabase
                 .from("professional_settings")
                 .update({
@@ -802,6 +944,7 @@ app.patch(
 
             if (error) throw error;
 
+            // Vérifier qu'une ligne a bien été modifiée
             if (!data || data.length === 0) {
                 return res.status(404).json({
                     success: false,
@@ -809,9 +952,10 @@ app.patch(
                 });
             }
 
+            // Confirmer la modification
             return res.json({
                 success: true,
-                message: "Statut professionnel modifié.",
+                message: "Statut professionnel modifié avec succès.",
                 settings: data[0]
             });
 
@@ -833,19 +977,15 @@ app.patch(
 
 app.post("/api/contact", async (req, res) => {
     try {
-
-        // ========================================
-        // DIAGNOSTIC : AFFICHER LES DONNÉES REÇUES
-        // ========================================
-
+        // Afficher les informations reçues dans les logs
         console.log("====================================");
         console.log("FORMULAIRE CONTACT REÇU :", req.body);
         console.log("====================================");
 
-        // Récupérer les informations du formulaire
+        // Récupérer les données du formulaire
         const { name, email, message } = req.body || {};
 
-        // Vérifier les champs obligatoires
+        // Vérifier que tous les champs sont remplis
         if (
             typeof name !== "string" ||
             typeof email !== "string" ||
@@ -862,7 +1002,7 @@ app.post("/api/contact", async (req, res) => {
             });
         }
 
-        // Vérifier le format de l'email
+        // Vérifier le format de l'adresse email
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
             console.error("ERREUR : EMAIL INVALIDE.");
 
@@ -892,9 +1032,9 @@ app.post("/api/contact", async (req, res) => {
             return;
         }
 
-        // ----------------------------------------
-        // 17.1 ENREGISTRER LE MESSAGE DANS SUPABASE
-        // ----------------------------------------
+        /* ----------------------------------------
+           17.1 ENREGISTRER LE MESSAGE DANS SUPABASE
+        ---------------------------------------- */
 
         console.log("TENTATIVE D'ENREGISTREMENT DANS SUPABASE...");
 
@@ -928,9 +1068,9 @@ app.post("/api/contact", async (req, res) => {
             savedMessage.id
         );
 
-        // ----------------------------------------
-        // 17.2 VÉRIFIER LA CONFIGURATION BREVO
-        // ----------------------------------------
+        /* ----------------------------------------
+           17.2 VÉRIFIER LA CONFIGURATION BREVO
+        ---------------------------------------- */
 
         if (!process.env.BREVO_API_KEY || !process.env.EMAIL_USER) {
             console.error("Configuration Brevo manquante.");
@@ -941,9 +1081,9 @@ app.post("/api/contact", async (req, res) => {
             });
         }
 
-        // ----------------------------------------
-        // 17.3 PRÉPARER L'EMAIL
-        // ----------------------------------------
+        /* ----------------------------------------
+           17.3 PRÉPARER L'EMAIL
+        ---------------------------------------- */
 
         const emailData = {
             sender: {
@@ -968,9 +1108,9 @@ ${message.trim()}
             `
         };
 
-        // ----------------------------------------
-        // 17.4 ENVOYER L'EMAIL AVEC BREVO
-        // ----------------------------------------
+        /* ----------------------------------------
+           17.4 ENVOYER L'EMAIL AVEC BREVO
+        ---------------------------------------- */
 
         const response = await fetch(
             "https://api.brevo.com/v3/smtp/email",
@@ -998,9 +1138,9 @@ ${message.trim()}
 
         console.log("NOTIFICATION BREVO ENVOYEE.");
 
-        // ----------------------------------------
-        // 17.5 CONFIRMER L'ENVOI
-        // ----------------------------------------
+        /* ----------------------------------------
+           17.5 CONFIRMER L'ENVOI
+        ---------------------------------------- */
 
         return res.status(201).json({
             success: true,
@@ -1021,6 +1161,7 @@ ${message.trim()}
    18. DÉMARRAGE DU SERVEUR
 ============================================ */
 
+// Démarrer le serveur et écouter les requêtes
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Backend démarré sur le port ${PORT}`);
 });
