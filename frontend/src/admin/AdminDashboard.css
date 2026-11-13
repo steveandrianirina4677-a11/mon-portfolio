@@ -369,3 +369,151 @@
         width: 100%;
     }
 }
+
+
+/* ========================================
+   17. RUBRIQUE MESSAGES REÇUS
+======================================== */
+
+.messages-section {
+    margin-top: 35px;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.unread-counter {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 20px;
+    background: #fff0e6;
+    color: #d35400;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.messages-list {
+    display: grid;
+    gap: 18px;
+    margin-top: 20px;
+}
+
+.message-card {
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+.message-unread {
+    border-left: 4px solid #0077b6;
+    background: #f8fcff;
+}
+
+.message-read {
+    border-left: 4px solid #cbd5e1;
+}
+
+.message-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.message-top h3 {
+    margin: 0 0 7px;
+    color: #101827;
+    font-size: 18px;
+}
+
+.message-date {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.message-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.message-status.unread {
+    color: #005f92;
+    background: #dff3ff;
+}
+
+.message-status.read {
+    color: #64748b;
+    background: #edf1f5;
+}
+
+.message-information {
+    margin-bottom: 15px;
+    overflow-wrap: anywhere;
+}
+
+.message-information p {
+    margin: 0;
+    color: #334155;
+}
+
+.message-information a {
+    color: #0077b6;
+    text-decoration: none;
+}
+
+.message-information a:hover {
+    text-decoration: underline;
+}
+
+.message-content {
+    padding: 15px;
+    border-radius: 8px;
+    background: #f5f8fc;
+    color: #334155;
+}
+
+.message-content p {
+    margin: 10px 0 0;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.message-actions {
+    margin-top: 15px;
+}
+
+.mark-read-button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 7px;
+    background: #0077b6;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.mark-read-button:hover {
+    background: #005f92;
+}
+
+.mark-read-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Adaptation aux petits écrans */
+@media (max-width: 600px) {
+    .messages-section {
+        padding: 15px;
+    }
+
+    .message-top {
+        flex-direction: column;
+    }
+}
