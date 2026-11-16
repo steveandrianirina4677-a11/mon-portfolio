@@ -3,10 +3,8 @@ import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import "./AdminLogin.css";
 
-// Adresse du backend local.
-// Nous configurerons l'adresse de production ensuite.
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000";
+// Adresse du backend hébergé sur Render
+const API_URL = "https://mon-portfolio-backend-twxs.onrender.com";
 
 function AdminLogin({ onLogin }) {
   // Informations saisies dans le formulaire

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import AdminLogin from "./AdminLogin";
@@ -20,6 +21,31 @@ export default function AdminPage() {
 
     return (
         <div>
+
+            {/* Bouton pour revenir au portfolio public */}
+            <div style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                padding: "15px 25px",
+                background: "#f8fafc"
+            }}>
+                <a
+                    href="/"
+                    style={{
+                        display: "inline-block",
+                        padding: "11px 20px",
+                        background: "#0077b6",
+                        color: "white",
+                        textDecoration: "none",
+                        borderRadius: "8px",
+                        fontWeight: "bold",
+                        transition: "0.3s"
+                    }}
+                >
+                    ← Retour au portfolio
+                </a>
+            </div>
+
             {/* Tableau de bord administrateur */}
             <AdminDashboard session={session} />
 
@@ -43,6 +69,7 @@ export default function AdminPage() {
                     Déconnexion
                 </button>
             </div>
+
         </div>
     );
 }

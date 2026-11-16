@@ -1,9 +1,10 @@
-// ========================================
-// 1. IMPORTATION DES OUTILS ET DES ICÔNES
-// ========================================
+
+/* ========================================
+   1. IMPORTATION DES OUTILS ET DES ICÔNES
+======================================== */
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import "./App.css";
 
 import {
@@ -31,42 +32,100 @@ import {
   FaChevronRight,
   FaCalendarAlt,
   FaClock,
-  FaVideo
+  FaVideo,
+  FaComments,
+  FaClipboardList,
+  FaHandshake,
+  FaCheckCircle,
+  FaFileAlt
 } from "react-icons/fa";
 
-// ========================================
-// 2. CONFIGURATION DU BACKEND
-// ========================================
 
-// Adresse principale du backend hébergé sur Render.
-// Les différentes fonctionnalités utilisent cette même adresse.
-const BACKEND_URL =
-  "https://mon-portfolio-backend-twxs.onrender.com";
+/* ========================================
+   2. CONFIGURATION DU BACKEND
+======================================== */
 
-// Adresse du formulaire de contact.
-// On conserve exactement la route qui fonctionne déjà.
+// Adresse du backend en local.
+// En production, utiliser l'adresse de ton backend Render.
+
+// En local, utiliser le serveur de développement.
+// En ligne, utiliser le backend hébergé sur Render.
+const BACKEND_URL = import.meta.env.DEV
+  ? "http://localhost:5000"
+  : "https://mon-portfolio-backend-twxs.onrender.com";
+
 const API_URL = `${BACKEND_URL}/api/contact`;
 
-// Lien WhatsApp utilisé sur le portfolio.
 const WHATSAPP_URL =
   "https://wa.me/261385990110?text=Bonjour%20Steve%2C%20je%20viens%20de%20visiter%20votre%20portfolio.";
 
-// Fuseau horaire utilisé pour les rendez-vous.
+// Fuseau horaire professionnel de Madagascar.
 const TIMEZONE = "Indian/Antananarivo";
 
-// ========================================
-// 3. FONCTION POUR OBTENIR LA DATE LOCALE
-// ========================================
+// Fuseau horaire détecté automatiquement sur l'appareil du visiteur.
+const VISITOR_TIMEZONE =
+  Intl.DateTimeFormat().resolvedOptions().timeZone || TIMEZONE;
 
-// Cette fonction évite les erreurs de date liées au décalage UTC.
-// Elle retourne une date au format YYYY-MM-DD à Madagascar.
-function getLocalDate() {
+
+/* ========================================
+   3. CONFIGURATION DES CINQ STATUTS
+======================================== */
+
+const STATUS_CONFIG = {
+  "Disponible": {
+    className: "status-available",
+    icon: "🟢",
+    message:
+      "Je suis disponible pour les appels directs. Contactez-moi !",
+    canCall: true
+  },
+
+  "En pause": {
+    className: "status-break",
+    icon: "🟡",
+    message:
+      "Je ne peux pas prendre d'appels pour le moment. Vous pouvez toujours m'envoyer un message ou réserver une visioconférence.",
+    canCall: false
+  },
+
+  "En traitement": {
+    className: "status-working",
+    icon: "🔵",
+    message:
+      "Je suis occupé sur un projet et ne peux pas prendre d'appels actuellement. Vous pouvez m'envoyer un message ou réserver une visioconférence.",
+    canCall: false
+  },
+
+  "En conférence": {
+    className: "status-conference",
+    icon: "🟣",
+    message:
+      "Je suis actuellement en conférence et ne peux pas prendre d'appels. Vous pouvez m'envoyer un message ou réserver une visioconférence.",
+    canCall: false
+  },
+
+  "Hors ligne": {
+    className: "status-offline",
+    icon: "⚫",
+    message:
+      "Je suis actuellement indisponible pour les appels. Vous pouvez toujours m'envoyer un message ou réserver une visioconférence.",
+    canCall: false
+  }
+};
+
+
+/* ========================================
+   4. FONCTIONS DE GESTION DES DATES
+======================================== */
+
+// Obtenir une date YYYY-MM-DD dans un fuseau horaire précis.
+function getDateInTimezone(timezone, date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: TIMEZONE,
+    timeZone: timezone,
     year: "numeric",
     month: "2-digit",
     day: "2-digit"
-  }).formatToParts(new Date());
+  }).formatToParts(date);
 
   const values = {};
 
@@ -79,11 +138,45 @@ function getLocalDate() {
   return `${values.year}-${values.month}-${values.day}`;
 }
 
-// ========================================
-// 4. LISTE DES PROJETS
-// ========================================
+// Date professionnelle de référence : Madagascar.
+function getLocalDate() {
+  return getDateInTimezone(TIMEZONE);
+}
 
-// Les quatre projets existants sont conservés.
+// Afficher un instant dans le fuseau horaire demandé.
+function formatDateTimeInTimezone(isoDate, timezone) {
+  return new Intl.DateTimeFormat("fr-FR", {
+    timeZone: timezone,
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  }).format(new Date(isoDate));
+}
+
+// Obtenir la date locale d'un instant.
+function getInstantDate(isoDate, timezone) {
+  return getDateInTimezone(timezone, new Date(isoDate));
+}
+
+// Obtenir l'heure locale d'un instant.
+function getInstantTime(isoDate, timezone) {
+  return new Intl.DateTimeFormat("fr-FR", {
+    timeZone: timezone,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  }).format(new Date(isoDate));
+}
+
+
+/* ========================================
+   5. LISTE DES PROJETS
+======================================== */
+
 const projects = [
   {
     title: "Application de gestion d'établissement scolaire",
@@ -100,6 +193,7 @@ const projects = [
       "CSS"
     ]
   },
+
   {
     title: "Site vitrine avec gestion de stock",
     description:
@@ -114,6 +208,7 @@ const projects = [
       "MySQL"
     ]
   },
+
   {
     title: "Portfolio personnel",
     description:
@@ -127,6 +222,7 @@ const projects = [
       "CSS"
     ]
   },
+
   {
     title: "Boutique en ligne E-commerce",
     description:
@@ -159,16 +255,18 @@ const projects = [
   }
 ];
 
-// ========================================
-// 5. CONFIGURATION DES ANIMATIONS
-// ========================================
 
-// Animation d'apparition progressive des éléments.
+/* ========================================
+   6. CONFIGURATION DES ANIMATIONS
+======================================== */
+
+// Animation d'apparition des sections.
 const revealVariants = {
   hidden: {
     opacity: 0,
     y: 35
   },
+
   visible: {
     opacity: 1,
     y: 0,
@@ -179,9 +277,10 @@ const revealVariants = {
   }
 };
 
-// Animation qui fait apparaître les cartes progressivement.
+// Apparition progressive des éléments d'une grille.
 const containerVariants = {
   hidden: {},
+
   visible: {
     transition: {
       staggerChildren: 0.15
@@ -189,13 +288,14 @@ const containerVariants = {
   }
 };
 
-// Animation individuelle des cartes.
+// Animation des cartes.
 const cardVariants = {
   hidden: {
     opacity: 0,
     y: 45,
     scale: 0.96
   },
+
   visible: {
     opacity: 1,
     y: 0,
@@ -207,26 +307,49 @@ const cardVariants = {
   }
 };
 
-// ========================================
-// 6. EFFET SCROLL REVEAL
-// ========================================
+// Animation spéciale des étapes du déroulement.
+const processCardVariants = {
+  hidden: {
+    opacity: 0,
+    y: 55,
+    scale: 0.92,
+    rotateX: 8
+  },
 
-// Ce composant fait apparaître son contenu
-// lorsque l'utilisateur fait défiler la page.
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotateX: 0,
+    transition: {
+      duration: 0.7,
+      ease: "easeOut"
+    }
+  }
+};
+
+
+/* ========================================
+   7. EFFET SCROLL REVEAL
+======================================== */
+
 function Reveal({ children, className = "" }) {
+  // Respecte le réglage de réduction des animations du navigateur.
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.div
       className={className}
-      variants={revealVariants}
-      initial="hidden"
-      whileInView="visible"
+      variants={reduceMotion ? {} : revealVariants}
+      initial={reduceMotion ? false : "hidden"}
+      whileInView={reduceMotion ? undefined : "visible"}
       viewport={{
         once: true,
         amount: 0.2,
         margin: "0px 0px -50px 0px"
       }}
       style={{
-        willChange: "transform, opacity"
+        willChange: reduceMotion ? "auto" : "transform, opacity"
       }}
     >
       {children}
@@ -234,13 +357,14 @@ function Reveal({ children, className = "" }) {
   );
 }
 
-// ========================================
-// 7. EFFET TEXTE QUI S'ÉCRIT AUTOMATIQUEMENT
-// ========================================
 
-// Le texte change automatiquement pour présenter
-// les différents métiers et technologies.
+/* ========================================
+   8. EFFET TEXTE QUI S'ÉCRIT AUTOMATIQUEMENT
+======================================== */
+
 function TypingEffect() {
+  const reduceMotion = useReducedMotion();
+
   const words = [
     "Développeur Full Stack",
     "Développeur Web",
@@ -254,6 +378,12 @@ function TypingEffect() {
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
+    // En mode réduction des animations, afficher un texte fixe.
+    if (reduceMotion) {
+      setText(words[0]);
+      return;
+    }
+
     const currentWord = words[wordIndex];
 
     let delay = deleting ? 45 : 85;
@@ -280,23 +410,26 @@ function TypingEffect() {
     }, delay);
 
     return () => clearTimeout(timer);
-  }, [text, deleting, wordIndex]);
+  }, [text, deleting, wordIndex, reduceMotion]);
 
   return (
     <h2 className="typing-title">
       {text}
-      <span className="typing-cursor">|</span>
+      {!reduceMotion && (
+        <span className="typing-cursor">|</span>
+      )}
     </h2>
   );
 }
 
-// ========================================
-// 8. EFFET ICÔNES TECHNOLOGIQUES FLOTTANTES
-// ========================================
 
-// Les icônes technologiques bougent doucement
-// autour du contenu de la section d'accueil.
+/* ========================================
+   9. EFFET ICÔNES TECHNOLOGIQUES FLOTTANTES
+======================================== */
+
 function FloatingIcons() {
+  const reduceMotion = useReducedMotion();
+
   const icons = [
     {
       icon: <FaPython />,
@@ -326,13 +459,17 @@ function FloatingIcons() {
         <motion.div
           key={index}
           className={`floating-icon ${item.className}`}
-          animate={{
-            y: [0, -16, 0],
-            rotate: [0, 5, -5, 0]
-          }}
+          animate={
+            reduceMotion
+              ? {}
+              : {
+                  y: [0, -16, 0],
+                  rotate: [0, 5, -5, 0]
+                }
+          }
           transition={{
             duration: item.duration,
-            repeat: Infinity,
+            repeat: reduceMotion ? 0 : Infinity,
             ease: "easeInOut"
           }}
         >
@@ -343,12 +480,14 @@ function FloatingIcons() {
   );
 }
 
-// ========================================
-// 9. EFFET PARTICULES LUMINEUSES
-// ========================================
 
-// Création de petites particules animées.
+/* ========================================
+   10. EFFET PARTICULES LUMINEUSES
+======================================== */
+
 function Particles() {
+  const reduceMotion = useReducedMotion();
+
   const particles = Array.from({ length: 22 }, (_, index) => ({
     id: index,
     left: `${(index * 37 + 11) % 100}%`,
@@ -367,15 +506,19 @@ function Particles() {
             left: particle.left,
             top: particle.top
           }}
-          animate={{
-            opacity: [0.15, 0.8, 0.15],
-            scale: [0.7, 1.3, 0.7],
-            y: [0, -18, 0]
-          }}
+          animate={
+            reduceMotion
+              ? { opacity: 0.35 }
+              : {
+                  opacity: [0.15, 0.8, 0.15],
+                  scale: [0.7, 1.3, 0.7],
+                  y: [0, -18, 0]
+                }
+          }
           transition={{
             duration: particle.duration,
             delay: particle.delay,
-            repeat: Infinity,
+            repeat: reduceMotion ? 0 : Infinity,
             ease: "easeInOut"
           }}
         />
@@ -384,11 +527,11 @@ function Particles() {
   );
 }
 
-// ========================================
-// 10. BARRE DE NAVIGATION
-// ========================================
 
-// Menu de navigation avec affichage mobile.
+/* ========================================
+   11. BARRE DE NAVIGATION
+======================================== */
+
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -412,16 +555,53 @@ function Navbar() {
         </button>
 
         <ul className={menuOpen ? "nav-links active" : "nav-links"}>
-          <li><a href="#accueil" onClick={closeMenu}>Accueil</a></li>
-          <li><a href="#apropos" onClick={closeMenu}>À propos</a></li>
-          <li><a href="#competences" onClick={closeMenu}>Compétences</a></li>
-          <li><a href="#projets" onClick={closeMenu}>Mes projets</a></li>
-          <li><a href="#offres" onClick={closeMenu}>Mes tarifs</a></li>
 
-          {/* Nouveau lien vers l'agenda de réservation */}
-          <li><a href="#reservation" onClick={closeMenu}>Réserver un rendez-vous</a></li>
+          <li>
+            <a href="#accueil" onClick={closeMenu}>Accueil</a>
+          </li>
 
-          <li><a href="#contact" onClick={closeMenu}>Me contacter</a></li>
+          <li>
+            <a href="#deroulement" onClick={closeMenu}>
+              Déroulement
+            </a>
+          </li>
+
+          <li>
+            <a href="#apropos" onClick={closeMenu}>À propos</a>
+          </li>
+
+          <li>
+            <a href="#competences" onClick={closeMenu}>Compétences</a>
+          </li>
+
+          <li>
+            <a href="#projets" onClick={closeMenu}>Mes projets</a>
+          </li>
+
+          <li>
+            <a href="#offres" onClick={closeMenu}>Mes tarifs</a>
+          </li>
+
+          <li>
+            <a href="#reservation" onClick={closeMenu}>
+              Réserver un rendez-vous
+            </a>
+          </li>
+
+          <li>
+            <a href="#contact" onClick={closeMenu}>Me contacter</a>
+          </li>
+
+          <li>
+            <a
+              href="/admin"
+              onClick={closeMenu}
+              className="admin-login-link"
+            >
+              Se connecter
+            </a>
+          </li>
+
         </ul>
 
       </div>
@@ -429,15 +609,19 @@ function Navbar() {
   );
 }
 
-// ========================================
-// 11. SECTION ACCUEIL AVEC VIDÉO
-// ========================================
 
-// La vidéo d'origine et la photo de profil sont conservées.
-function Hero() {
+/* ========================================
+   12. SECTION ACCUEIL AVEC STATUT ET VIDÉO
+======================================== */
+
+function Hero({ professionalStatus }) {
+  const reduceMotion = useReducedMotion();
+  const statusInfo = STATUS_CONFIG[professionalStatus];
+
   return (
     <section className="hero section" id="accueil">
 
+      {/* Vidéo originale conservée sans modification. */}
       <video
         className="hero-video"
         autoPlay
@@ -458,14 +642,44 @@ function Hero() {
 
       <motion.div
         className="hero-content"
-        initial={{ opacity: 0, y: 30 }}
+        initial={reduceMotion ? false : { opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
+        transition={{
+          duration: reduceMotion ? 0 : 1
+        }}
       >
 
         <p className="hero-subtitle">
           Bonjour, je suis
         </p>
+
+        <div
+          className={`professional-status ${
+            statusInfo ? statusInfo.className : "status-loading"
+          }`}
+          aria-live="polite"
+        >
+
+          <div className="status-badge">
+
+            <span className="status-indicator">
+              {statusInfo ? statusInfo.icon : "⚪"}
+            </span>
+
+            <span>
+              {professionalStatus || "Vérification du statut..."}
+            </span>
+
+          </div>
+
+          <p className="status-message">
+            {statusInfo
+              ? statusInfo.message
+              : "Veuillez patienter pendant la récupération de mon statut professionnel."
+            }
+          </p>
+
+        </div>
 
         <h1>
           Steve <span>Andrianirina</span>
@@ -480,6 +694,7 @@ function Hero() {
         </p>
 
         <div className="hero-buttons">
+
           <a href="#projets" className="btn-primary">
             Découvrir mes projets
           </a>
@@ -487,6 +702,22 @@ function Hero() {
           <a href="#contact" className="btn-secondary">
             Me contacter
           </a>
+
+          <a href="#reservation" className="btn-secondary">
+            <FaCalendarAlt />
+            Réserver une visioconférence
+          </a>
+
+          {statusInfo?.canCall && (
+            <a
+              href="tel:+261385990110"
+              className="btn-secondary direct-call-button"
+            >
+              <FaPhone />
+              Appeler directement
+            </a>
+          )}
+
         </div>
 
         <div className="social-links">
@@ -521,13 +752,17 @@ function Hero() {
           </a>
 
         </div>
+
       </motion.div>
 
+      {/* Photo de profil conservée. */}
       <motion.div
         className="hero-image"
-        initial={{ opacity: 0, x: 0 }}
+        initial={reduceMotion ? false : { opacity: 0, x: 0 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.35, delay: 0 }}
+        transition={{
+          duration: reduceMotion ? 0 : 0.35
+        }}
       >
         <img
           src="/images/profil.png"
@@ -545,9 +780,244 @@ function Hero() {
   );
 }
 
-// ========================================
-// 12. SECTION À PROPOS DE MOI
-// ========================================
+
+/* ========================================
+   13. SECTION DÉROULEMENT DE LA COLLABORATION
+======================================== */
+
+function WorkProcess() {
+  const reduceMotion = useReducedMotion();
+
+  // Les six étapes de la collaboration avec le client.
+  const steps = [
+    {
+      number: "01",
+      icon: <FaCalendarAlt />,
+      title: "Réservation d'un rendez-vous",
+      description:
+        "Choisissez une date et un créneau disponible dans mon agenda pour organiser notre premier échange.",
+      detail:
+        "Rendez-vous gratuit de 30 minutes en visioconférence."
+    },
+    {
+      number: "02",
+      icon: <FaComments />,
+      title: "Échange et découverte du projet",
+      description:
+        "Nous discutons de votre activité, de vos besoins, de vos objectifs et des fonctionnalités souhaitées.",
+      detail:
+        "Je prends le temps de comprendre votre idée."
+    },
+    {
+      number: "03",
+      icon: <FaClipboardList />,
+      title: "Analyse et proposition",
+      description:
+        "J'étudie votre demande afin de vous proposer une solution adaptée à votre projet et à votre budget.",
+      detail:
+        "Vous recevez une proposition avec les fonctionnalités, le tarif et le délai estimé."
+    },
+    {
+      number: "04",
+      icon: <FaHandshake />,
+      title: "Validation et démarrage",
+      description:
+        "Après votre accord sur la proposition, nous validons ensemble les conditions et les détails du projet.",
+      detail:
+        "Le développement commence après validation."
+    },
+    {
+      number: "05",
+      icon: <FaFileAlt />,
+      title: "Développement et suivi",
+      description:
+        "Je réalise votre solution et vous tiens informé de son avancement tout au long du développement.",
+      detail:
+        "Nous échangeons sur les ajustements nécessaires."
+    },
+    {
+      number: "06",
+      icon: <FaCheckCircle />,
+      title: "Livraison du projet",
+      description:
+        "Après les vérifications et votre validation finale, je vous livre votre site web ou votre application.",
+      detail:
+        "Votre solution est prête à être utilisée."
+    }
+  ];
+
+  return (
+    <section
+      className="work-process section"
+      id="deroulement"
+    >
+
+      {/* Titre et introduction avec Scroll Reveal. */}
+      <Reveal>
+
+        <h2 className="section-title">
+          Comment se déroule notre collaboration ?
+        </h2>
+
+        <p className="section-description">
+          De la première prise de contact jusqu'à la livraison,
+          découvrez les différentes étapes pour concrétiser
+          votre projet dans les meilleures conditions.
+        </p>
+
+      </Reveal>
+
+      {/* Grille avec apparition progressive des six cartes. */}
+      <motion.div
+        className="work-process-grid"
+        variants={reduceMotion ? {} : containerVariants}
+        initial={reduceMotion ? false : "hidden"}
+        whileInView={reduceMotion ? undefined : "visible"}
+        viewport={{
+          once: true,
+          amount: 0.1
+        }}
+      >
+
+        {steps.map((step, index) => (
+
+          <motion.article
+            className="work-process-card"
+            key={step.number}
+            variants={reduceMotion ? {} : processCardVariants}
+            initial={reduceMotion ? false : undefined}
+            whileHover={
+              reduceMotion
+                ? undefined
+                : {
+                    y: -10,
+                    scale: 1.025,
+                    rotateX: 2,
+                    rotateY: index % 2 === 0 ? 2 : -2,
+                    transition: {
+                      duration: 0.3,
+                      ease: "easeOut"
+                    }
+                  }
+            }
+            style={{
+              transformPerspective: 1000
+            }}
+          >
+
+            <div className="work-process-top">
+
+              {/* Numéro avec apparition en zoom. */}
+              <motion.span
+                className="work-process-number"
+                initial={
+                  reduceMotion
+                    ? false
+                    : {
+                        opacity: 0,
+                        scale: 0.5
+                      }
+                }
+                whileInView={{
+                  opacity: 1,
+                  scale: 1
+                }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.45,
+                  delay: reduceMotion ? 0 : index * 0.08
+                }}
+              >
+                {step.number}
+              </motion.span>
+
+              {/* Icône avec rotation et effet de flottement. */}
+              <motion.div
+                className="work-process-icon"
+                animate={
+                  reduceMotion
+                    ? {}
+                    : {
+                        y: [0, -5, 0],
+                        rotate: [0, 4, -4, 0]
+                      }
+                }
+                transition={{
+                  duration: 4 + index * 0.25,
+                  repeat: reduceMotion ? 0 : Infinity,
+                  ease: "easeInOut",
+                  delay: index * 0.15
+                }}
+                whileHover={
+                  reduceMotion
+                    ? undefined
+                    : {
+                        scale: 1.18,
+                        rotate: 12,
+                        transition: { duration: 0.25 }
+                      }
+                }
+              >
+                {step.icon}
+              </motion.div>
+
+            </div>
+
+            <h3>{step.title}</h3>
+
+            <p>{step.description}</p>
+
+            <div className="work-process-detail">
+              {step.detail}
+            </div>
+
+          </motion.article>
+
+        ))}
+
+      </motion.div>
+
+      {/* Bouton final avec animation lumineuse au survol. */}
+      <Reveal className="work-process-cta">
+
+        <p>
+          Vous avez déjà une idée ou un projet en tête ?
+        </p>
+
+        <motion.a
+          href="#reservation"
+          className="btn-primary"
+          whileHover={
+            reduceMotion
+              ? undefined
+              : {
+                  scale: 1.06,
+                  y: -3
+                }
+          }
+          whileTap={
+            reduceMotion
+              ? undefined
+              : {
+                  scale: 0.97
+                }
+          }
+          transition={{ duration: 0.2 }}
+        >
+          <FaCalendarAlt />
+          Discutons de votre projet
+        </motion.a>
+
+      </Reveal>
+
+    </section>
+  );
+}
+
+
+/* ========================================
+   14. SECTION À PROPOS DE MOI
+======================================== */
 
 function About() {
   return (
@@ -619,9 +1089,10 @@ function About() {
   );
 }
 
-// ========================================
-// 13. SECTION COMPÉTENCES
-// ========================================
+
+/* ========================================
+   15. SECTION COMPÉTENCES
+======================================== */
 
 function Skills() {
   const skills = [
@@ -637,6 +1108,7 @@ function Skills() {
     <section className="skills section" id="competences">
 
       <Reveal>
+
         <h2 className="section-title">
           Mes compétences
         </h2>
@@ -645,6 +1117,7 @@ function Skills() {
           Les technologies que j'utilise pour concevoir des solutions
           numériques modernes et performantes.
         </p>
+
       </Reveal>
 
       <motion.div
@@ -654,7 +1127,9 @@ function Skills() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.15 }}
       >
+
         {skills.map((skill, index) => (
+
           <motion.div
             className="skill-card"
             key={index}
@@ -668,38 +1143,41 @@ function Skills() {
             <div className="skill-icon">{skill.icon}</div>
             <h3>{skill.name}</h3>
           </motion.div>
+
         ))}
+
       </motion.div>
 
     </section>
   );
 }
 
-// ========================================
-// 14. SECTION PROJETS
-// ========================================
 
-// Présentation des projets avec carrousel E-commerce
-// et affichage des images en grand format.
+/* ========================================
+   16. SECTION PROJETS
+======================================== */
+
 function Projects() {
+  const reduceMotion = useReducedMotion();
+
   const [currentImage, setCurrentImage] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Afficher l'image précédente du carrousel.
+  // Passer à l'image précédente.
   const previousImage = (images) => {
     setCurrentImage((previous) =>
       (previous - 1 + images.length) % images.length
     );
   };
 
-  // Afficher l'image suivante du carrousel.
+  // Passer à l'image suivante.
   const nextImage = (images) => {
     setCurrentImage((previous) =>
       (previous + 1) % images.length
     );
   };
 
-  // Gérer les touches du clavier dans la fenêtre d'image agrandie.
+  // Navigation au clavier dans la visionneuse.
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -734,6 +1212,7 @@ function Projects() {
     <section className="projects section" id="projets">
 
       <Reveal>
+
         <h2 className="section-title">
           Mes projets récents
         </h2>
@@ -742,6 +1221,7 @@ function Projects() {
           Découvrez quelques réalisations qui illustrent mes compétences
           en développement web et logiciel.
         </p>
+
       </Reveal>
 
       <motion.div
@@ -761,30 +1241,34 @@ function Projects() {
             className="project-card"
             key={project.title}
             variants={cardVariants}
-            whileHover={{
-              y: -10,
-              rotateX: 2,
-              rotateY: -2,
-              scale: 1.015,
-              transition: { duration: 0.3 }
-            }}
+            whileHover={
+              reduceMotion
+                ? undefined
+                : {
+                    y: -10,
+                    rotateX: 2,
+                    rotateY: -2,
+                    scale: 1.015,
+                    transition: { duration: 0.3 }
+                  }
+            }
             style={{ transformPerspective: 1000 }}
           >
 
-            {/* Image des trois premiers projets */}
+            {/* Image des trois premiers projets. */}
             {project.image && (
               <div className="project-image">
                 <motion.img
                   src={project.image}
                   alt={project.title}
                   loading="lazy"
-                  whileHover={{ scale: 1.07 }}
+                  whileHover={reduceMotion ? undefined : { scale: 1.07 }}
                   transition={{ duration: 0.5 }}
                 />
               </div>
             )}
 
-            {/* Carrousel réservé au projet E-commerce */}
+            {/* Carrousel du projet E-commerce. */}
             {project.images && (
               <div className="project-carousel">
 
@@ -814,9 +1298,15 @@ function Projects() {
                     alt={project.images[currentImage].alt}
                     className="carousel-image"
                     loading="lazy"
-                    initial={{ opacity: 0, scale: 0.97 }}
+                    initial={
+                      reduceMotion
+                        ? false
+                        : { opacity: 0, scale: 0.97 }
+                    }
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.35 }}
+                    transition={{
+                      duration: reduceMotion ? 0 : 0.35
+                    }}
                   />
                 </button>
 
@@ -829,8 +1319,8 @@ function Projects() {
                   <FaChevronRight />
                 </button>
 
-                {/* Petits points permettant de choisir une image */}
                 <div className="carousel-indicators">
+
                   {project.images.map((image, index) => (
                     <button
                       type="button"
@@ -844,6 +1334,7 @@ function Projects() {
                       aria-label={`Afficher l'image ${index + 1}`}
                     />
                   ))}
+
                 </div>
 
                 <span className="carousel-counter">
@@ -857,10 +1348,14 @@ function Projects() {
 
               <motion.div
                 className="project-icon"
-                whileHover={{
-                  rotate: 10,
-                  scale: 1.12
-                }}
+                whileHover={
+                  reduceMotion
+                    ? undefined
+                    : {
+                        rotate: 10,
+                        scale: 1.12
+                      }
+                }
                 transition={{ duration: 0.3 }}
               >
                 {project.icon}
@@ -871,17 +1366,23 @@ function Projects() {
               <p>{project.description}</p>
 
               <div className="project-technologies">
+
                 {project.technologies.map((technology, index) => (
                   <motion.span
                     key={index}
-                    whileHover={{
-                      scale: 1.06,
-                      y: -2
-                    }}
+                    whileHover={
+                      reduceMotion
+                        ? undefined
+                        : {
+                            scale: 1.06,
+                            y: -2
+                          }
+                    }
                   >
                     {technology}
                   </motion.span>
                 ))}
+
               </div>
 
             </div>
@@ -892,7 +1393,7 @@ function Projects() {
 
       </motion.div>
 
-      {/* Fenêtre d'agrandissement des images */}
+      {/* Visionneuse des images E-commerce. */}
       {selectedImage && (
         <div
           className="image-lightbox"
@@ -966,76 +1467,284 @@ function Projects() {
   );
 }
 
-// ========================================
-// 15. SECTION MES OFFRES ET TARIFS
-// ========================================
+
+/* ========================================
+   17. SECTION MES OFFRES ET TARIFS
+======================================== */
 
 function Pricing() {
-  // Les deux offres commerciales conservées.
-  const offers = [
+  const reduceMotion = useReducedMotion();
+
+  // Les trois formules de création de portfolio.
+  const portfolioOffers = [
     {
-      title: "Création de portfolio professionnel",
-
+      title: "STARTER",
       description:
-        "Je vais créer votre portfolio professionnel pour présenter votre profil, vos compétences, vos réalisations et attirer de nouveaux clients.",
+        "Un portfolio professionnel et élégant pour présenter votre profil, vos compétences et vos premières réalisations.",
 
-      icon: <FaLaptopCode />,
+      originalPrice: "150 €",
+      discountedPrice: "127,50 €",
+
+      features: [
+        "Design moderne et professionnel",
+        "Présentation de votre profil",
+        "Section compétences",
+        "Présentation de vos projets",
+        "Formulaire de contact",
+        "Adaptation mobile et ordinateur",
+        "Mise en ligne du portfolio"
+      ],
+
+      message:
+        "Bonjour Steve, je suis intéressé(e) par votre formule Portfolio STARTER à 127,50 €. Je souhaite obtenir plus d'informations."
+    },
+
+    {
+      title: "PROFESSIONNEL",
+      description:
+        "Un portfolio plus complet et personnalisé pour valoriser votre image professionnelle et attirer de nouveaux clients.",
 
       originalPrice: "250 €",
       discountedPrice: "212,50 €",
 
       features: [
-        "Design moderne et personnalisé",
-        "Présentation de votre activité",
-        "Sections personnalisées",
-        "Formulaire de contact",
-        "Adaptation mobile et ordinateur"
+        "Toutes les fonctionnalités STARTER",
+        "Design personnalisé selon votre activité",
+        "Animations modernes et fluides",
+        "Sections supplémentaires personnalisées",
+        "Intégration des réseaux sociaux",
+        "Optimisation de l'expérience mobile",
+        "Mise en valeur de vos réalisations"
       ],
 
       message:
-        "Bonjour Steve, je suis intéressé(e) par la création de votre portfolio professionnel. Je souhaite obtenir plus d'informations."
+        "Bonjour Steve, je suis intéressé(e) par votre formule Portfolio PROFESSIONNEL à 212,50 €. Je souhaite obtenir plus d'informations."
     },
 
     {
-      title: "Boutique en ligne E-commerce",
-
+      title: "PREMIUM",
       description:
-        "Je vais créer votre boutique en ligne E-commerce pour présenter vos produits, recevoir des commandes et développer votre activité sur Internet.",
+        "Une solution avancée et sur mesure avec des fonctionnalités évoluées pour une présence professionnelle complète.",
 
-      icon: <FaShoppingCart />,
-
-      originalPrice: "700 €",
-      discountedPrice: "595 €",
+      originalPrice: "350 €",
+      discountedPrice: "297,50 €",
+      premium: true,
 
       features: [
-        "Design professionnel personnalisé",
-        "Catalogue de produits avec photos",
-        "Panier et système de commande",
-        "Gestion des produits et des stocks",
-        "Interface d'administration",
-        "Adaptation mobile et ordinateur"
+        "Toutes les fonctionnalités PROFESSIONNEL",
+        "Animations avancées et effets visuels",
+        "Fonctionnalités personnalisées",
+        "Backend et base de données selon les besoins",
+        "Système de réservation de rendez-vous",
+        "Espace d'administration si nécessaire",
+        "Accompagnement personnalisé"
       ],
 
       message:
-        "Bonjour Steve, je suis intéressé(e) par la création de votre boutique en ligne E-commerce. Je souhaite obtenir plus d'informations."
+        "Bonjour Steve, je suis intéressé(e) par votre formule Portfolio PREMIUM à 297,50 €. Je souhaite obtenir plus d'informations."
     }
   ];
+
+  // Les trois formules de création de boutique en ligne.
+  const ecommerceOffers = [
+    {
+      title: "STARTER",
+      description:
+        "Une première boutique en ligne pour présenter vos produits et permettre à vos clients de découvrir votre catalogue.",
+
+      originalPrice: "300 €",
+      discountedPrice: "255 €",
+
+      features: [
+        "Design professionnel et responsive",
+        "Catalogue de produits",
+        "Présentation des produits avec photos",
+        "Panier d'achat",
+        "Système de commande",
+        "Navigation adaptée aux mobiles",
+        "Mise en ligne de la boutique"
+      ],
+
+      message:
+        "Bonjour Steve, je suis intéressé(e) par votre formule Boutique en ligne STARTER à 255 €. Je souhaite obtenir plus d'informations."
+    },
+
+    {
+      title: "PROFESSIONNELLE",
+      description:
+        "Une boutique complète avec des outils de gestion pour organiser vos produits, vos commandes et votre stock.",
+
+      originalPrice: "500 €",
+      discountedPrice: "425 €",
+
+      features: [
+        "Toutes les fonctionnalités STARTER",
+        "Gestion des produits",
+        "Gestion des commandes",
+        "Interface d'administration",
+        "Gestion du stock",
+        "Suivi des ventes",
+        "Gestion des informations de la boutique"
+      ],
+
+      message:
+        "Bonjour Steve, je suis intéressé(e) par votre formule Boutique en ligne PROFESSIONNELLE à 425 €. Je souhaite obtenir plus d'informations."
+    },
+
+    {
+      title: "PREMIUM",
+      description:
+        "Une solution e-commerce avancée pour développer votre activité avec des outils de vente, de suivi et de gestion personnalisés.",
+
+      originalPrice: "700 €",
+      discountedPrice: "595 €",
+      premium: true,
+
+      features: [
+        "Toutes les fonctionnalités PROFESSIONNELLE",
+        "Intégration du paiement en ligne",
+        "Gestion avancée des commandes",
+        "Statistiques et suivi des ventes",
+        "Fonctionnalités personnalisées",
+        "Amélioration du parcours client",
+        "Accompagnement personnalisé"
+      ],
+
+      message:
+        "Bonjour Steve, je suis intéressé(e) par votre formule Boutique en ligne PREMIUM à 595 €. Je souhaite obtenir plus d'informations."
+    }
+  ];
+
+  // Composant réutilisable pour afficher les cartes d'une catégorie.
+  const renderOfferCards = (offers, categoryName) => (
+    <motion.div
+      className="pricing-grid"
+      variants={reduceMotion ? {} : containerVariants}
+      initial={reduceMotion ? false : "hidden"}
+      whileInView={reduceMotion ? undefined : "visible"}
+      viewport={{
+        once: true,
+        amount: 0.1
+      }}
+    >
+
+      {offers.map((offer) => (
+
+        <motion.article
+          className={`pricing-card ${offer.premium ? "pricing-card-premium" : ""}`}
+          key={`${categoryName}-${offer.title}`}
+          variants={reduceMotion ? {} : cardVariants}
+          whileHover={
+            reduceMotion
+              ? undefined
+              : {
+                  y: -9,
+                  scale: 1.015,
+                  transition: { duration: 0.3 }
+                }
+          }
+        >
+
+          {/* Badge PREMIUM affiché uniquement sur la formule concernée. */}
+          {offer.premium && (
+            <span className="pricing-premium-badge">
+              PREMIUM
+            </span>
+          )}
+
+          {/* Icône de la formule. */}
+          <div className="pricing-card-icon">
+            {categoryName === "portfolio"
+              ? <FaLaptopCode />
+              : <FaShoppingCart />
+            }
+          </div>
+
+          <h3>{offer.title}</h3>
+
+          <p className="pricing-description">
+            {offer.description}
+          </p>
+
+          {/* Affichage du tarif habituel et de la réduction. */}
+          <div className="pricing-price">
+
+            <span className="pricing-original">
+              {offer.originalPrice}
+            </span>
+
+            <span className="pricing-discount">
+              -15 %
+            </span>
+
+          </div>
+
+          {/* Prix final après réduction. */}
+          <div className="pricing-discounted">
+
+            <span>Prix promotionnel</span>
+
+            <strong>
+              {offer.discountedPrice}
+            </strong>
+
+          </div>
+
+          {/* Liste des caractéristiques de la formule. */}
+          <ul className="pricing-features">
+
+            {offer.features.map((feature, index) => (
+              <li key={index}>
+                <span className="pricing-check">✓</span>
+                <span>{feature}</span>
+              </li>
+            ))}
+
+          </ul>
+
+          {/* Bouton de commande WhatsApp. */}
+          <a
+            href={`https://wa.me/261385990110?text=${encodeURIComponent(
+              offer.message
+            )}`}
+            className="pricing-button"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaWhatsapp />
+            Choisir cette formule
+          </a>
+
+        </motion.article>
+
+      ))}
+
+    </motion.div>
+  );
 
   return (
     <section className="pricing section" id="offres">
 
+      {/* Titre principal de la section. */}
       <Reveal>
+
         <h2 className="section-title">
           Mes offres et tarifs
         </h2>
 
         <p className="section-description">
-          Vous avez un projet ? Je vous accompagne dans la création
-          d'une solution numérique adaptée à vos besoins.
+          Des solutions adaptées à votre activité, à vos objectifs
+          et à votre budget. Choisissez la formule qui correspond
+          à votre projet.
         </p>
+
       </Reveal>
 
-      {/* Bannière promotionnelle */}
+
+      {/* ========================================
+          BANDEAU PROMOTIONNEL
+      ======================================== */}
+
       <Reveal className="pricing-promo">
 
         <div className="pricing-promo-icon">
@@ -1049,145 +1758,194 @@ function Pricing() {
           </span>
 
           <h3>
-            15 % de réduction pour les 5 premières commandes validées !
+            15 % DE RÉDUCTION
           </h3>
 
+          <p className="pricing-promo-highlight">
+            Pour les 5 premières commandes validées !
+          </p>
+
           <p>
-            Profitez de cette offre spéciale pour lancer votre projet
-            numérique à un tarif avantageux.
+            Profitez de cette offre spéciale pour lancer
+            votre projet numérique à un tarif avantageux.
           </p>
 
         </div>
+
       </Reveal>
 
-      {/* Cartes des offres */}
-      <motion.div
-        className="pricing-grid"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{
-          once: true,
-          amount: 0.15
-        }}
-      >
 
-        {offers.map((offer) => (
+      {/* ========================================
+          PREMIÈRE CATÉGORIE : PORTFOLIO
+      ======================================== */}
 
-          <motion.article
-            className="pricing-card"
-            key={offer.title}
-            variants={cardVariants}
-            whileHover={{
-              y: -8,
-              transition: { duration: 0.3 }
-            }}
-          >
+      <div className="pricing-category pricing-portfolio-category">
 
-            <div className="pricing-card-icon">
-              {offer.icon}
-            </div>
+        <Reveal className="pricing-category-heading">
 
-            <h3>{offer.title}</h3>
+          <div className="pricing-category-icon">
+            <FaLaptopCode />
+          </div>
 
-            <p className="pricing-description">
-              {offer.description}
-            </p>
+          <h3 className="pricing-category-title">
+            Création de portfolio
+          </h3>
 
-            <div className="pricing-price">
+          <p className="pricing-category-description">
+            Présentez votre profil, vos compétences et vos réalisations
+            avec un portfolio professionnel qui valorise votre image
+            auprès de vos futurs clients ou recruteurs.
+          </p>
 
-              <span className="pricing-original">
-                Tarif habituel : à partir de {offer.originalPrice}
-              </span>
+        </Reveal>
 
-              <span className="pricing-discount">
-                -15 %
-              </span>
+        {renderOfferCards(portfolioOffers, "portfolio")}
 
-            </div>
+      </div>
 
-            <div className="pricing-discounted">
+
+      {/* ========================================
+          DEUXIÈME CATÉGORIE : BOUTIQUE EN LIGNE
+      ======================================== */}
+
+      <div className="pricing-category pricing-ecommerce-category">
+
+        <Reveal className="pricing-category-heading">
+
+          <div className="pricing-category-icon">
+            <FaShoppingCart />
+          </div>
+
+          <h3 className="pricing-category-title">
+            Création de boutique en ligne
+          </h3>
+
+          <p className="pricing-category-description">
+            Développez votre activité sur Internet grâce à une boutique
+            en ligne adaptée à vos produits, à vos clients et à votre
+            organisation commerciale.
+          </p>
+
+        </Reveal>
+
+        {renderOfferCards(ecommerceOffers, "ecommerce")}
+
+      </div>
+
+
+      {/* ========================================
+          CONDITIONS D'HÉBERGEMENT
+      ======================================== */}
+
+      <Reveal className="pricing-hosting">
+
+        <div className="pricing-hosting-icon">
+          <FaCheckCircle />
+        </div>
+
+        <div className="pricing-hosting-content">
+
+          <h3>
+            Hébergement offert au lancement
+          </h3>
+
+          <p className="pricing-hosting-intro">
+            Pour vous aider à démarrer votre activité dans les
+            meilleures conditions, une période d'hébergement
+            est offerte selon votre ordre de commande.
+          </p>
+
+          <div className="pricing-hosting-benefits">
+
+            <div className="pricing-hosting-item">
+
+              <strong>12 mois offerts</strong>
 
               <span>
-                Offre de lancement : à partir de
+                : Pour les 5 premiers clients.
               </span>
-
-              <strong>
-                {offer.discountedPrice}
-              </strong>
 
             </div>
 
-            <ul className="pricing-features">
+            <div className="pricing-hosting-item">
 
-              {offer.features.map((feature, index) => (
+              <strong>6 mois offerts</strong>
 
-                <li key={index}>
-                  <span className="pricing-check">✓</span>
-                  <span>{feature}</span>
-                </li>
+              <span>
+                : Pour les clients suivants.
+              </span>
 
-              ))}
+            </div>
 
-            </ul>
+          </div>
 
-            <a
-              href={`https://wa.me/261385990110?text=${encodeURIComponent(
-                offer.message
-              )}`}
-              className="pricing-button"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaWhatsapp />
-              Commander cette offre
-            </a>
+          <p className="pricing-hosting-condition">
+            Après la période offerte, le renouvellement de
+            l'hébergement est à la charge du client.
+          </p>
 
-          </motion.article>
+          {/* NOUVEAU : estimation du coût après la période offerte. */}
+          <p className="pricing-hosting-condition">
+            Le coût de renouvellement de l'hébergement est estimé
+            entre 3 et 10 € par mois. Il est conseillé de prévoir
+            un budget de 5 à 10 € par mois, selon l'hébergement
+            choisi et les besoins du site.
+          </p>
 
-        ))}
+          <p className="pricing-hosting-condition">
+            Le nom de domaine et les services externes payants,
+            lorsqu'ils sont nécessaires, ne sont pas compris
+            dans les tarifs affichés.
+          </p>
 
-      </motion.div>
+        </div>
+
+      </Reveal>
+
+
+      {/* ========================================
+          NOTE ET CONDITIONS GÉNÉRALES
+      ======================================== */}
 
       <Reveal>
+
         <p className="pricing-note">
-          Les tarifs affichés sont des prix de départ.
-          Le prix final dépend des fonctionnalités et des besoins
-          de votre projet. La réduction de 15 % est réservée aux
-          cinq premières commandes validées.
+          Les tarifs présentés correspondent aux formules décrites.
+          Les fonctionnalités supplémentaires ou les besoins
+          particuliers peuvent faire l'objet d'un devis personnalisé.
+          La réduction de 15 % est réservée aux cinq premières
+          commandes validées. L'offre d'hébergement dépend de l'ordre
+          de validation des commandes et ne constitue pas un
+          hébergement gratuit à vie.
         </p>
+
       </Reveal>
 
     </section>
   );
 }
 
-// ========================================
-// 16. NOUVELLE SECTION : RÉSERVATION
-// ========================================
 
-// Cette section permet aux visiteurs de :
-// 1. Choisir une date.
-// 2. Consulter les créneaux disponibles depuis le backend.
-// 3. Choisir un horaire.
-// 4. Remplir leurs coordonnées.
-// 5. Envoyer une demande de rendez-vous.
-
-// Le backend reste responsable de vérifier la disponibilité
-// et d'enregistrer le rendez-vous dans Supabase.
+/* ========================================
+   18. SECTION RÉSERVATION AVEC CALENDRIER
+======================================== */
 
 function Reservation() {
+  // Date professionnelle actuelle à Madagascar.
+  const today = getLocalDate();
 
-  // Date sélectionnée : aujourd'hui à Madagascar par défaut.
-  const [date, setDate] = useState(getLocalDate);
+  // Mois affiché dans le calendrier.
+  const [currentMonth, setCurrentMonth] = useState(
+    today.slice(0, 7)
+  );
 
-  // Créneaux récupérés depuis le backend.
-  const [slots, setSlots] = useState([]);
+  // Date sélectionnée selon le calendrier du visiteur.
+  const [date, setDate] = useState(today);
 
-  // Horaire choisi par le visiteur.
-  const [selectedTime, setSelectedTime] = useState("");
+  // Disponibilités renvoyées par le backend.
+  const [days, setDays] = useState([]);
 
-  // Informations demandées au visiteur.
+  // Informations du visiteur.
   const [formData, setFormData] = useState({
     clientName: "",
     clientPhone: "",
@@ -1195,52 +1953,73 @@ function Reservation() {
     projectDetails: ""
   });
 
-  // États de chargement et de retour utilisateur.
-  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [loadingCalendar, setLoadingCalendar] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(false);
+
+  // Instant exact du créneau sélectionné.
+  const [selectedSlot, setSelectedSlot] = useState(null);
 
   const [feedback, setFeedback] = useState({
     type: "",
     message: ""
   });
 
-  // La date minimale est aujourd'hui à Madagascar.
-  const minimumDate = getLocalDate();
 
-  // ----------------------------------------
-  // RÉCUPÉRATION DES CRÉNEAUX DISPONIBLES
-  // ----------------------------------------
+  /* ----------------------------------------
+     CONSTRUCTION DU CALENDRIER
+  ---------------------------------------- */
+
+  const [year, month] = currentMonth.split("-").map(Number);
+
+  const daysInMonth = new Date(year, month, 0).getDate();
+
+  const firstDayOffset =
+    (new Date(year, month - 1, 1).getDay() + 6) % 7;
+
+  const calendarCells = [
+    ...Array(firstDayOffset).fill(null),
+    ...Array.from(
+      { length: daysInMonth },
+      (_, index) => index + 1
+    )
+  ];
+
+  while (calendarCells.length % 7 !== 0) {
+    calendarCells.push(null);
+  }
+
+  const weekdays = [
+    "Lun",
+    "Mar",
+    "Mer",
+    "Jeu",
+    "Ven",
+    "Sam",
+    "Dim"
+  ];
+
+  const monthLabel = new Intl.DateTimeFormat("fr-FR", {
+    month: "long",
+    year: "numeric",
+    timeZone: TIMEZONE
+  }).format(new Date(Date.UTC(year, month - 1, 15, 12)));
+
+
+  /* ----------------------------------------
+     CHARGEMENT DES DISPONIBILITÉS
+  ---------------------------------------- */
 
   useEffect(() => {
-    // Lorsqu'on change de date, on réinitialise l'ancien horaire.
-    setSelectedTime("");
-    setSlots([]);
-
-    setFeedback({
-      type: "",
-      message: ""
-    });
-
-    // Évite d'envoyer une date antérieure à aujourd'hui.
-    if (date < minimumDate) {
-      setFeedback({
-        type: "error",
-        message: "Veuillez sélectionner une date valide."
-      });
-
-      return;
-    }
-
-    // Permet d'annuler une ancienne requête si la date change.
     const controller = new AbortController();
 
-    const fetchAvailability = async () => {
-      setLoadingSlots(true);
+    const fetchMonthAvailability = async () => {
+      setLoadingCalendar(true);
+      setDays([]);
+      setSelectedSlot(null);
 
       try {
-        // Appel à la route GET déjà créée dans le backend.
         const response = await fetch(
-          `${BACKEND_URL}/api/creative-break/availability?date=${encodeURIComponent(date)}`,
+          `${BACKEND_URL}/api/creative-break/availability/month?month=${encodeURIComponent(currentMonth)}`,
           {
             method: "GET",
             signal: controller.signal
@@ -1251,47 +2030,151 @@ function Reservation() {
 
         if (!response.ok || !data.success) {
           throw new Error(
-            data.message || "Impossible de récupérer les disponibilités."
+            data.message ||
+            "Impossible de récupérer les disponibilités du calendrier."
           );
         }
 
-        // Les créneaux sont fournis par le serveur.
-        // On ne fabrique donc pas de disponibilités fictives.
-        setSlots(Array.isArray(data.slots) ? data.slots : []);
+        if (!controller.signal.aborted) {
+          setDays(
+            Array.isArray(data.days) ? data.days : []
+          );
+        }
 
       } catch (error) {
-
-        // Une requête annulée lors d'un changement de date
-        // ne doit pas afficher un message d'erreur.
         if (error.name !== "AbortError") {
-          setSlots([]);
+          setDays([]);
 
           setFeedback({
             type: "error",
             message:
               error.message ||
-              "Erreur lors du chargement des disponibilités."
+              "Erreur lors du chargement du calendrier."
           });
         }
 
       } finally {
         if (!controller.signal.aborted) {
-          setLoadingSlots(false);
+          setLoadingCalendar(false);
         }
       }
     };
 
-    fetchAvailability();
+    fetchMonthAvailability();
 
-    // Nettoyage de la requête si le composant est démonté
-    // ou si l'utilisateur choisit une autre date.
     return () => controller.abort();
 
-  }, [date]);
+  }, [currentMonth]);
 
-  // ----------------------------------------
-  // MODIFICATION DES CHAMPS DU FORMULAIRE
-  // ----------------------------------------
+
+  /* ----------------------------------------
+     CRÉNEAUX AFFICHÉS DANS LE FUSEAU VISITEUR
+  ---------------------------------------- */
+
+  // Vérifier si un instant est encore dans le futur.
+  const isSlotInFuture = (slot) => {
+    return (
+      slot?.startsAt &&
+      new Date(slot.startsAt).getTime() > Date.now()
+    );
+  };
+
+  // Tous les créneaux correspondant à la date affichée
+  // dans le fuseau horaire du visiteur.
+  const displayedSlots = days.flatMap((day) =>
+    (day.slots || [])
+      .filter((slot) => {
+        if (!slot.startsAt) return false;
+
+        return (
+          getInstantDate(slot.startsAt, VISITOR_TIMEZONE) === date &&
+          isSlotInFuture(slot)
+        );
+      })
+      .map((slot) => ({
+        ...slot,
+        professionalDate: day.date,
+        localTime: getInstantTime(slot.startsAt, VISITOR_TIMEZONE),
+        localDate: getInstantDate(slot.startsAt, VISITOR_TIMEZONE)
+      }))
+  );
+
+
+  /* ----------------------------------------
+     NAVIGATION ENTRE LES MOIS
+  ---------------------------------------- */
+
+  const changeMonth = (direction) => {
+    const [currentYear, currentMonthNumber] =
+      currentMonth.split("-").map(Number);
+
+    const newDate = new Date(
+      currentYear,
+      currentMonthNumber - 1 + direction,
+      1
+    );
+
+    const newYear = newDate.getFullYear();
+
+    const newMonth = String(
+      newDate.getMonth() + 1
+    ).padStart(2, "0");
+
+    const newMonthValue = `${newYear}-${newMonth}`;
+
+    if (newMonthValue < today.slice(0, 7)) {
+      return;
+    }
+
+    setCurrentMonth(newMonthValue);
+    setDate("");
+    setSelectedSlot(null);
+
+    setFeedback({
+      type: "",
+      message: ""
+    });
+  };
+
+
+  /* ----------------------------------------
+     SÉLECTION D'UNE JOURNÉE
+  ---------------------------------------- */
+
+  const handleDateSelection = (dayNumber) => {
+    if (!dayNumber) return;
+
+    const day = String(dayNumber).padStart(2, "0");
+    const selectedDate = `${currentMonth}-${day}`;
+
+    const availableSlots = days.flatMap((dayInfo) =>
+      (dayInfo.slots || []).filter((slot) => {
+        if (!slot.startsAt) return false;
+
+        return (
+          getInstantDate(slot.startsAt, VISITOR_TIMEZONE) === selectedDate &&
+          isSlotInFuture(slot)
+        );
+      })
+    );
+
+    if (availableSlots.length === 0) {
+      return;
+    }
+
+    setDate(selectedDate);
+    setSelectedSlot(null);
+
+    setFeedback({
+      type: "",
+      message: ""
+    });
+  };
+
+
+  /* ----------------------------------------
+     MODIFICATION DES CHAMPS
+  ---------------------------------------- */
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -1302,20 +2185,32 @@ function Reservation() {
     }));
   };
 
-  // ----------------------------------------
-  // ENVOI DE LA DEMANDE DE RENDEZ-VOUS
-  // ----------------------------------------
+
+  /* ----------------------------------------
+     ENVOI DE LA RÉSERVATION
+  ---------------------------------------- */
 
   const handleBooking = async (event) => {
     event.preventDefault();
 
-    // Vérification de l'horaire sélectionné.
-    if (!selectedTime) {
+    if (!date || !selectedSlot?.startsAt) {
       setFeedback({
         type: "error",
-        message: "Veuillez choisir un créneau horaire."
+        message:
+          "Veuillez choisir une date et un horaire disponibles."
       });
 
+      return;
+    }
+
+    if (!isSlotInFuture(selectedSlot)) {
+      setFeedback({
+        type: "error",
+        message:
+          "Ce créneau est déjà passé. Veuillez en choisir un autre."
+      });
+
+      setSelectedSlot(null);
       return;
     }
 
@@ -1327,22 +2222,30 @@ function Reservation() {
     });
 
     try {
-      // Envoi des données avec les noms de champs attendus
-      // par la route POST /api/creative-break/bookings.
       const response = await fetch(
         `${BACKEND_URL}/api/creative-break/bookings`,
         {
           method: "POST",
+
           headers: {
             "Content-Type": "application/json"
           },
+
+          // startsAt est l'instant ISO du créneau.
+          // Le backend doit prendre en charge ce champ pour
+          // garantir la conversion correcte entre fuseaux.
           body: JSON.stringify({
             clientName: formData.clientName,
             clientPhone: formData.clientPhone,
             clientEmail: formData.clientEmail,
             projectDetails: formData.projectDetails,
-            date: date,
-            time: selectedTime
+
+            startsAt: selectedSlot.startsAt,
+            visitorTimezone: VISITOR_TIMEZONE,
+
+            // Informations de compatibilité avec l'ancienne route.
+            date: selectedSlot.professionalDate,
+            time: selectedSlot.time
           })
         }
       );
@@ -1351,19 +2254,18 @@ function Reservation() {
 
       if (!response.ok || !data.success) {
         throw new Error(
-          data.message || "Impossible d'enregistrer votre réservation."
+          data.message ||
+          "Impossible d'enregistrer votre réservation."
         );
       }
 
-      // Confirmation affichée après la réponse positive du backend.
       setFeedback({
         type: "success",
         message:
           data.message ||
-          "Votre demande de rendez-vous a été enregistrée !"
+          "Votre demande de rendez-vous a été enregistrée avec succès !"
       });
 
-      // Réinitialisation du formulaire après l'enregistrement.
       setFormData({
         clientName: "",
         clientPhone: "",
@@ -1371,26 +2273,25 @@ function Reservation() {
         projectDetails: ""
       });
 
-      setSelectedTime("");
+      setSelectedSlot(null);
 
-      // Actualisation des créneaux pour tenir compte
-      // du rendez-vous qui vient d'être enregistré.
+      // Actualiser les disponibilités après la réservation.
       const availabilityResponse = await fetch(
-        `${BACKEND_URL}/api/creative-break/availability?date=${encodeURIComponent(date)}`
+        `${BACKEND_URL}/api/creative-break/availability/month?month=${encodeURIComponent(currentMonth)}`
       );
 
-      const availabilityData = await availabilityResponse.json();
+      const availabilityData =
+        await availabilityResponse.json();
 
       if (
         availabilityResponse.ok &&
         availabilityData.success &&
-        Array.isArray(availabilityData.slots)
+        Array.isArray(availabilityData.days)
       ) {
-        setSlots(availabilityData.slots);
+        setDays(availabilityData.days);
       }
 
     } catch (error) {
-
       setFeedback({
         type: "error",
         message:
@@ -1403,24 +2304,29 @@ function Reservation() {
     }
   };
 
+
+  /* ----------------------------------------
+     AFFICHAGE DE LA RÉSERVATION
+  ---------------------------------------- */
+
   return (
     <section className="reservation section" id="reservation">
 
-      {/* Présentation de la réservation */}
       <Reveal>
+
         <h2 className="section-title">
           Réserver un rendez-vous
         </h2>
 
         <p className="section-description">
           Vous avez un projet ou souhaitez discuter de vos besoins ?
-          Choisissez une date et un horaire pour échanger avec moi.
+          Choisissez une journée et un horaire pour échanger avec moi.
         </p>
+
       </Reveal>
 
       <div className="reservation-layout">
 
-        {/* Informations sur les rendez-vous */}
         <Reveal className="reservation-info">
 
           <div className="reservation-info-icon">
@@ -1435,37 +2341,52 @@ function Reservation() {
           </p>
 
           <div className="reservation-detail">
+
             <FaClock />
+
             <div>
               <strong>Durée du rendez-vous</strong>
               <span>30 minutes</span>
             </div>
+
           </div>
 
           <div className="reservation-detail">
+
             <FaVideo />
+
             <div>
               <strong>Type de rendez-vous</strong>
               <span>Visioconférence gratuite</span>
             </div>
+
           </div>
 
           <div className="reservation-detail">
+
             <FaCalendarAlt />
+
             <div>
-              <strong>Disponibilités habituelles</strong>
-              <span>Du lundi au vendredi</span>
+              <strong>Mes horaires habituels</strong>
+
+              <span>Lundi, mardi, mercredi et vendredi</span>
               <span>09h00–13h00 et 14h00–18h00</span>
+              <span>Jeudi : 08h00–12h00</span>
+              <span>Samedi et dimanche : fermé</span>
             </div>
+
           </div>
 
           <p className="reservation-timezone">
-            Horaires affichés selon l'heure de Madagascar.
+            Les horaires sont affichés selon le fuseau horaire
+            de votre appareil : {VISITOR_TIMEZONE}.
+            Les disponibilités professionnelles sont définies
+            selon l'heure de Madagascar ({TIMEZONE}).
           </p>
 
         </Reveal>
 
-        {/* Formulaire de réservation */}
+
         <Reveal className="reservation-form-wrapper">
 
           <form
@@ -1473,68 +2394,240 @@ function Reservation() {
             onSubmit={handleBooking}
           >
 
-            <h3>Vos informations</h3>
+            <h3>Choisissez votre rendez-vous</h3>
 
-            {/* Choix de la date */}
-            <label htmlFor="booking-date">
-              Choisir une date
-            </label>
 
-            <input
-              id="booking-date"
-              type="date"
-              value={date}
-              min={minimumDate}
-              onChange={(event) => setDate(event.target.value)}
-              required
-            />
+            {/* CALENDRIER MENSUEL */}
 
-            {/* Affichage des créneaux */}
-            <div className="slots-heading">
-              <label>Choisir un horaire</label>
+            <div className="calendar-container">
 
-              {loadingSlots && (
-                <span className="slots-loading">
-                  Chargement...
-                </span>
-              )}
-            </div>
+              <div className="calendar-header">
 
-            {loadingSlots ? (
-              <p className="slots-message">
-                Recherche des disponibilités...
-              </p>
-            ) : slots.length > 0 ? (
+                <button
+                  type="button"
+                  className="calendar-nav-button"
+                  onClick={() => changeMonth(-1)}
+                  disabled={currentMonth <= today.slice(0, 7)}
+                  aria-label="Mois précédent"
+                >
+                  <FaChevronLeft />
+                </button>
 
-              <div className="reservation-slots">
+                <h4>{monthLabel}</h4>
 
-                {slots.map((slot) => (
-                  <button
-                    key={slot.time}
-                    type="button"
-                    className={
-                      selectedTime === slot.time
-                        ? "slot-button selected"
-                        : "slot-button"
-                    }
-                    onClick={() => setSelectedTime(slot.time)}
-                  >
-                    {slot.time}
-                  </button>
+                <button
+                  type="button"
+                  className="calendar-nav-button"
+                  onClick={() => changeMonth(1)}
+                  aria-label="Mois suivant"
+                >
+                  <FaChevronRight />
+                </button>
+
+              </div>
+
+              <div className="calendar-weekdays">
+
+                {weekdays.map((weekday) => (
+                  <span key={weekday}>
+                    {weekday}
+                  </span>
                 ))}
 
               </div>
 
-            ) : (
+              <div className="calendar-grid">
 
-              <p className="slots-message">
-                Aucun créneau disponible pour cette date.
-                Essayez une autre journée.
-              </p>
+                {calendarCells.map((dayNumber, index) => {
 
-            )}
+                  if (!dayNumber) {
+                    return (
+                      <div
+                        className="calendar-empty"
+                        key={`empty-${index}`}
+                      />
+                    );
+                  }
 
-            {/* Nom du visiteur */}
+                  const day = String(dayNumber).padStart(2, "0");
+                  const dateValue = `${currentMonth}-${day}`;
+
+                  // Recherche des créneaux disponibles à cette date
+                  // dans le fuseau horaire du visiteur.
+                  const localDaySlots = days.flatMap((dayInfo) =>
+                    (dayInfo.slots || []).filter((slot) => {
+                      if (!slot.startsAt) return false;
+
+                      return (
+                        getInstantDate(
+                          slot.startsAt,
+                          VISITOR_TIMEZONE
+                        ) === dateValue &&
+                        isSlotInFuture(slot)
+                      );
+                    })
+                  );
+
+                  const isPast =
+                    dateValue < getDateInTimezone(VISITOR_TIMEZONE);
+
+                  const isAvailable =
+                    !isPast && localDaySlots.length > 0;
+
+                  const isSelected = date === dateValue;
+
+                  const isToday =
+                    dateValue === getDateInTimezone(VISITOR_TIMEZONE);
+
+                  let dayClass = "calendar-day";
+
+                  if (
+                    isPast ||
+                    (!loadingCalendar && !isAvailable)
+                  ) {
+                    dayClass += " unavailable";
+                  }
+
+                  if (isAvailable) {
+                    dayClass += " available";
+                  }
+
+                  if (isSelected) {
+                    dayClass += " selected";
+                  }
+
+                  if (isToday) {
+                    dayClass += " today";
+                  }
+
+                  return (
+                    <button
+                      type="button"
+                      key={dateValue}
+                      className={dayClass}
+                      onClick={() => handleDateSelection(dayNumber)}
+                      disabled={!isAvailable || loadingCalendar}
+                      aria-label={`${dayNumber} ${monthLabel}, ${
+                        isAvailable ? "disponible" : "indisponible"
+                      }`}
+                      aria-pressed={isSelected}
+                    >
+
+                      <span>{dayNumber}</span>
+
+                      {isAvailable && (
+                        <span className="calendar-day-indicator" />
+                      )}
+
+                    </button>
+                  );
+                })}
+
+              </div>
+
+              <div className="calendar-legend">
+
+                <span>
+                  <i className="legend-dot legend-available" />
+                  Disponible
+                </span>
+
+                <span>
+                  <i className="legend-dot legend-unavailable" />
+                  Indisponible
+                </span>
+
+                <span>
+                  <i className="legend-dot legend-selected" />
+                  Sélectionné
+                </span>
+
+              </div>
+
+              {loadingCalendar && (
+                <p className="calendar-loading">
+                  Chargement des disponibilités...
+                </p>
+              )}
+
+            </div>
+
+
+            {/* CRÉNEAUX HORAIRES */}
+
+            <div className="slots-section">
+
+              <div className="slots-heading">
+                <label>Choisir un horaire</label>
+              </div>
+
+              {!date ? (
+
+                <p className="slots-message">
+                  Sélectionnez une journée disponible dans le calendrier.
+                </p>
+
+              ) : loadingCalendar ? (
+
+                <p className="slots-message">
+                  Chargement des horaires...
+                </p>
+
+              ) : displayedSlots.length > 0 ? (
+
+                <div className="reservation-slots">
+
+                  {displayedSlots.map((slot) => {
+
+                    const isSelected =
+                      selectedSlot?.startsAt === slot.startsAt;
+
+                    return (
+                      <button
+                        key={slot.startsAt}
+                        type="button"
+                        className={
+                          isSelected
+                            ? "slot-button selected"
+                            : "slot-button"
+                        }
+                        onClick={() => setSelectedSlot(slot)}
+                      >
+                        {slot.localTime}
+                      </button>
+                    );
+                  })}
+
+                </div>
+
+              ) : (
+
+                <p className="slots-message">
+                  Aucun créneau disponible pour cette journée.
+                  Choisissez une autre date.
+                </p>
+
+              )}
+
+              {selectedSlot && (
+                <p className="selected-slot-information">
+                  Rendez-vous choisi :{" "}
+                  {formatDateTimeInTimezone(
+                    selectedSlot.startsAt,
+                    VISITOR_TIMEZONE
+                  )}
+                </p>
+              )}
+
+            </div>
+
+
+            {/* INFORMATIONS DU VISITEUR */}
+
+            <h3 className="booking-form-title">
+              Vos informations
+            </h3>
+
             <label htmlFor="booking-name">
               Nom complet
             </label>
@@ -1550,7 +2643,6 @@ function Reservation() {
               required
             />
 
-            {/* Téléphone du visiteur */}
             <label htmlFor="booking-phone">
               Numéro de téléphone
             </label>
@@ -1566,7 +2658,6 @@ function Reservation() {
               required
             />
 
-            {/* Adresse email du visiteur */}
             <label htmlFor="booking-email">
               Adresse email
             </label>
@@ -1582,7 +2673,6 @@ function Reservation() {
               required
             />
 
-            {/* Description du projet */}
             <label htmlFor="booking-project">
               Parlez-moi de votre projet
             </label>
@@ -1597,7 +2687,6 @@ function Reservation() {
               required
             />
 
-            {/* Confirmation ou message d'erreur */}
             {feedback.message && (
               <p
                 className={`form-feedback ${feedback.type}`}
@@ -1607,23 +2696,24 @@ function Reservation() {
               </p>
             )}
 
-            {/* Bouton d'envoi */}
             <button
               type="submit"
               className="reservation-submit"
               disabled={
                 bookingLoading ||
-                loadingSlots ||
-                slots.length === 0 ||
-                !selectedTime
+                loadingCalendar ||
+                !selectedSlot ||
+                !isSlotInFuture(selectedSlot)
               }
             >
+
               {bookingLoading
                 ? "Enregistrement en cours..."
                 : "Confirmer ma demande"
               }
 
               {!bookingLoading && <FaCalendarAlt />}
+
             </button>
 
             <p className="reservation-note">
@@ -1642,13 +2732,12 @@ function Reservation() {
   );
 }
 
-// ========================================
-// 17. SECTION CONTACT
-// ========================================
 
-// Le formulaire existant est conservé.
-// Il continue d'utiliser /api/contact.
-function Contact() {
+/* ========================================
+   19. SECTION CONTACT
+======================================== */
+
+function Contact({ professionalStatus }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -1662,7 +2751,6 @@ function Contact() {
     message: ""
   });
 
-  // Mise à jour des champs du formulaire.
   const handleChange = (event) => {
     setFormData({
       ...formData,
@@ -1670,7 +2758,6 @@ function Contact() {
     });
   };
 
-  // Envoi du message vers le backend.
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -1684,9 +2771,11 @@ function Contact() {
     try {
       const response = await fetch(API_URL, {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json"
         },
+
         body: JSON.stringify(formData)
       });
 
@@ -1710,7 +2799,6 @@ function Contact() {
       });
 
     } catch (error) {
-
       setFeedback({
         type: "error",
         message:
@@ -1727,6 +2815,7 @@ function Contact() {
     <section className="contact section" id="contact">
 
       <Reveal>
+
         <h2 className="section-title">
           Me contacter
         </h2>
@@ -1735,6 +2824,7 @@ function Contact() {
           Vous avez un projet ou besoin d'un logiciel sur mesure ?
           N'hésitez pas à me contacter.
         </p>
+
       </Reveal>
 
       <motion.div
@@ -1748,7 +2838,6 @@ function Contact() {
         }}
       >
 
-        {/* Coordonnées */}
         <motion.div
           className="contact-info"
           variants={cardVariants}
@@ -1763,17 +2852,33 @@ function Contact() {
 
           <div className="contact-item">
             <FaEnvelope />
+
             <a href="mailto:steveandrianirina4677@gmail.com">
               steveandrianirina4677@gmail.com
             </a>
           </div>
 
-          <div className="contact-item">
-            <FaPhone />
-            <a href="tel:+261385990110">
-              +261 38 599 01 10
-            </a>
-          </div>
+          {professionalStatus === "Disponible" && (
+            <div className="contact-item">
+              <FaPhone />
+
+              <a href="tel:+261385990110">
+                +261 38 599 01 10
+              </a>
+            </div>
+          )}
+
+          {professionalStatus &&
+            professionalStatus !== "Disponible" && (
+              <div className="contact-item">
+                <FaPhone />
+
+                <span>
+                  Appels directs momentanément indisponibles.
+                  Vous pouvez toujours m'envoyer un message.
+                </span>
+              </div>
+          )}
 
           <div className="contact-item">
             <FaMapMarkerAlt />
@@ -1781,7 +2886,9 @@ function Contact() {
           </div>
 
           <div className="contact-item">
+
             <FaLinkedin />
+
             <a
               href="https://www.linkedin.com/in/steve-andrianirina-922a17448/"
               target="_blank"
@@ -1789,10 +2896,11 @@ function Contact() {
             >
               Mon LinkedIn
             </a>
+
           </div>
 
-          {/* Contact WhatsApp */}
           <div className="whatsapp-contact">
+
             <a
               href={WHATSAPP_URL}
               target="_blank"
@@ -1801,11 +2909,11 @@ function Contact() {
               <FaWhatsapp />
               Me contacter sur WhatsApp
             </a>
+
           </div>
 
         </motion.div>
 
-        {/* Formulaire de contact */}
         <motion.form
           className="contact-form"
           onSubmit={handleSubmit}
@@ -1853,12 +2961,14 @@ function Contact() {
             className="btn-primary"
             disabled={loading}
           >
+
             {loading
               ? "Envoi en cours..."
               : "Envoyer le message"
             }
 
             {!loading && <FaPaperPlane />}
+
           </button>
 
         </motion.form>
@@ -1869,9 +2979,10 @@ function Contact() {
   );
 }
 
-// ========================================
-// 18. PIED DE PAGE
-// ========================================
+
+/* ========================================
+   20. PIED DE PAGE
+======================================== */
 
 function Footer() {
   return (
@@ -1901,36 +3012,133 @@ function Footer() {
         </a>
 
       </div>
+
     </footer>
   );
 }
 
-// ========================================
-// 19. COMPOSANT PRINCIPAL DE L'APPLICATION
-// ========================================
 
-// C'est ici que toutes les sections sont assemblées.
-// La réservation est ajoutée après les tarifs,
-// sans déplacer les autres sections.
+/* ========================================
+   21. COMPOSANT PRINCIPAL
+======================================== */
+
 function App() {
+  const [professionalStatus, setProfessionalStatus] =
+    useState(null);
+
+  // Récupérer le statut professionnel depuis le backend.
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchProfessionalStatus = async () => {
+      try {
+        const response = await fetch(
+          `${BACKEND_URL}/api/creative-break/status`
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(
+            "Impossible de récupérer le statut."
+          );
+        }
+
+        if (
+          isMounted &&
+          STATUS_CONFIG[data.status]
+        ) {
+          setProfessionalStatus(data.status);
+        }
+
+      } catch (error) {
+        console.error(
+          "Erreur de récupération du statut professionnel :",
+          error
+        );
+      }
+    };
+
+    fetchProfessionalStatus();
+
+    // Actualiser le statut toutes les minutes.
+    const interval = setInterval(
+      fetchProfessionalStatus,
+      60000
+    );
+
+    // Actualiser aussi lorsque le visiteur revient sur la page.
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchProfessionalStatus();
+      }
+    };
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityChange
+    );
+
+    return () => {
+      isMounted = false;
+
+      clearInterval(interval);
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange
+      );
+    };
+
+  }, []);
+
+
+  /* ----------------------------------------
+     AFFICHAGE DES SECTIONS
+  ---------------------------------------- */
+
   return (
     <>
+
       <Navbar />
 
       <main>
-        <Hero />
+
+        {/* Accueil avec la vidéo originale conservée. */}
+        <Hero
+          professionalStatus={professionalStatus}
+        />
+
+        {/* Nouvelle section de collaboration. */}
+        <WorkProcess />
+
         <About />
+
         <Skills />
+
         <Projects />
+
         <Pricing />
+
+        {/* Réservation indépendante du statut professionnel. */}
         <Reservation />
-        <Contact />
+
+        {/* Contact contrôlé par le statut professionnel. */}
+        <Contact
+          professionalStatus={professionalStatus}
+        />
+
       </main>
 
       <Footer />
+
     </>
   );
 }
 
-// Exportation du composant pour le démarrage de React.
+
+// ========================================
+// EXPORTATION DU COMPOSANT PRINCIPAL
+// ========================================
+
 export default App;

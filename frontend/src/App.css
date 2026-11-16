@@ -2057,3 +2057,1138 @@ textarea {
     transition: none;
   }
 }
+
+
+/* ============================================
+   STATUT PROFESSIONNEL DANS LA SECTION ACCUEIL
+============================================ */
+
+/* Conteneur général du statut */
+.professional-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  width: fit-content;
+  max-width: 520px;
+  margin: 0 0 22px;
+  animation: statusAppear 0.8s ease both;
+}
+
+/* Animation d'apparition */
+@keyframes statusAppear {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Badge principal */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border: 1px solid currentColor;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  background: rgba(10, 20, 40, 0.72);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.12);
+}
+
+/* Indicateur animé */
+.status-indicator {
+  font-size: 13px;
+  animation: statusPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.65;
+    transform: scale(1.2);
+  }
+}
+
+/* Message explicatif */
+.status-message {
+  margin: 0;
+  padding-left: 3px;
+  color: #e2e8f0;
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+/* Disponible : vert */
+.status-available .status-badge {
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.5);
+  box-shadow: 0 0 18px rgba(74, 222, 128, 0.15);
+}
+
+/* En pause : jaune */
+.status-break .status-badge {
+  color: #facc15;
+  border-color: rgba(250, 204, 21, 0.5);
+  box-shadow: 0 0 18px rgba(250, 204, 21, 0.15);
+}
+
+/* En traitement : bleu */
+.status-working .status-badge {
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.15);
+}
+
+/* En conférence : violet */
+.status-conference .status-badge {
+  color: #c084fc;
+  border-color: rgba(192, 132, 252, 0.5);
+  box-shadow: 0 0 18px rgba(192, 132, 252, 0.15);
+}
+
+/* Hors ligne : gris */
+.status-offline .status-badge {
+  color: #cbd5e1;
+  border-color: rgba(203, 213, 225, 0.4);
+  box-shadow: 0 0 18px rgba(203, 213, 225, 0.1);
+}
+
+/* Statut en cours de chargement */
+.status-loading .status-badge {
+  color: #94a3b8;
+}
+
+/* Bouton d'appel direct */
+.direct-call-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+/* Adaptation aux téléphones */
+@media (max-width: 768px) {
+  .professional-status {
+    max-width: 100%;
+    align-items: center;
+    margin: 0 auto 20px;
+    text-align: center;
+  }
+
+  .status-message {
+    font-size: 12px;
+    max-width: 340px;
+  }
+
+  .status-badge {
+    font-size: 13px;
+    padding: 9px 15px;
+  }
+}
+
+
+/* ============================================
+   19. CALENDRIER MENSUEL DE RÉSERVATION
+============================================ */
+
+/* Conteneur général du calendrier */
+.calendar-container {
+  width: 100%;
+  margin: 15px 0 25px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(0, 212, 255, 0.16);
+  border-radius: 14px;
+}
+
+/* En-tête : mois et boutons de navigation */
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.calendar-header h4 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+.calendar-nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  color: #00d4ff;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.calendar-nav-button:hover:not(:disabled) {
+  color: #07111f;
+  background: #00d4ff;
+  transform: scale(1.06);
+}
+
+.calendar-nav-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Noms des jours */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.calendar-weekdays span {
+  color: #9baec4;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Grille des jours */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 7px;
+}
+
+/* Cases vides */
+.calendar-empty {
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+}
+
+/* Boutons représentant les journées */
+.calendar-day {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  padding: 4px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Journées disponibles */
+.calendar-day.available {
+  color: #00e6a0;
+  background: rgba(0, 230, 160, 0.08);
+  border-color: rgba(0, 230, 160, 0.3);
+}
+
+.calendar-day.available:hover:not(:disabled) {
+  background: rgba(0, 230, 160, 0.18);
+  border-color: #00e6a0;
+  transform: translateY(-2px);
+}
+
+/* Journée sélectionnée */
+.calendar-day.selected {
+  color: #07111f;
+  background: #00d4ff;
+  border-color: #00d4ff;
+  font-weight: 700;
+  box-shadow: 0 0 14px rgba(0, 212, 255, 0.3);
+}
+
+/* Journées indisponibles */
+.calendar-day.unavailable {
+  color: #687789;
+  background: rgba(255, 255, 255, 0.018);
+  border-color: rgba(255, 255, 255, 0.035);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* Date du jour */
+.calendar-day.today:not(.selected) {
+  outline: 1px solid #a78bfa;
+  outline-offset: 1px;
+}
+
+/* Petit indicateur des journées disponibles */
+.calendar-day-indicator {
+  display: block;
+  width: 5px;
+  height: 5px;
+  flex-shrink: 0;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+/* Légende */
+.calendar-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.calendar-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #aebdce;
+  font-size: 0.72rem;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-available {
+  background: #00e6a0;
+}
+
+.legend-unavailable {
+  background: #687789;
+}
+
+.legend-selected {
+  background: #00d4ff;
+}
+
+/* Message de chargement */
+.calendar-loading {
+  margin: 14px 0 0;
+  color: #00d4ff;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* Zone des créneaux horaires */
+.slots-section {
+  margin: 15px 0 25px;
+}
+
+.booking-form-title {
+  margin-top: 25px;
+}
+
+/* Adaptation aux petits écrans */
+@media (max-width: 480px) {
+  .calendar-container {
+    padding: 12px;
+  }
+
+  .calendar-grid {
+    gap: 5px;
+  }
+
+  .calendar-weekdays {
+    gap: 5px;
+  }
+
+  .calendar-day {
+    font-size: 0.78rem;
+    border-radius: 7px;
+  }
+
+  .calendar-header h4 {
+    font-size: 0.95rem;
+  }
+
+  .calendar-nav-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .calendar-legend {
+    gap: 8px;
+  }
+
+  .calendar-legend span {
+    font-size: 0.66rem;
+  }
+}
+
+/* Respect du réglage de réduction des animations */
+@media (prefers-reduced-motion: reduce) {
+  .calendar-day,
+  .calendar-nav-button {
+    transition: none;
+  }
+}
+
+
+/* ============================================
+   20. SECTION : DÉROULEMENT DE LA COLLABORATION
+============================================ */
+
+/* Fond et espacement de la nouvelle section */
+.work-process {
+  background:
+    radial-gradient(
+      circle at 90% 20%,
+      rgba(56, 189, 248, 0.07),
+      transparent 32%
+    ),
+    #080f1e;
+}
+
+/* Grille des six étapes */
+.work-process-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+/* Carte de chaque étape */
+.work-process-card {
+  position: relative;
+  min-width: 0;
+  padding: 30px 25px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(
+    145deg,
+    #142238,
+    #0e192b
+  );
+  box-shadow: var(--shadow);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    background 0.3s ease;
+}
+
+/* Effet lumineux au survol */
+.work-process-card:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-hover);
+  background: linear-gradient(
+    145deg,
+    #192d47,
+    #101e32
+  );
+}
+
+/* Numéro de l'étape */
+.work-process-number {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: rgba(56, 189, 248, 0.16);
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Conteneur de l'icône */
+.work-process-icon {
+  width: 62px;
+  height: 62px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1.8rem;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 17px;
+  background: rgba(56, 189, 248, 0.1);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.06);
+}
+
+/* Titre de chaque étape */
+.work-process-card h3 {
+  position: relative;
+  margin-bottom: 13px;
+  color: var(--white);
+  font-size: 1.12rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* Description de chaque étape */
+.work-process-card p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.85;
+}
+
+/* Information complémentaire */
+.work-process-detail {
+  margin-top: 17px;
+  padding-top: 14px;
+  color: var(--primary);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  border-top: 1px solid var(--border);
+}
+
+/* Zone du bouton de réservation */
+.work-process-cta {
+  margin-top: 45px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ============================================
+   ADAPTATION TABLETTES
+============================================ */
+
+@media (max-width: 1024px) {
+  .work-process-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+/* ============================================
+   ADAPTATION TÉLÉPHONES
+============================================ */
+
+@media (max-width: 768px) {
+  .work-process-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .work-process-card {
+    padding: 25px 20px;
+  }
+
+  .work-process-number {
+    font-size: 2.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .work-process-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .work-process-card {
+    padding: 25px 22px;
+  }
+
+  .work-process-card h3 {
+    font-size: 1.05rem;
+  }
+
+  .work-process-card p {
+    font-size: 0.88rem;
+  }
+
+  .work-process-cta {
+    margin-top: 30px;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITÉ : ANIMATIONS RÉDUITES
+============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .work-process-card {
+    transition: none;
+  }
+}
+
+
+/* ============================================
+   21. ANIMATIONS RENFORCÉES — DÉROULEMENT
+============================================ */
+
+/* Halo lumineux discret derrière chaque carte */
+.work-process-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at top right,
+    rgba(56, 189, 248, 0.16),
+    transparent 55%
+  );
+  transition: opacity 0.4s ease;
+}
+
+.work-process-card:hover::before {
+  opacity: 1;
+}
+
+/* Le contenu reste au-dessus du halo */
+.work-process-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Zoom lumineux du numéro */
+.work-process-number {
+  transition:
+    color 0.35s ease,
+    transform 0.35s ease,
+    text-shadow 0.35s ease;
+  transform-origin: center;
+}
+
+.work-process-card:hover .work-process-number {
+  color: rgba(56, 189, 248, 0.38);
+  transform: scale(1.15);
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+}
+
+/* Animation douce de l'icône */
+.work-process-icon {
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease,
+    background 0.4s ease;
+}
+
+.work-process-card:hover .work-process-icon {
+  transform: translateY(-5px) rotate(-5deg);
+  background: rgba(56, 189, 248, 0.18);
+  box-shadow:
+    0 0 15px rgba(56, 189, 248, 0.2),
+    0 0 30px rgba(139, 92, 246, 0.12);
+}
+
+/* Mise en valeur du titre */
+.work-process-card h3 {
+  transition: color 0.3s ease;
+}
+
+.work-process-card:hover h3 {
+  color: var(--primary);
+}
+
+/* Trait lumineux sous les détails */
+.work-process-detail {
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.work-process-card:hover .work-process-detail {
+  color: #7dd3fc;
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+/* Effet lumineux du bouton de réservation */
+.work-process-cta .btn-primary {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.15);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.work-process-cta .btn-primary:hover {
+  transform: translateY(-4px) scale(1.025);
+  box-shadow:
+    0 0 18px rgba(56, 189, 248, 0.35),
+    0 0 35px rgba(139, 92, 246, 0.18);
+}
+
+/* Reflet lumineux qui traverse le bouton */
+.work-process-cta .btn-primary::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  transform: skewX(-25deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  transition: left 0.65s ease;
+}
+
+.work-process-cta .btn-primary:hover::after {
+  left: 150%;
+}
+
+/* Respect des préférences d'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .work-process-card::before,
+  .work-process-number,
+  .work-process-icon,
+  .work-process-card h3,
+  .work-process-detail,
+  .work-process-cta .btn-primary,
+  .work-process-cta .btn-primary::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+
+/* ========================================
+   NOUVELLE SECTION TARIFS : SIX FORMULES
+======================================== */
+
+/* Séparation visuelle des deux catégories. */
+.pricing-category {
+  width: 100%;
+  margin: 65px auto 75px;
+}
+
+.pricing-category-heading {
+  max-width: 800px;
+  margin: 0 auto 35px;
+  text-align: center;
+}
+
+.pricing-category-heading h3 {
+  margin: 15px 0;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  color: var(--primary-color, #38bdf8);
+}
+
+.pricing-category-heading p {
+  line-height: 1.8;
+  color: var(--text-secondary, #cbd5e1);
+}
+
+.pricing-category-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+  height: 65px;
+  border-radius: 18px;
+  font-size: 1.8rem;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+/* Trois formules côte à côte sur grand écran. */
+.pricing-grid-three {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 25px;
+  align-items: stretch;
+}
+
+/* Cartes tarifaires. */
+.pricing-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 30px 24px;
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.88);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.pricing-card:hover {
+  border-color: rgba(56, 189, 248, 0.65);
+  box-shadow: 0 18px 45px rgba(56, 189, 248, 0.12);
+}
+
+.pricing-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 18px;
+  border-radius: 15px;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  font-size: 1.5rem;
+}
+
+.pricing-plan-name {
+  margin-bottom: 8px;
+  color: #38bdf8;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.pricing-card h4 {
+  margin: 0 0 12px;
+  font-size: 1.45rem;
+  color: #f8fafc;
+}
+
+.pricing-description {
+  min-height: 75px;
+  line-height: 1.7;
+  color: #cbd5e1;
+}
+
+/* Prix initial et réduction. */
+.pricing-price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.pricing-original {
+  color: #94a3b8;
+  text-decoration: line-through;
+  font-size: 1rem;
+}
+
+.pricing-discount {
+  padding: 5px 10px;
+  border-radius: 20px;
+  color: #ffffff;
+  background: #dc2626;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.pricing-discounted {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 12px 0 20px;
+}
+
+.pricing-discounted > span {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+}
+
+.pricing-discounted strong {
+  color: #38bdf8;
+  font-size: clamp(1.9rem, 3vw, 2.4rem);
+  font-weight: 900;
+}
+
+/* Liste des prestations. */
+.pricing-features {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  flex: 1;
+  padding: 20px 0;
+  margin: 0;
+  list-style: none;
+}
+
+.pricing-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #e2e8f0;
+  line-height: 1.55;
+  font-size: 0.92rem;
+}
+
+.pricing-check {
+  flex-shrink: 0;
+  color: #22c55e;
+  font-weight: 900;
+}
+
+/* Bouton WhatsApp. */
+.pricing-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 50px;
+  margin-top: auto;
+  padding: 13px 15px;
+  border-radius: 12px;
+  color: #ffffff;
+  background: #0f9f6e;
+  text-decoration: none;
+  text-align: center;
+  font-weight: 750;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.pricing-button:hover {
+  background: #087f59;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(16, 185, 129, 0.2);
+}
+
+/* Mise en évidence de la formule PREMIUM. */
+.pricing-card-premium {
+  border: 1px solid rgba(56, 189, 248, 0.75);
+  box-shadow:
+    0 0 0 1px rgba(56, 189, 248, 0.12),
+    0 12px 35px rgba(56, 189, 248, 0.1);
+}
+
+.pricing-card-premium:hover {
+  box-shadow:
+    0 0 25px rgba(56, 189, 248, 0.2),
+    0 18px 45px rgba(0, 0, 0, 0.2);
+}
+
+.pricing-premium-badge {
+  position: absolute;
+  top: 17px;
+  right: 17px;
+  padding: 7px 11px;
+  border-radius: 20px;
+  color: #082f49;
+  background: #38bdf8;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.7px;
+}
+
+/* Promotion de lancement. */
+.pricing-promo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  max-width: 950px;
+  margin: 35px auto 55px;
+  padding: 28px;
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  border-radius: 20px;
+  background: linear-gradient(
+    120deg,
+    rgba(8, 47, 73, 0.85),
+    rgba(15, 23, 42, 0.95)
+  );
+  box-shadow: 0 0 28px rgba(56, 189, 248, 0.1);
+  animation: pricingPromoPulse 4s ease-in-out infinite;
+}
+
+.pricing-promo-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+  height: 65px;
+  border-radius: 18px;
+  color: #ffffff;
+  background: #0284c7;
+  font-size: 1.8rem;
+}
+
+.pricing-promo-label {
+  color: #7dd3fc;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.pricing-promo-content h3 {
+  margin: 10px 0;
+}
+
+.pricing-promo-badge {
+  display: inline-block;
+  padding: 8px 13px;
+  border-radius: 8px;
+  color: #082f49;
+  background: #7dd3fc;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.pricing-promo-highlight {
+  color: #ffffff;
+  font-size: 1.08rem;
+  font-weight: 850;
+}
+
+.pricing-promo-content p {
+  line-height: 1.65;
+}
+
+/* Conditions d'hébergement. */
+.pricing-hosting {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 950px;
+  margin: 45px auto 25px;
+  padding: 25px;
+  border-radius: 17px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: rgba(15, 23, 42, 0.75);
+}
+
+.pricing-hosting-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  font-size: 1.4rem;
+}
+
+.pricing-hosting h3 {
+  margin: 0 0 12px;
+  color: #7dd3fc;
+}
+
+.pricing-hosting p {
+  margin: 8px 0;
+  color: #cbd5e1;
+  line-height: 1.7;
+}
+
+.pricing-hosting-note {
+  font-size: 0.85rem;
+  color: #94a3b8 !important;
+}
+
+.pricing-note {
+  max-width: 900px;
+  margin: 30px auto;
+  color: #94a3b8;
+  text-align: center;
+  line-height: 1.8;
+}
+
+/* Animation discrète du bandeau promotionnel. */
+@keyframes pricingPromoPulse {
+  0%, 100% {
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.08);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.2);
+  }
+}
+
+/* ========================================
+   RESPONSIVE : SECTION TARIFS
+======================================== */
+
+@media (max-width: 1000px) {
+  .pricing-grid-three {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .pricing-category {
+    margin: 45px auto 55px;
+  }
+
+  .pricing-grid-three {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .pricing-card {
+    padding: 25px 20px;
+  }
+
+  .pricing-description {
+    min-height: auto;
+  }
+
+  .pricing-promo {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px;
+    gap: 15px;
+  }
+
+  .pricing-promo-icon {
+    width: 55px;
+    height: 55px;
+  }
+
+  .pricing-promo-badge {
+    font-size: 0.85rem;
+  }
+
+  .pricing-hosting {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .pricing-premium-badge {
+    top: 14px;
+    right: 14px;
+  }
+}
+
+/* Respect des préférences de réduction des animations. */
+@media (prefers-reduced-motion: reduce) {
+  .pricing-promo {
+    animation: none;
+  }
+
+  .pricing-card,
+  .pricing-button {
+    transition: none;
+  }
+}

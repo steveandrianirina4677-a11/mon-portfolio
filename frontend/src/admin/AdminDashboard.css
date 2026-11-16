@@ -1,10 +1,21 @@
-/* Conteneur principal du tableau de bord */
+
+/* =========================================================
+   1. CONFIGURATION GÉNÉRALE
+========================================================= */
+
 .admin-dashboard {
     min-height: 100vh;
     padding: 40px;
     background: #f4f6fb;
     color: #1e293b;
     font-family: Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+.admin-dashboard *,
+.admin-dashboard *::before,
+.admin-dashboard *::after {
+    box-sizing: border-box;
 }
 
 /* Écran de chargement */
@@ -13,11 +24,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 20px;
     font-size: 18px;
     color: #334155;
 }
 
-/* En-tête */
+/* =========================================================
+   2. EN-TÊTE DU TABLEAU DE BORD
+========================================================= */
+
 .dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -36,10 +51,12 @@
 .dashboard-header h1 {
     margin: 10px 0;
     font-size: 32px;
+    color: #172554;
 }
 
 .dashboard-header p {
     color: #64748b;
+    line-height: 1.6;
 }
 
 /* Bouton actualiser */
@@ -51,33 +68,49 @@
     color: white;
     cursor: pointer;
     font-weight: bold;
+    transition: background 0.3s ease, transform 0.3s ease;
 }
 
 .refresh-button:hover {
     background: #1d4ed8;
+    transform: translateY(-2px);
 }
 
-/* Messages */
+.refresh-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   3. NOTIFICATIONS ET ERREURS
+========================================================= */
+
 .dashboard-alert {
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
+    line-height: 1.6;
 }
 
 .dashboard-alert.error {
     background: #fee2e2;
     color: #b91c1c;
+    border: 1px solid #fecaca;
 }
 
 .dashboard-alert.success {
     background: #dcfce7;
     color: #166534;
+    border: 1px solid #bbf7d0;
 }
 
-/* Statistiques */
+/* =========================================================
+   4. STATISTIQUES
+========================================================= */
+
 .dashboard-stats {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 20px;
     margin-bottom: 25px;
 }
@@ -87,12 +120,20 @@
     background: white;
     border-radius: 12px;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #edf2f7;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08);
 }
 
 .stat-card span {
     display: block;
     color: #64748b;
     font-size: 14px;
+    line-height: 1.5;
 }
 
 .stat-card strong {
@@ -102,14 +143,17 @@
     color: #2563eb;
 }
 
-/* Statut professionnel */
+/* =========================================================
+   5. STATUT PROFESSIONNEL
+========================================================= */
+
 .professional-status-card {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 20px;
     padding: 25px;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
@@ -117,57 +161,109 @@
 
 .professional-status-card h2 {
     margin-top: 0;
+    color: #172554;
 }
 
 .professional-status-card p {
     color: #64748b;
+    line-height: 1.7;
+    max-width: 650px;
 }
 
 .status-controls {
     display: flex;
     align-items: center;
     gap: 15px;
+    flex-wrap: wrap;
 }
 
 .status-indicator {
     padding: 9px 14px;
     border-radius: 20px;
+    background: #dbeafe;
+    color: #1d4ed8;
     font-size: 13px;
     font-weight: bold;
 }
 
-.status-indicator.available {
-    background: #dcfce7;
-    color: #15803d;
-}
-
-.status-indicator.unavailable {
-    background: #fee2e2;
-    color: #b91c1c;
-}
-
 .status-controls select {
+    min-width: 170px;
     padding: 10px;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
     background: white;
+    color: #334155;
+    cursor: pointer;
 }
 
-/* Réservations */
-.bookings-section {
+/* =========================================================
+   6. NAVIGATION ENTRE LES RUBRIQUES
+========================================================= */
+
+.admin-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+    padding: 10px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.admin-tabs button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-tabs button:hover {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.admin-tabs button.active {
+    background: #2563eb;
+    color: white;
+    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2);
+}
+
+/* =========================================================
+   7. TITRES DES SECTIONS
+========================================================= */
+
+.bookings-section,
+.messages-section,
+.schedule-section,
+.leave-section {
     margin-top: 30px;
 }
 
 .section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
     margin-bottom: 20px;
 }
 
-.section-heading h2 {
+.section-heading h2,
+.section-heading h3 {
+    margin-top: 0;
     margin-bottom: 8px;
+    color: #172554;
 }
 
 .section-heading p {
     color: #64748b;
+    line-height: 1.6;
 }
 
 .empty-bookings {
@@ -176,19 +272,24 @@
     border-radius: 12px;
     text-align: center;
     color: #64748b;
+    border: 1px solid #e2e8f0;
 }
+
+/* =========================================================
+   8. CARTES DE RÉSERVATION
+========================================================= */
 
 .bookings-list {
     display: grid;
     gap: 20px;
 }
 
-/* Carte de réservation */
 .booking-card {
     padding: 25px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #edf2f7;
 }
 
 .booking-top {
@@ -201,6 +302,7 @@
 
 .booking-top h3 {
     margin: 0 0 7px;
+    color: #172554;
 }
 
 .booking-id {
@@ -213,6 +315,7 @@
     border-radius: 20px;
     font-size: 12px;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 .booking-status.pending {
@@ -235,7 +338,7 @@
     color: #475569;
 }
 
-/* Informations */
+/* Informations du client */
 .booking-information {
     line-height: 1.7;
     overflow-wrap: anywhere;
@@ -247,22 +350,34 @@
 
 .booking-information a {
     color: #2563eb;
+    text-decoration: none;
 }
 
-/* Actions */
+.booking-information a:hover {
+    text-decoration: underline;
+}
+
+/* =========================================================
+   9. BOUTONS DES RÉSERVATIONS
+========================================================= */
+
 .booking-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 12px;
     margin-top: 20px;
 }
 
-.booking-actions button {
+.booking-actions button,
+.accept-button,
+.reject-button {
     padding: 11px 20px;
     border: none;
     border-radius: 7px;
     color: white;
     cursor: pointer;
     font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .accept-button {
@@ -281,45 +396,18 @@
     background: #b91c1c;
 }
 
-.booking-actions button:disabled {
+.booking-actions button:disabled,
+.accept-button:disabled,
+.reject-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
 }
 
-/* Adaptation téléphone et tablette */
-@media (max-width: 768px) {
-    .admin-dashboard {
-        padding: 20px 15px;
-    }
+/* =========================================================
+   10. FORMULAIRE DU LIEN DE VISIOCONFÉRENCE
+========================================================= */
 
-    .dashboard-header,
-    .professional-status-card {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .dashboard-stats {
-        grid-template-columns: 1fr;
-    }
-
-    .status-controls {
-        flex-wrap: wrap;
-    }
-
-    .booking-top {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .booking-actions {
-        flex-direction: column;
-    }
-
-    .booking-actions button {
-        width: 100%;
-    }
-}
-/* Formulaire du lien de visioconférence */
 .meeting-link-form {
     display: flex;
     flex-direction: column;
@@ -327,7 +415,13 @@
     margin-top: 22px;
     padding: 18px;
     background: #f8fafc;
+    border: 1px solid #e2e8f0;
     border-radius: 10px;
+}
+
+.meeting-link-form h4 {
+    margin: 0;
+    color: #172554;
 }
 
 .meeting-link-form label {
@@ -337,13 +431,72 @@
 
 .meeting-link-form input {
     width: 100%;
-    box-sizing: border-box;
     padding: 12px;
     border: 1px solid #cbd5e1;
     border-radius: 7px;
     font-size: 14px;
 }
 
+/* =========================================================
+   11. FORMULAIRES ET ACTIONS ADMINISTRATEUR
+========================================================= */
+
+.admin-action-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 22px;
+    padding: 20px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+.admin-action-panel h3,
+.admin-action-panel h4 {
+    margin: 0 0 5px;
+    color: #172554;
+}
+
+.admin-action-panel p {
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.admin-action-panel label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #334155;
+}
+
+.admin-action-panel input,
+.admin-action-panel select,
+.admin-action-panel textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: white;
+    color: #334155;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    outline: none;
+}
+
+.admin-action-panel textarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.6;
+}
+
+.admin-action-panel input:focus,
+.admin-action-panel select:focus,
+.admin-action-panel textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Bouton principal d'enregistrement */
 .save-link-button {
     align-self: flex-start;
     padding: 11px 18px;
@@ -353,30 +506,173 @@
     color: white;
     font-weight: bold;
     cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .save-link-button:hover {
     background: #1d4ed8;
+    transform: translateY(-1px);
 }
 
 .save-link-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
 }
 
-@media (max-width: 768px) {
-    .save-link-button {
-        width: 100%;
-    }
+/* Boutons secondaires */
+.secondary-button {
+    padding: 10px 15px;
+    border: 1px solid #bfdbfe;
+    border-radius: 7px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
+.secondary-button:hover {
+    background: #dbeafe;
+}
 
-/* ========================================
-   17. RUBRIQUE MESSAGES REÇUS
-======================================== */
+.admin-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+/* =========================================================
+   12. HORAIRES PERSONNALISÉS
+========================================================= */
+
+.schedule-section {
+    padding: 25px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+.schedule-section > .admin-action-panel {
+    max-width: 800px;
+}
+
+.schedule-info {
+    padding: 12px;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #1d4ed8 !important;
+    font-size: 13px;
+}
+
+.schedule-period {
+    margin-top: 10px;
+    padding: 18px;
+    background: white;
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+}
+
+.schedule-period h3 {
+    margin-top: 0;
+    color: #1e40af;
+}
+
+.schedule-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+    cursor: pointer;
+}
+
+.schedule-checkbox input {
+    width: auto;
+    accent-color: #2563eb;
+}
+
+.schedule-time-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.schedule-time-fields > div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.schedule-time-fields label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #334155;
+}
+
+.schedule-time-fields input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: white;
+    color: #334155;
+}
+
+/* =========================================================
+   13. CONGÉS ET INDISPONIBILITÉS
+========================================================= */
+
+.leave-section {
+    padding: 25px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+.leave-form {
+    max-width: 900px;
+}
+
+.leave-form > input {
+    margin-bottom: 10px;
+}
+
+.leave-list {
+    display: grid;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.leave-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+.leave-card h4 {
+    margin-top: 0;
+    color: #172554;
+}
+
+.leave-card p {
+    color: #64748b;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   14. RUBRIQUE MESSAGES
+========================================================= */
 
 .messages-section {
-    margin-top: 35px;
     padding: 25px;
     background: #ffffff;
     border-radius: 14px;
@@ -391,6 +687,7 @@
     color: #d35400;
     font-size: 13px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .messages-list {
@@ -439,6 +736,7 @@
     border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .message-status.unread {
@@ -457,7 +755,7 @@
 }
 
 .message-information p {
-    margin: 0;
+    margin: 8px 0;
     color: #334155;
 }
 
@@ -488,7 +786,9 @@
     margin-top: 15px;
 }
 
+/* Bouton marquer comme lu */
 .mark-read-button {
+    margin-top: 15px;
     padding: 10px 16px;
     border: none;
     border-radius: 7px;
@@ -507,13 +807,1097 @@
     cursor: not-allowed;
 }
 
-/* Adaptation aux petits écrans */
-@media (max-width: 600px) {
+/* =========================================================
+   15. HISTORIQUE DES EMAILS
+========================================================= */
+
+.email-history {
+    margin-top: 20px;
+    padding: 18px;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    background: #eff6ff;
+}
+
+.email-history h4 {
+    margin-top: 0;
+    color: #1e40af;
+}
+
+.email-history article {
+    margin-top: 12px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    overflow-wrap: anywhere;
+}
+
+.email-history article strong {
+    color: #172554;
+}
+
+.email-history article p {
+    color: #475569;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* =========================================================
+   16. LIENS ET ÉLÉMENTS INTERACTIFS
+========================================================= */
+
+.admin-dashboard a {
+    overflow-wrap: anywhere;
+}
+
+.admin-dashboard button {
+    font-family: Arial, sans-serif;
+}
+
+.admin-dashboard button:focus-visible,
+.admin-dashboard input:focus-visible,
+.admin-dashboard select:focus-visible,
+.admin-dashboard textarea:focus-visible {
+    outline: 2px solid #60a5fa;
+    outline-offset: 2px;
+}
+
+/* =========================================================
+   17. TABLETTES
+========================================================= */
+
+@media (max-width: 1024px) {
+
+    .admin-dashboard {
+        padding: 25px;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .professional-status-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .status-controls {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   18. TÉLÉPHONES
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .admin-dashboard {
+        padding: 20px 15px;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dashboard-header h1 {
+        font-size: 26px;
+    }
+
+    .dashboard-header .refresh-button {
+        width: 100%;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 18px;
+    }
+
+    .stat-card strong {
+        font-size: 27px;
+    }
+
+    .professional-status-card {
+        padding: 20px;
+    }
+
+    .status-controls {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .status-controls select {
+        width: 100%;
+    }
+
+    .admin-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-tabs button {
+        padding: 12px 8px;
+        font-size: 12px;
+    }
+
+    .booking-card {
+        padding: 18px;
+    }
+
+    .booking-top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .booking-actions {
+        flex-direction: column;
+    }
+
+    .booking-actions button {
+        width: 100%;
+    }
+
+    .save-link-button {
+        width: 100%;
+    }
+
+    .admin-card-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .admin-card-actions button {
+        width: 100%;
+    }
+
+    .schedule-section,
+    .leave-section,
     .messages-section {
         padding: 15px;
+    }
+
+    .schedule-time-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .leave-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .leave-card button {
+        width: 100%;
     }
 
     .message-top {
         flex-direction: column;
     }
+
+    .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .section-heading > button {
+        width: 100%;
+    }
 }
+
+/* =========================================================
+   19. PETITS TÉLÉPHONES
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .admin-dashboard {
+        padding: 15px 10px;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        padding: 20px;
+    }
+
+    .admin-tabs {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-card,
+    .message-card {
+        padding: 15px;
+    }
+
+    .admin-action-panel {
+        padding: 15px;
+    }
+
+    .schedule-period {
+        padding: 12px;
+    }
+
+    .unread-counter {
+        white-space: normal;
+    }
+
+    .save-link-button,
+    .secondary-button,
+    .accept-button,
+    .reject-button,
+    .mark-read-button {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   20. NOUVELLE STRUCTURE AVEC MENU LATÉRAL
+========================================================= */
+
+/* Le tableau de bord devient une disposition en deux colonnes. */
+.admin-dashboard {
+    display: flex;
+    gap: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: #f4f6fb;
+}
+
+/* Zone latérale de navigation. */
+.admin-sidebar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    width: 285px;
+    height: 100vh;
+    padding: 28px 18px;
+    background: #111c35;
+    color: #fff;
+    overflow-y: auto;
+    z-index: 20;
+}
+
+/* Logo et nom de l'espace. */
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 5px 8px 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+}
+
+.sidebar-brand strong {
+    display: block;
+    color: white;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.sidebar-brand span {
+    display: block;
+    margin-top: 5px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+/* Petit titre au-dessus du menu. */
+.sidebar-caption {
+    margin: 30px 10px 15px;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+}
+
+/* Liste des rubriques. */
+.sidebar-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+/* Chaque lien du menu. */
+.sidebar-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 13px 11px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: #a8b5ca;
+    text-align: left;
+    cursor: pointer;
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.sidebar-link:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: white;
+    transform: translateX(2px);
+}
+
+/* Rubrique sélectionnée. */
+.sidebar-link.active {
+    background: rgba(59, 130, 246, 0.17);
+    border-color: rgba(96, 165, 250, 0.18);
+    color: white;
+}
+
+.sidebar-link.active::before {
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: -18px;
+    width: 3px;
+    border-radius: 0 4px 4px 0;
+    background: #60a5fa;
+    content: "";
+}
+
+/* Icône de chaque rubrique. */
+.sidebar-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.07);
+    color: #bfdbfe;
+    font-size: 20px;
+}
+
+.sidebar-link.active .sidebar-icon {
+    background: #2563eb;
+    color: white;
+}
+
+/* Titre et description des rubriques. */
+.sidebar-link-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.sidebar-link-text strong {
+    color: inherit;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.sidebar-link-text small {
+    color: #8291a9;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.sidebar-link.active .sidebar-link-text small {
+    color: #b8c9e6;
+}
+
+/* Nombre de messages non lus. */
+.sidebar-badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 23px;
+    height: 23px;
+    margin-left: auto;
+    padding: 0 6px;
+    border-radius: 20px;
+    background: #dc2626;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* Pied du menu. */
+.sidebar-bottom {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: auto;
+    padding: 20px 8px 5px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.sidebar-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+}
+
+/* =========================================================
+   21. ZONE PRINCIPALE
+========================================================= */
+
+.admin-main {
+    flex: 1;
+    min-width: 0;
+    padding: 35px 40px;
+    overflow: hidden;
+}
+
+/* En-tête et boutons. */
+.admin-main .dashboard-header {
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.header-date {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: #64748b;
+    font-size: 11px;
+    text-align: right;
+}
+
+.header-date strong {
+    color: #334155;
+    font-size: 13px;
+}
+
+/* Bouton actualiser. */
+.admin-main .refresh-button {
+    white-space: nowrap;
+}
+
+/* Notifications avec bouton de fermeture. */
+.admin-main .dashboard-alert {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.admin-main .dashboard-alert button {
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+/* =========================================================
+   22. PAGE D'ACCUEIL
+========================================================= */
+
+.overview-section {
+    display: grid;
+    gap: 25px;
+}
+
+/* Bannière de bienvenue. */
+.welcome-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    padding: 30px;
+    border-radius: 16px;
+    background: linear-gradient(120deg, #172554, #1e40af 65%, #2563eb);
+    color: white;
+    overflow: hidden;
+}
+
+.welcome-eyebrow {
+    color: #bfdbfe;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.8px;
+}
+
+.welcome-panel h2 {
+    max-width: 650px;
+    margin: 12px 0;
+    color: white;
+    font-size: 25px;
+    line-height: 1.35;
+}
+
+.welcome-panel p {
+    max-width: 600px;
+    margin: 0;
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.welcome-symbol {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #dbeafe;
+    font-size: 45px;
+}
+
+/* Statistiques de l'accueil. */
+.overview-section .dashboard-stats {
+    margin-bottom: 0;
+}
+
+.overview-section .stat-card {
+    min-width: 0;
+}
+
+/* Petits textes des cartes de statistiques. */
+.stat-card small {
+    display: block;
+    margin-top: 10px;
+    color: #94a3b8;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   23. INDICATEURS DE PROGRESSION
+========================================================= */
+
+.progress-section {
+    padding: 25px;
+    border: 1px solid #edf2f7;
+    border-radius: 14px;
+    background: white;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.progress-section .section-heading {
+    margin-bottom: 22px;
+}
+
+.progress-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.progress-card {
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    background: #fbfdff;
+}
+
+.progress-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 17px;
+}
+
+.progress-heading strong {
+    color: #172554;
+    font-size: 15px;
+}
+
+.progress-heading p {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.progress-heading > strong {
+    color: #2563eb;
+    font-size: 22px;
+}
+
+.progress-track {
+    width: 100%;
+    height: 9px;
+    border-radius: 20px;
+    background: #e2e8f0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: inherit;
+    transition: width 0.5s ease;
+}
+
+.progress-fill.blue {
+    background: linear-gradient(90deg, #2563eb, #60a5fa);
+}
+
+.progress-fill.green {
+    background: linear-gradient(90deg, #16a34a, #4ade80);
+}
+
+.progress-card > small {
+    display: block;
+    margin-top: 12px;
+    color: #64748b;
+    font-size: 11px;
+}
+
+/* =========================================================
+   24. CARTES DE L'ACCUEIL
+========================================================= */
+
+.overview-bottom-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.overview-card {
+    padding: 23px;
+    border: 1px solid #edf2f7;
+    border-radius: 13px;
+    background: white;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.overview-card h3 {
+    margin: 0 0 18px;
+    color: #172554;
+    font-size: 17px;
+}
+
+.overview-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 13px 0;
+    border-bottom: 1px solid #edf2f7;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.overview-line:last-child {
+    border-bottom: none;
+}
+
+.overview-line strong {
+    color: #2563eb;
+    font-size: 16px;
+}
+
+.overview-card > button {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid #dbeafe;
+    border-radius: 8px;
+    background: #f8fbff;
+    color: #1d4ed8;
+    text-align: left;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.overview-card > button:hover {
+    background: #eff6ff;
+    transform: translateX(3px);
+}
+
+/* =========================================================
+   25. HISTORIQUE DES COMMUNICATIONS
+========================================================= */
+
+.history-card {
+    padding: 22px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.history-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.history-card-top h3 {
+    margin: 9px 0;
+    color: #172554;
+    font-size: 17px;
+}
+
+.history-card-top p {
+    margin: 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.history-type {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.history-email-status {
+    padding: 7px 10px;
+    border-radius: 20px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 11px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   26. PROFIL PROFESSIONNEL
+========================================================= */
+
+.profile-section {
+    display: grid;
+    gap: 22px;
+}
+
+.profile-status-panel {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 25px;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    background: white;
+}
+
+.profile-status-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 65px;
+    height: 65px;
+    flex-shrink: 0;
+    border-radius: 16px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 32px;
+}
+
+.profile-status-content h3 {
+    margin: 0 0 8px;
+    color: #172554;
+}
+
+.profile-status-content p {
+    margin: 0 0 15px;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.profile-form {
+    max-width: 650px;
+}
+
+.profile-summary {
+    max-width: 650px;
+}
+
+/* =========================================================
+   27. CHARGEMENT
+========================================================= */
+
+.admin-loading {
+    background: #f4f6fb;
+}
+
+.admin-loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    color: #475569;
+}
+
+.admin-loader {
+    width: 38px;
+    height: 38px;
+    border: 4px solid #dbeafe;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: adminSpin 0.8s linear infinite;
+}
+
+@keyframes adminSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================================
+   28. RESPONSIVE : TABLETTES
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .admin-sidebar {
+        width: 245px;
+        padding: 22px 13px;
+    }
+
+    .admin-main {
+        padding: 28px 24px;
+    }
+
+    .sidebar-link {
+        gap: 9px;
+        padding: 12px 8px;
+    }
+
+    .sidebar-link-text strong {
+        font-size: 11px;
+    }
+
+    .sidebar-link-text small {
+        font-size: 9px;
+    }
+}
+
+/* =========================================================
+   29. RESPONSIVE : PETITS ÉCRANS
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .admin-dashboard {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Le menu passe au-dessus du contenu. */
+    .admin-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        overflow: visible;
+    }
+
+    .sidebar-brand {
+        padding-bottom: 15px;
+    }
+
+    .sidebar-caption {
+        margin: 18px 5px 10px;
+    }
+
+    .sidebar-navigation {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .sidebar-link {
+        min-height: 65px;
+        padding: 9px;
+    }
+
+    .sidebar-link.active::before {
+        display: none;
+    }
+
+    .sidebar-link-text small {
+        display: none;
+    }
+
+    .sidebar-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 17px;
+    }
+
+    .sidebar-link-text strong {
+        font-size: 10px;
+    }
+
+    .sidebar-bottom {
+        margin-top: 15px;
+        padding-top: 12px;
+    }
+
+    .admin-main {
+        width: 100%;
+        padding: 22px 15px;
+    }
+
+    .admin-main .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-actions {
+        justify-content: space-between;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .header-date {
+        text-align: left;
+    }
+
+    .header-actions .refresh-button {
+        flex: 1;
+    }
+
+    .progress-grid,
+    .overview-bottom-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome-panel {
+        padding: 23px;
+    }
+
+    .welcome-panel h2 {
+        font-size: 21px;
+    }
+
+    .welcome-symbol {
+        width: 60px;
+        height: 60px;
+        font-size: 30px;
+    }
+
+    .history-card-top {
+        flex-direction: column;
+    }
+}
+
+/* =========================================================
+   30. RESPONSIVE : TÉLÉPHONES
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .admin-main {
+        padding: 18px 10px;
+    }
+
+    .sidebar-navigation {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .sidebar-link {
+        min-height: 58px;
+        gap: 7px;
+        padding: 7px;
+    }
+
+    .sidebar-link-text strong {
+        font-size: 9px;
+    }
+
+    .sidebar-icon {
+        width: 26px;
+        height: 26px;
+        font-size: 15px;
+    }
+
+    .welcome-panel {
+        padding: 18px;
+    }
+
+    .welcome-panel h2 {
+        font-size: 18px;
+    }
+
+    .welcome-symbol {
+        display: none;
+    }
+
+    .progress-section,
+    .overview-card {
+        padding: 16px;
+    }
+
+    .progress-card {
+        padding: 15px;
+    }
+
+    .profile-status-panel {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-main .dashboard-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .admin-main .stat-card {
+        padding: 15px;
+    }
+
+    .admin-main .stat-card strong {
+        font-size: 25px;
+    }
+
+    .admin-main .stat-card span {
+        font-size: 12px;
+    }
+
+    .admin-main .section-heading {
+        align-items: stretch;
+    }
+
+    .admin-main .section-heading > button {
+        width: 100%;
+    }
+}
+
