@@ -1,0 +1,5 @@
+
+User-agent: *
+Allow: /
+
+Sitemap: https://steve-portfolio-2026.pages.dev/sitemap.xml
