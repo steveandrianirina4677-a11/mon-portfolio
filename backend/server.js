@@ -12,32 +12,74 @@ import { DateTime } from "luxon";
 dotenv.config();
 
 /* =========================================================
-   2. CONFIGURATION DU SERVEUR
+   2. CONFIGURATION DU SERVEUR ET CORS
 ========================================================= */
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Autoriser le frontend local et les adresses configurées dans .env
+// Domaines autorisés à communiquer avec le backend.
+// Le domaine actuellement utilisé est ajouté explicitement.
 const allowedOrigins = [
+    "https://steve-portfolio-2026.pages.dev",
+    "https://mon-portfolio-bqq.pages.dev",
     "http://localhost:5173",
+    "http://localhost:3000",
+
+    // Permet d'ajouter d'autres domaines dans FRONTEND_URL sur Render.
     ...(process.env.FRONTEND_URL || "")
         .split(",")
-        .map(origin => origin.trim())
+        .map(origin => origin.trim().replace(/\/$/, ""))
         .filter(Boolean)
 ];
 
-app.use(cors({
+// Supprimer les éventuels doublons.
+const uniqueAllowedOrigins = [...new Set(allowedOrigins)];
+
+// Configuration CORS commune à toutes les routes.
+const corsOptions = {
     origin(origin, callback) {
-        // Autoriser les requêtes sans origine (tests, outils serveur)
-        if (!origin || allowedOrigins.includes(origin)) {
+        // Autoriser les requêtes sans origine (tests et outils serveur).
+        if (!origin) {
             return callback(null, true);
         }
 
-        return callback(new Error("Origine non autorisée par CORS."));
-    }
-}));
+        // Autoriser uniquement les domaines enregistrés.
+        if (uniqueAllowedOrigins.includes(origin.replace(/\/$/, ""))) {
+            return callback(null, true);
+        }
 
+        console.warn("Origine refusée par CORS :", origin);
+
+        return callback(new Error("Origine non autorisée par CORS."));
+    },
+
+    methods: [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "OPTIONS"
+    ],
+
+    allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "apikey",
+        "x-client-info"
+    ],
+
+    optionsSuccessStatus: 204,
+    credentials: true,
+    maxAge: 86400
+};
+
+// IMPORTANT : CORS doit être placé AVANT les routes.
+// Ce middleware répond également aux requêtes OPTIONS de pré-vérification.
+app.use(cors(corsOptions));
+
+// Autoriser les données JSON envoyées par le frontend.
 app.use(express.json({ limit: "1mb" }));
 
 /* =========================================================
@@ -57,13 +99,13 @@ const supabase = SUPABASE_URL && SUPABASE_SECRET_KEY
     })
     : null;
 
-// Fuseau horaire de Madagascar
+// Fuseau horaire de Madagascar.
 const DEFAULT_TIMEZONE = "Indian/Antananarivo";
 
-// Durée fixe d'un rendez-vous
+// Durée fixe d'un rendez-vous.
 const BOOKING_DURATION = 30;
 
-// Statuts professionnels autorisés
+// Statuts professionnels autorisés.
 const PROFESSIONAL_STATUSES = [
     "Disponible",
     "En pause",
@@ -72,7 +114,7 @@ const PROFESSIONAL_STATUSES = [
     "Hors ligne"
 ];
 
-// Statuts des réservations
+// Statuts des réservations.
 const BOOKING_STATUSES = [
     "pending",
     "accepted",
@@ -85,14 +127,15 @@ console.log("Configuration du serveur :", {
     adminUserIdConfigured: Boolean(ADMIN_USER_ID),
     brevoConfigured: Boolean(
         process.env.BREVO_API_KEY && process.env.EMAIL_USER
-    )
+    ),
+    allowedOrigins: uniqueAllowedOrigins
 });
 
 /* =========================================================
    4. FONCTIONS UTILITAIRES
 ========================================================= */
 
-// Vérifier que Supabase est configuré
+// Vérifier que Supabase est configuré.
 function checkSupabase(res) {
     if (!supabase) {
         res.status(503).json({
@@ -106,7 +149,7 @@ function checkSupabase(res) {
     return true;
 }
 
-// Vérifier une date au format YYYY-MM-DD
+// Vérifier une date au format YYYY-MM-DD.
 function isValidDate(date) {
     if (
         typeof date !== "string" ||
@@ -122,7 +165,7 @@ function isValidDate(date) {
     return parsed.isValid && parsed.toISODate() === date;
 }
 
-// Vérifier une heure au format HH:mm
+// Vérifier une heure au format HH:mm.
 function isValidTime(time) {
     return (
         typeof time === "string" &&
@@ -130,13 +173,13 @@ function isValidTime(time) {
     );
 }
 
-// Convertir une heure en minutes depuis minuit
+// Convertir une heure en minutes depuis minuit.
 function timeToMinutes(time) {
     const [hour, minute] = String(time).split(":").map(Number);
     return hour * 60 + minute;
 }
 
-// Convertir une heure SQL en objet utilisable par Luxon
+// Convertir une heure SQL en objet utilisable par Luxon.
 function parseTime(time) {
     const [hour, minute] = String(time).split(":").map(Number);
 
@@ -148,7 +191,7 @@ function parseTime(time) {
     };
 }
 
-// Récupérer les paramètres professionnels
+// Récupérer les paramètres professionnels.
 async function getProfessionalSettings() {
     const { data, error } = await supabase
         .from("professional_settings")
@@ -161,7 +204,7 @@ async function getProfessionalSettings() {
     return data;
 }
 
-// Vérifier une adresse email
+// Vérifier une adresse email.
 function isValidEmail(email) {
     return (
         typeof email === "string" &&
@@ -169,14 +212,14 @@ function isValidEmail(email) {
     );
 }
 
-// Vérifier un identifiant numérique
+// Vérifier un identifiant numérique.
 function isValidId(id) {
     const value = Number(id);
 
     return Number.isSafeInteger(value) && value > 0;
 }
 
-// Vérifier un lien HTTP ou HTTPS
+// Vérifier un lien HTTP ou HTTPS.
 function isValidHttpUrl(value) {
     if (typeof value !== "string" || !value.trim()) {
         return false;
@@ -191,7 +234,7 @@ function isValidHttpUrl(value) {
     }
 }
 
-// Convertir une date et une heure locales en DateTime
+// Convertir une date et une heure locales en DateTime.
 function createLocalDateTime(date, time, timezone) {
     if (!isValidDate(date) || !isValidTime(time)) {
         return null;
@@ -204,7 +247,7 @@ function createLocalDateTime(date, time, timezone) {
     return result.isValid ? result : null;
 }
 
-// Vérifier une date ISO contenant explicitement un fuseau horaire
+// Vérifier une date ISO contenant explicitement un fuseau horaire.
 function parseIsoWithTimezone(value) {
     if (
         typeof value !== "string" ||
@@ -220,12 +263,12 @@ function parseIsoWithTimezone(value) {
     return parsed.isValid ? parsed : null;
 }
 
-// Convertir une date SQL en DateTime UTC
+// Convertir une date SQL en DateTime UTC.
 function toUtcDateTime(value) {
     return DateTime.fromISO(value, { zone: "utc" });
 }
 
-// Envoyer une réponse d'erreur serveur
+// Envoyer une réponse d'erreur serveur.
 function serverError(res, message, error, label) {
     console.error(label || "Erreur serveur :", error);
 
@@ -239,7 +282,7 @@ function serverError(res, message, error, label) {
    5. SÉCURITÉ ADMINISTRATEUR
 ========================================================= */
 
-// Vérifier le jeton Supabase et l'identité de l'administrateur
+// Vérifier le jeton Supabase et l'identité de l'administrateur.
 async function requireAdmin(req, res, next) {
     try {
         if (!supabase || !ADMIN_USER_ID) {
@@ -305,7 +348,7 @@ async function getSchedulesForDate(date, timezone) {
         throw new Error("Date invalide.");
     }
 
-    // Chercher une personnalisation de cette date
+    // Chercher une personnalisation de cette date.
     const { data: override, error: overrideError } = await supabase
         .from("availability_overrides")
         .select("*")
@@ -346,7 +389,7 @@ async function getSchedulesForDate(date, timezone) {
         };
     }
 
-    // Sinon, utiliser les horaires hebdomadaires
+    // Sinon, utiliser les horaires hebdomadaires.
     const { data: schedules, error } = await supabase
         .from("availability")
         .select("start_time, end_time")
@@ -362,7 +405,7 @@ async function getSchedulesForDate(date, timezone) {
     };
 }
 
-// Vérifier qu'un rendez-vous respecte les horaires
+// Vérifier qu'un rendez-vous respecte les horaires.
 async function isWithinWorkingHours(startsAt, endsAt, timezone) {
     const date = startsAt.setZone(timezone).toISODate();
     const result = await getSchedulesForDate(date, timezone);
@@ -389,7 +432,7 @@ async function isWithinWorkingHours(startsAt, endsAt, timezone) {
     });
 }
 
-// Vérifier que le rendez-vous commence sur un créneau de 30 minutes
+// Vérifier que le rendez-vous commence sur un créneau de 30 minutes.
 async function isValidBookingSlot(startsAt, timezone) {
     const date = startsAt.setZone(timezone).toISODate();
     const time = startsAt.setZone(timezone).toFormat("HH:mm");
@@ -415,7 +458,7 @@ async function isValidBookingSlot(startsAt, timezone) {
     });
 }
 
-// Vérifier un chevauchement avec un congé ou une indisponibilité
+// Vérifier un chevauchement avec un congé ou une indisponibilité.
 async function hasUnavailabilityConflict(startsAt, endsAt) {
     const { data, error } = await supabase
         .from("unavailability_periods")
@@ -429,7 +472,7 @@ async function hasUnavailabilityConflict(startsAt, endsAt) {
     return Boolean(data?.length);
 }
 
-// Vérifier un chevauchement avec une réservation active
+// Vérifier un chevauchement avec une réservation active.
 async function hasBookingConflict(
     startsAt,
     endsAt,
@@ -453,7 +496,7 @@ async function hasBookingConflict(
     return Boolean(data?.length);
 }
 
-// Vérifier si les horaires proposés couvrent les rendez-vous existants
+// Vérifier si les horaires proposés couvrent les rendez-vous existants.
 function bookingFitsSchedules(booking, schedules, timezone) {
     const start = toUtcDateTime(booking.starts_at);
     const end = toUtcDateTime(booking.ends_at);
@@ -484,7 +527,7 @@ function bookingFitsSchedules(booking, schedules, timezone) {
     });
 }
 
-// Vérifier les réservations avant de modifier les horaires d'une date
+// Vérifier les réservations avant de modifier les horaires d'une date.
 async function checkExistingBookingsAgainstSchedules(date, schedules, timezone) {
     const dayStart = DateTime.fromISO(date, { zone: timezone }).startOf("day");
     const dayEnd = dayStart.plus({ days: 1 });
@@ -509,7 +552,7 @@ async function checkExistingBookingsAgainstSchedules(date, schedules, timezone) 
    7. ENVOI DES EMAILS AVEC BREVO
 ========================================================= */
 
-// Envoyer un email et enregistrer son historique
+// Envoyer un email et enregistrer son historique.
 async function sendAdminEmail({
     recordType = "other",
     recordId = null,
@@ -577,7 +620,7 @@ async function sendAdminEmail({
         errorMessage = error.message;
     }
 
-    // Enregistrer l'envoi ou l'échec dans Supabase
+    // Enregistrer l'envoi ou l'échec dans Supabase.
     const { error: historyError } = await supabase
         .from("admin_email_history")
         .insert({
@@ -718,10 +761,10 @@ app.get("/api/creative-break/availability", async (req, res) => {
         const dayStart = DateTime.fromISO(date, { zone: timezone }).startOf("day");
         const dayEnd = dayStart.plus({ days: 1 });
 
-        // Récupérer les horaires de cette date
+        // Récupérer les horaires de cette date.
         const scheduleResult = await getSchedulesForDate(date, timezone);
 
-        // Récupérer les réservations actives
+        // Récupérer les réservations actives.
         const { data: bookings, error: bookingError } = await supabase
             .from("bookings")
             .select("starts_at, ends_at")
@@ -731,7 +774,7 @@ app.get("/api/creative-break/availability", async (req, res) => {
 
         if (bookingError) throw bookingError;
 
-        // Récupérer les indisponibilités
+        // Récupérer les indisponibilités.
         const { data: unavailable, error: unavailableError } = await supabase
             .from("unavailability_periods")
             .select("starts_at, ends_at")
@@ -743,7 +786,7 @@ app.get("/api/creative-break/availability", async (req, res) => {
         const now = DateTime.now().setZone(timezone);
         const slots = [];
 
-        // Construire les créneaux de 30 minutes
+        // Construire les créneaux de 30 minutes.
         for (const schedule of scheduleResult.schedules) {
             let slotStart = dayStart.set(parseTime(schedule.start_time));
             const scheduleEnd = dayStart.set(parseTime(schedule.end_time));
@@ -853,7 +896,7 @@ app.get("/api/creative-break/availability/month", async (req, res) => {
 
         const monthEnd = monthStart.plus({ months: 1 });
 
-        // Charger les horaires hebdomadaires
+        // Charger les horaires hebdomadaires.
         const { data: weeklySchedules, error: weeklyError } = await supabase
             .from("availability")
             .select("weekday, start_time, end_time")
@@ -862,7 +905,7 @@ app.get("/api/creative-break/availability/month", async (req, res) => {
 
         if (weeklyError) throw weeklyError;
 
-        // Charger les horaires personnalisés du mois
+        // Charger les horaires personnalisés du mois.
         const { data: overrides, error: overrideError } = await supabase
             .from("availability_overrides")
             .select("*")
@@ -871,7 +914,7 @@ app.get("/api/creative-break/availability/month", async (req, res) => {
 
         if (overrideError) throw overrideError;
 
-        // Charger les réservations du mois
+        // Charger les réservations du mois.
         const { data: bookings, error: bookingError } = await supabase
             .from("bookings")
             .select("starts_at, ends_at")
@@ -881,7 +924,7 @@ app.get("/api/creative-break/availability/month", async (req, res) => {
 
         if (bookingError) throw bookingError;
 
-        // Charger les périodes d'indisponibilité du mois
+        // Charger les périodes d'indisponibilité du mois.
         const { data: unavailable, error: unavailableError } = await supabase
             .from("unavailability_periods")
             .select("starts_at, ends_at")
@@ -893,7 +936,7 @@ app.get("/api/creative-break/availability/month", async (req, res) => {
         const now = DateTime.now().setZone(timezone);
         const days = [];
 
-        // Parcourir tous les jours du mois
+        // Parcourir tous les jours du mois.
         for (
             let currentDay = monthStart;
             currentDay < monthEnd;
@@ -1022,7 +1065,6 @@ app.post("/api/creative-break/bookings", async (req, res) => {
     try {
         if (!checkSupabase(res)) return;
 
-        // Récupérer toutes les données envoyées par le frontend React
         const {
             clientName,
             clientPhone,
@@ -1034,7 +1076,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             visitorTimezone
         } = req.body || {};
 
-        // Vérifier les champs obligatoires
+        // Vérifier les champs obligatoires.
         if (
             typeof clientName !== "string" ||
             typeof clientPhone !== "string" ||
@@ -1055,7 +1097,6 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
-        // Vérifier l'adresse email
         if (!isValidEmail(clientEmail)) {
             return res.status(400).json({
                 success: false,
@@ -1063,7 +1104,6 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
-        // Vérifier les longueurs des champs
         if (
             clientName.trim().length > 120 ||
             clientPhone.trim().length > 40 ||
@@ -1076,7 +1116,6 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
-        // Récupérer les paramètres professionnels
         const settings = await getProfessionalSettings();
 
         if (!settings) {
@@ -1086,10 +1125,8 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
-        // Le fuseau professionnel reste celui de Madagascar
         const timezone = DEFAULT_TIMEZONE;
 
-        // Vérifier que le fuseau enregistré dans Supabase est cohérent
         if (
             settings.timezone &&
             settings.timezone !== DEFAULT_TIMEZONE
@@ -1107,8 +1144,6 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
-        // Vérifier le fuseau horaire du visiteur
-        // Il sert à identifier son fuseau, mais ne modifie pas l'instant réservé.
         let visitorZone = timezone;
 
         if (visitorTimezone !== undefined && visitorTimezone !== null) {
@@ -1127,9 +1162,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             visitorZone = visitorTimezone;
         }
 
-        // IMPORTANT :
-        // startsAt contient l'instant exact choisi dans le calendrier.
-        // Il doit obligatoirement contenir Z ou un décalage horaire.
+        // startsAt doit contenir un fuseau horaire explicite.
         const receivedInstant = parseIsoWithTimezone(receivedStartsAt);
 
         if (!receivedInstant) {
@@ -1139,8 +1172,6 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
-        // Convertir l'instant reçu vers le fuseau de Madagascar.
-        // Cette conversion conserve le même instant réel.
         const startsAt = receivedInstant.setZone(timezone);
 
         if (!startsAt.isValid) {
@@ -1150,11 +1181,9 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
-        // Recalculer la date et l'heure professionnelles à Madagascar
         const professionalDate = startsAt.toISODate();
         const professionalTime = startsAt.toFormat("HH:mm");
 
-        // Vérifier que date et time correspondent à startsAt
         if (
             date !== professionalDate ||
             time !== professionalTime
@@ -1162,10 +1191,7 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: "La date ou l'heure envoyée ne correspond pas au créneau professionnel sélectionné.",
-                received: {
-                    date,
-                    time
-                },
+                received: { date, time },
                 expected: {
                     date: professionalDate,
                     time: professionalTime,
@@ -1174,12 +1200,10 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
-        // Calculer la fin du rendez-vous : 30 minutes après le début
         const endsAt = startsAt.plus({
             minutes: BOOKING_DURATION
         });
 
-        // Refuser les créneaux déjà passés
         if (startsAt.toMillis() <= DateTime.now().toMillis()) {
             return res.status(400).json({
                 success: false,
@@ -1187,7 +1211,6 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
-        // Vérifier que le rendez-vous respecte les horaires professionnels
         if (!(await isWithinWorkingHours(startsAt, endsAt, timezone))) {
             return res.status(400).json({
                 success: false,
@@ -1195,7 +1218,6 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
-        // Vérifier que le rendez-vous correspond à un créneau proposé
         if (!(await isValidBookingSlot(startsAt, timezone))) {
             return res.status(400).json({
                 success: false,
@@ -1203,7 +1225,6 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
-        // Vérifier les congés et les indisponibilités
         if (await hasUnavailabilityConflict(startsAt, endsAt)) {
             return res.status(409).json({
                 success: false,
@@ -1211,7 +1232,6 @@ app.post("/api/creative-break/bookings", async (req, res) => {
             });
         }
 
-        // Vérifier qu'une autre réservation n'occupe pas ce créneau
         if (await hasBookingConflict(startsAt, endsAt)) {
             return res.status(409).json({
                 success: false,
@@ -1220,7 +1240,6 @@ app.post("/api/creative-break/bookings", async (req, res) => {
         }
 
         // Enregistrer les dates en UTC dans Supabase.
-        // Supabase conservera ainsi le même instant, quel que soit le fuseau du visiteur.
         const { data: booking, error } = await supabase
             .from("bookings")
             .insert({
@@ -1237,7 +1256,6 @@ app.post("/api/creative-break/bookings", async (req, res) => {
 
         if (error) throw error;
 
-        // Retourner les informations de réservation au frontend
         return res.status(201).json({
             success: true,
             message: "Votre demande de rendez-vous a été enregistrée !",
@@ -1278,7 +1296,6 @@ app.get(
                 .select("*")
                 .order("starts_at", { ascending: false });
 
-            // Afficher les archives uniquement si demandé
             if (req.query.archived === "true") {
                 query = query.not("archived_at", "is", null);
             } else {
@@ -1326,7 +1343,6 @@ app.patch(
             const { status, meeting_link } = req.body || {};
             const updateData = {};
 
-            // Le statut peut être modifié indépendamment du lien
             if (status !== undefined) {
                 if (!BOOKING_STATUSES.includes(status)) {
                     return res.status(400).json({
@@ -1338,7 +1354,6 @@ app.patch(
                 updateData.status = status;
             }
 
-            // Le lien de visioconférence est facultatif
             if (meeting_link !== undefined) {
                 if (
                     meeting_link !== null &&
@@ -1418,7 +1433,6 @@ app.patch(
                 });
             }
 
-            // Récupérer la réservation actuelle
             const { data: booking, error: bookingError } = await supabase
                 .from("bookings")
                 .select("*")
@@ -1493,7 +1507,6 @@ app.patch(
                 });
             }
 
-            // Mettre à jour la réservation
             const { data: updatedBooking, error: updateError } = await supabase
                 .from("bookings")
                 .update({
@@ -1506,7 +1519,6 @@ app.patch(
 
             if (updateError) throw updateError;
 
-            // Envoyer un email au client
             let emailResult = null;
 
             if (booking.client_email) {
@@ -1875,7 +1887,6 @@ app.get(
 
             const result = await getSchedulesForDate(date, timezone);
 
-            // Présenter les deux créneaux séparément
             const morning = result.customized
                 ? {
                     enabled: result.override.morning_enabled,
@@ -1955,7 +1966,6 @@ app.put(
                 });
             }
 
-            // Vérifier le créneau du matin
             if (
                 morning_enabled &&
                 (
@@ -1970,7 +1980,6 @@ app.put(
                 });
             }
 
-            // Vérifier le créneau de l'après-midi
             if (
                 afternoon_enabled &&
                 (
@@ -1985,7 +1994,6 @@ app.put(
                 });
             }
 
-            // Vérifier que l'après-midi commence après le matin
             if (
                 morning_enabled &&
                 afternoon_enabled &&
@@ -1997,7 +2005,6 @@ app.put(
                 });
             }
 
-            // Préparer les horaires réellement activés
             const schedules = [];
 
             if (morning_enabled) {
@@ -2017,7 +2024,6 @@ app.put(
             const settings = await getProfessionalSettings();
             const timezone = settings?.timezone || DEFAULT_TIMEZONE;
 
-            // Ne pas invalider un rendez-vous déjà enregistré
             const incompatibleBookings =
                 await checkExistingBookingsAgainstSchedules(
                     date,
@@ -2033,7 +2039,6 @@ app.put(
                 });
             }
 
-            // Préparer les données à enregistrer
             const payload = {
                 override_date: date,
                 morning_enabled,
@@ -2045,7 +2050,6 @@ app.put(
                 updated_at: new Date().toISOString()
             };
 
-            // Créer ou remplacer la personnalisation
             const { data, error } = await supabase
                 .from("availability_overrides")
                 .upsert(payload, {
@@ -2094,7 +2098,6 @@ app.delete(
             const settings = await getProfessionalSettings();
             const timezone = settings?.timezone || DEFAULT_TIMEZONE;
 
-            // Récupérer les horaires hebdomadaires qui reprendront effet
             const day = DateTime.fromISO(date, { zone: timezone });
 
             const { data: weeklySchedules, error: weeklyError } = await supabase
@@ -2105,7 +2108,6 @@ app.delete(
 
             if (weeklyError) throw weeklyError;
 
-            // Ne pas invalider les rendez-vous existants
             const incompatibleBookings =
                 await checkExistingBookingsAgainstSchedules(
                     date,
@@ -2188,7 +2190,6 @@ app.post(
         try {
             const { starts_at, ends_at, description } = req.body || {};
 
-            // Exiger des dates ISO avec un fuseau explicite
             const start = parseIsoWithTimezone(starts_at);
             const end = parseIsoWithTimezone(ends_at);
 
@@ -2216,7 +2217,6 @@ app.post(
                 });
             }
 
-            // Vérifier qu'aucun rendez-vous actif ne se trouve dans la période
             const { data: conflicts, error: conflictError } = await supabase
                 .from("bookings")
                 .select("id")
@@ -2234,7 +2234,6 @@ app.post(
                 });
             }
 
-            // Enregistrer la période en UTC
             const { data, error } = await supabase
                 .from("unavailability_periods")
                 .insert({
@@ -2464,7 +2463,6 @@ app.post(
                 emailType: "message_reply"
             });
 
-            // Marquer comme lu seulement après l'envoi réussi
             const { error: readError } = await supabase
                 .from("messages")
                 .update({ is_read: true })
@@ -2818,7 +2816,7 @@ app.post("/api/contact", async (req, res) => {
             });
         }
 
-        // Enregistrer le message dans Supabase
+        // Enregistrer le message dans Supabase.
         const { data: savedMessage, error } = await supabase
             .from("messages")
             .insert({
@@ -2833,7 +2831,7 @@ app.post("/api/contact", async (req, res) => {
 
         if (error) throw error;
 
-        // Le message reste enregistré même si Brevo n'est pas configuré
+        // Le message reste enregistré même si Brevo n'est pas configuré.
         if (!process.env.BREVO_API_KEY || !process.env.EMAIL_USER) {
             return res.status(201).json({
                 success: true,
@@ -2842,7 +2840,6 @@ app.post("/api/contact", async (req, res) => {
             });
         }
 
-        // Préparer la notification à l'administrateur
         const emailData = {
             sender: {
                 name: "Portfolio",
@@ -2882,7 +2879,6 @@ app.post("/api/contact", async (req, res) => {
                 );
             }
         } catch (emailError) {
-            // Ne pas perdre le message du client si Brevo est indisponible
             console.error("Erreur notification Brevo :", emailError.message);
         }
 
@@ -2906,7 +2902,7 @@ app.post("/api/contact", async (req, res) => {
    38. GESTION DES ERREURS ET DÉMARRAGE
 ========================================================= */
 
-// Gérer les erreurs qui ne sont pas interceptées par les routes
+// Gérer les erreurs qui ne sont pas interceptées par les routes.
 app.use((error, req, res, next) => {
     if (res.headersSent) {
         return next(error);
@@ -2920,7 +2916,7 @@ app.use((error, req, res, next) => {
     });
 });
 
-// Démarrer le serveur
+// Démarrer le serveur.
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Backend démarré sur le port ${PORT}`);
 });
