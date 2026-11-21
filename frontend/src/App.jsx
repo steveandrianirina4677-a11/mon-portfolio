@@ -367,10 +367,10 @@ function TypingEffect() {
 
   const words = [
     "Développeur Full Stack",
-    "Développeur Web",
     "React.js",
     "Python",
-    "JavaScript"
+    "JavaScript",
+    "Linux"
   ];
 
   const [wordIndex, setWordIndex] = useState(0);
@@ -541,8 +541,15 @@ function Navbar() {
     <nav className="navbar">
       <div className="nav-container">
 
-        <a href="#accueil" className="logo" onClick={closeMenu}>
-          Steve<span>.</span>
+        <a href="#accueil" className="logo" onClick={closeMenu} aria-label="Accueil - Steev Andrianirina">
+          <img
+            src="/steve.png"
+            alt="Logo Steev Andrianirina"
+            className="nav-logo-image"
+            width="54"
+            height="54"
+            fetchPriority="high"
+          />
         </a>
 
         <button
@@ -682,7 +689,7 @@ function Hero({ professionalStatus }) {
         </div>
 
         <h1>
-          Steve <span>Andrianirina</span>
+          Steev <span>Andrianirina</span>
         </h1>
 
         <TypingEffect />
